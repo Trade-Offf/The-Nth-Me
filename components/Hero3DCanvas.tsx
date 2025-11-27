@@ -1,9 +1,13 @@
 'use client';
 
-import { Canvas } from '@react-three/fiber';
+import { Canvas, extend } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera } from '@react-three/drei';
 import HeroRobot from './HeroRobot';
 import { Suspense } from 'react';
+import * as THREE from 'three';
+
+// 扩展 Three.js 元素以支持 JSX
+extend(THREE);
 
 export default function Hero3DCanvas() {
   return (

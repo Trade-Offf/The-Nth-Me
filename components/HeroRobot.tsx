@@ -1,9 +1,12 @@
 'use client';
 
 import { useRef, useEffect } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, extend } from '@react-three/fiber';
 import { Environment, Text } from '@react-three/drei';
 import * as THREE from 'three';
+
+// 扩展 Three.js 元素以支持 JSX
+extend(THREE);
 
 export default function HeroRobot() {
   const groupRef = useRef<THREE.Group>(null);
