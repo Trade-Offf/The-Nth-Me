@@ -198,16 +198,22 @@ export default function PricingPage() {
         </div>
 
         {/* 说明 */}
-        <div className="mt-16 text-center text-white/40 text-sm space-y-2">
-          <p>⚡️ 每生成一张图片消耗 4 点能量</p>
-          <p>🔒 充值后能量永久有效，不会过期</p>
-          <p className="pt-4">
-            充值前请先在{' '}
-            <Link href="/user" className="text-purple-400 hover:underline">
-              用户中心
-            </Link>{' '}
-            绑定您的爱发电账号
-          </p>
+        <div className="mt-16 text-center space-y-4">
+          <div className="text-white/40 text-sm space-y-2">
+            <p>⚡️ 每生成一张图片消耗 4 点能量</p>
+            <p>🔒 充值后能量永久有效，不会过期</p>
+          </div>
+
+          {/* 重要提示 */}
+          <div className="max-w-md mx-auto bg-purple-500/10 border border-purple-500/30 rounded-xl p-4">
+            <p className="text-purple-300 text-sm font-medium mb-2">📧 重要提示</p>
+            <p className="text-white/70 text-sm">
+              付款时请在爱发电<span className="text-purple-400">「留言」</span>中填写您的注册邮箱
+              {session?.user?.email && (
+                <>：<br /><code className="text-purple-300">{session.user.email}</code></>
+              )}
+            </p>
+          </div>
         </div>
       </div>
     </main>

@@ -72,16 +72,28 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ ec: 200, em: 'Order already processed' });
     }
 
-    // 根据爱发电 user_id 查找用户
+    // 从留言中提取邮箱
+    const remark = order.remark || '';
+    const emailMatch = remark.match(/[\w.-]+@[\w.-]+\.\w+/);
+    const email = emailMatch ? emailMatch[0].toLowerCase() : null;
+
+    console.log(`[Afdian Webhook] 留言: ${remark}, 提取邮箱: ${email}`);
+
+    if (!email) {
+      console.log(`[Afdian Webhook] 留言中未找到邮箱，订单: ${out_trade_no}`);
+      // 仍然返回成功，避免爱发电重试
+      return NextResponse.json({ ec: 200, em: 'No email in remark, order logged for manual processing' });
+    }
+
+    // 根据邮箱查找用户
     const user = await prisma.user.findUnique({
-      where: { afdianId: afdianUserId },
+      where: { email },
     });
 
     if (!user) {
-      console.log(`[Afdian Webhook] 未找到绑定用户，爱发电ID: ${afdianUserId}`);
+      console.log(`[Afdian Webhook] 未找到用户，邮箱: ${email}`);
       // 仍然返回成功，避免爱发电重试
-      // 可以记录到待处理队列，后续人工处理
-      return NextResponse.json({ ec: 200, em: 'User not found, order logged' });
+      return NextResponse.json({ ec: 200, em: 'User not found, order logged for manual processing' });
     }
 
     // 根据金额匹配充值档位

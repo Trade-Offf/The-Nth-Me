@@ -15,7 +15,6 @@ import {
   Zap,
   ArrowLeft,
   Link as LinkIcon,
-  CheckCircle,
   History,
   User,
   Loader2,
@@ -43,11 +42,6 @@ export default function UserPage() {
 
   const [credits, setCredits] = useState<CreditData | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [afdianId, setAfdianId] = useState('');
-  const [isBound, setIsBound] = useState(false);
-  const [bindInput, setBindInput] = useState('');
-  const [isBinding, setIsBinding] = useState(false);
-  const [bindError, setBindError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
   // 未登录跳转
@@ -62,49 +56,16 @@ export default function UserPage() {
     if (session?.user) {
       Promise.all([
         fetch('/api/user/credits').then((r) => r.json()),
-        fetch('/api/user/bindAfdian').then((r) => r.json()),
         fetch('/api/user/transactions').then((r) => r.json()),
       ])
-        .then(([creditsRes, bindRes, txRes]) => {
+        .then(([creditsRes, txRes]) => {
           if (creditsRes.success) setCredits(creditsRes.data);
-          if (bindRes.success) {
-            setAfdianId(bindRes.data.afdianId || '');
-            setIsBound(bindRes.data.isBound);
-          }
           if (txRes.success) setTransactions(txRes.data);
         })
         .catch(console.error)
         .finally(() => setIsLoading(false));
     }
   }, [session]);
-
-  // 绑定爱发电
-  const handleBind = async () => {
-    if (!bindInput.trim()) return;
-    setIsBinding(true);
-    setBindError('');
-
-    try {
-      const res = await fetch('/api/user/bindAfdian', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ afdianId: bindInput.trim() }),
-      });
-      const data = await res.json();
-
-      if (data.success) {
-        setAfdianId(bindInput.trim());
-        setIsBound(true);
-        setBindInput('');
-      } else {
-        setBindError(data.error || '绑定失败');
-      }
-    } catch {
-      setBindError('网络错误，请重试');
-    } finally {
-      setIsBinding(false);
-    }
-  };
 
   if (status === 'loading' || isLoading) {
     return (
@@ -184,7 +145,7 @@ export default function UserPage() {
           </Link>
         </motion.div>
 
-        {/* 绑定爱发电 */}
+        {/* 充值说明 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -193,46 +154,16 @@ export default function UserPage() {
         >
           <div className="flex items-center gap-2 mb-4">
             <LinkIcon className="w-5 h-5 text-purple-400" />
-            <h2 className="text-lg font-bold">绑定爱发电账号</h2>
+            <h2 className="text-lg font-bold">充值说明</h2>
           </div>
 
-          {isBound ? (
-            <div className="flex items-center gap-2 text-green-400">
-              <CheckCircle className="w-5 h-5" />
-              <span>已绑定：{afdianId.slice(0, 8)}...{afdianId.slice(-8)}</span>
+          <div className="space-y-3 text-white/70 text-sm">
+            <p>📧 充值时请在爱发电<span className="text-purple-400 font-medium">「留言」</span>中填写您的注册邮箱：</p>
+            <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-3">
+              <code className="text-purple-300">{session.user?.email}</code>
             </div>
-          ) : (
-            <div className="space-y-3">
-              <p className="text-white/50 text-sm">
-                绑定后，您在爱发电的充值将自动到账。
-                <a
-                  href="https://afdian.com/dashboard"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-purple-400 hover:underline ml-1"
-                >
-                  如何获取爱发电 ID？
-                </a>
-              </p>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={bindInput}
-                  onChange={(e) => setBindInput(e.target.value)}
-                  placeholder="输入您的爱发电 User ID（32位）"
-                  className="flex-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-purple-500"
-                />
-                <button
-                  onClick={handleBind}
-                  disabled={isBinding || !bindInput.trim()}
-                  className="px-6 py-2 bg-purple-500 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isBinding ? <Loader2 className="w-5 h-5 animate-spin" /> : '绑定'}
-                </button>
-              </div>
-              {bindError && <p className="text-red-400 text-sm">{bindError}</p>}
-            </div>
-          )}
+            <p className="text-white/50">能量将在支付成功后自动到账，请确保邮箱填写正确。</p>
+          </div>
         </motion.div>
 
         {/* 交易记录 */}
