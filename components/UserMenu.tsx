@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * 用户菜单组件
+ * 用户菜单组件 - Electric Green Tech Style
  * 显示登录状态、头像和下拉菜单
  */
 
@@ -9,7 +9,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { User, LogOut, Settings, Loader2 } from 'lucide-react';
+import { User, LogOut, Settings } from 'lucide-react';
 
 export default function UserMenu() {
   const { data: session, status } = useSession();
@@ -31,8 +31,8 @@ export default function UserMenu() {
   // 加载中
   if (status === 'loading') {
     return (
-      <div className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center">
-        <Loader2 className="w-4 h-4 animate-spin text-white/60" />
+      <div className="w-8 h-8 rounded-sm bg-tech-card border border-tech-border flex items-center justify-center">
+        <span className="font-mono text-[10px] text-acid animate-pulse">...</span>
       </div>
     );
   }
@@ -42,11 +42,9 @@ export default function UserMenu() {
     return (
       <Link
         href="/login"
-        className="px-4 py-2 rounded-full bg-gradient-to-r from-purple-500/20 to-indigo-500/20
-                 border border-cosmic-purple/30 text-cosmic-purple hover:bg-purple-500/30
-                 transition-all text-sm font-medium"
+        className="px-4 py-2 rounded-sm border border-zinc-700 text-zinc-400 font-mono text-xs uppercase tracking-wider hover:border-acid hover:text-acid transition-colors"
       >
-        登录
+        LOGIN
       </Link>
     );
   }
@@ -56,56 +54,55 @@ export default function UserMenu() {
     <div className="relative" ref={menuRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 rounded-full p-1 hover:bg-white/10 transition-colors"
+        className="flex items-center gap-2 p-1 rounded-sm hover:bg-acid/10 transition-colors"
       >
         {session.user?.image ? (
           <Image
             src={session.user.image}
             alt={session.user.name || '用户头像'}
-            width={36}
-            height={36}
-            className="rounded-full"
+            width={32}
+            height={32}
+            className="rounded-sm"
           />
         ) : (
-          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center">
-            <User className="w-5 h-5 text-white" />
+          <div className="w-8 h-8 rounded-sm bg-acid flex items-center justify-center">
+            <User className="w-4 h-4 text-black" strokeWidth={1.5} />
           </div>
         )}
       </button>
 
       {/* 下拉菜单 */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-56 rounded-xl bg-cosmic-midnight/95 backdrop-blur-xl
-                      border border-white/10 shadow-xl overflow-hidden z-50">
+        <div className="absolute right-0 mt-2 w-56 rounded-sm bg-tech-card border border-tech-border overflow-hidden z-50">
           {/* 用户信息 */}
-          <div className="px-4 py-3 border-b border-white/10">
+          <div className="px-4 py-3 border-b border-tech-border">
             <p className="text-sm font-medium text-white truncate">
               {session.user?.name || '用户'}
             </p>
-            <p className="text-xs text-white/50 truncate">
+            <p className="text-xs text-zinc-500 font-mono truncate">
               {session.user?.email}
             </p>
           </div>
 
           {/* 菜单项 */}
-          <div className="py-2">
+          <div className="py-1">
             <Link
               href="/user"
               onClick={() => setIsOpen(false)}
-              className="flex items-center gap-3 px-4 py-2 text-sm text-white/70 hover:bg-white/10 hover:text-white transition-colors"
+              className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-400 hover:bg-acid/10 hover:text-acid transition-colors"
             >
-              <Settings className="w-4 h-4" />
-              用户中心
+              <Settings className="w-4 h-4" strokeWidth={1.5} />
+              <span className="font-mono text-xs uppercase tracking-wider">用户中心</span>
             </Link>
             <button
               onClick={() => {
                 setIsOpen(false);
                 signOut({ callbackUrl: '/' });
               }}
-              className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 transition-colors"
+              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-500/10 transition-colors"
             >
-              <LogOut className="w-4 h-4" />
-              退出登录
+              <LogOut className="w-4 h-4" strokeWidth={1.5} />
+              <span className="font-mono text-xs uppercase tracking-wider">退出登录</span>
             </button>
           </div>
         </div>

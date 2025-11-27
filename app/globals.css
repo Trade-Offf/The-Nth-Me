@@ -4,26 +4,35 @@
 
 @layer base {
   :root {
+    /* Legacy cosmic colors */
     --cosmic-black: #0a0a0f;
     --cosmic-midnight: #0f0f1e;
     --cosmic-purple: #8b5cf6;
     --cosmic-teal: #14b8a6;
     --cosmic-gold: #fbbf24;
     --cosmic-pink: #ec4899;
+
+    /* New Electric Green theme */
+    --acid: #CCFF00;
+    --acid-dim: #9ECC00;
+    --acid-glow: rgba(204, 255, 0, 0.15);
+    --tech-bg: #050505;
+    --tech-card: #0A0A0A;
+    --tech-border: #27272a;
+    --tech-border-light: #3f3f46;
   }
 
   * {
-    @apply border-cosmic-midnight;
+    @apply border-tech-border;
   }
 
   body {
-    @apply bg-cosmic-black text-white;
-    background-image: radial-gradient(ellipse at top, #1e1b4b 0%, #0a0a0f 50%);
-    background-attachment: fixed;
+    @apply bg-tech-bg text-white antialiased;
   }
 }
 
 @layer utilities {
+  /* Legacy glass card (保留兼容) */
   .glass-card {
     @apply bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl;
   }
@@ -32,6 +41,16 @@
     @apply glass-card transition-all duration-300 hover:bg-white/10 hover:border-white/20;
   }
 
+  /* New Tech Card */
+  .tech-card {
+    @apply relative bg-tech-card border border-tech-border rounded-sm;
+  }
+
+  .tech-card-hover {
+    @apply tech-card transition-all duration-200 hover:border-acid/50 hover:bg-acid-glow;
+  }
+
+  /* Legacy gradients */
   .glow-text {
     text-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
   }
@@ -48,23 +67,62 @@
     @apply bg-clip-text text-transparent;
     background-image: linear-gradient(135deg, #8b5cf6 0%, #14b8a6 50%, #fbbf24 100%);
   }
+
+  /* New Tech utilities */
+  .text-acid-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #CCFF00 0%, #9ECC00 100%);
+  }
+
+  .tech-border-glow {
+    box-shadow: 0 0 20px rgba(204, 255, 0, 0.2);
+  }
+
+  /* Grid background */
+  .tech-grid-bg {
+    background-image:
+      linear-gradient(rgba(39, 39, 42, 0.4) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(39, 39, 42, 0.4) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+
+  /* Scanline overlay effect */
+  .tech-scanline {
+    background: linear-gradient(
+      transparent 50%,
+      rgba(0, 0, 0, 0.05) 50%
+    );
+    background-size: 100% 4px;
+    pointer-events: none;
+  }
+
+  /* Monospace labels */
+  .tech-label {
+    @apply font-mono text-xs uppercase tracking-widest text-zinc-500;
+  }
+
+  /* Cursor blink effect */
+  .cursor-blink::after {
+    content: '_';
+    @apply animate-blink text-acid;
+  }
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar - Tech style */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--cosmic-midnight);
+  background: #0A0A0A;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--cosmic-purple);
-  border-radius: 4px;
+  background: #27272a;
+  border-radius: 0;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--cosmic-teal);
+  background: #CCFF00;
 }
 

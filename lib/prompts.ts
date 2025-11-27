@@ -30,26 +30,26 @@ export interface PromptConfig {
 export const prompts: PromptConfig[] = [
   {
     id: 'studio-portrait',
-    name: '高级摄影棚',
+    name: '光影实验室',
     prompt:
       '将图片转换为摄影棚风格的顶级半身肖像照。人物穿着都市休闲服饰，动作自然放松，镜头特写、聚焦面部。背景为柔和的渐变色，层次分明，突出主体与背景的分离，并加入 gobo lighting 光影投射，形成几何或窗棂状的光影效果。画面氛围静谧而温柔，细腻胶片颗粒质感，柔和定向光轻抚面庞，在眼神处留下光点，营造经典黑白摄影的高级氛围。中心构图',
     sampleStrength: 0.75,
-    tags: ['摄影', '人像', '黑白', '高级'],
+    tags: ['光子捕捉', '生物扫描', '单色矩阵', '高保真'],
   },
   {
     id: 'tech-startup',
-    name: '科技创业风',
+    name: '硅谷原型体',
     prompt: `Edit this image. I need a professional, high-resolution, profile photo, maintaining the exact facial structure, identity, and key features of the person in the input image. The subject is framed from the chest up, with ample headroom and negative space above their head, ensuring the top of their head is not cropped. The person looks directly at the camera with a relaxed, approachable expression, and the subject's body is casually positioned with a slight lean. They are styled for a professional photo studio shoot, wearing a modern henley shirt in heather gray with rolled sleeves. The background is a solid '#141414' neutral studio. Shot from a high angle with bright and airy soft, diffused studio lighting, gently illuminating the face and creating a subtle catchlight in the eyes, conveying a sense of innovation and accessibility. Captured on an 85mm f/1.8 lens with a shallow depth of field, exquisite focus on the eyes, and beautiful, soft bokeh. Observe crisp detail on the fabric texture of the henley, individual strands of hair, and natural, realistic skin texture，keep the glass if the picture has . The atmosphere exudes confidence, innovation, and modern professionalism. Clean and bright cinematic color grading with subtle warmth and balanced tones, ensuring a polished and contemporary feel.`,
     sampleStrength: 1.0,
-    tags: ['商务', '科技', '创业', '专业', '现代'],
+    tags: ['企业协议', '神经链接', '创始人模式', '高清渲染'],
   },
   {
     id: 'collectible-figure',
-    name: '人偶手办',
+    name: '量子人偶',
     prompt:
       'Create a 1/7 scale commercialized figure of the character in the illustration, in a realistic style and environment. Place the figure on a computer desk, using a circular transparent acrylic base without any text. On the computer screen, display the ZBrush modeling process of the figure. Next to the computer screen, place a BANDAI-style toy packaging box printed with the original artwork.',
     sampleStrength: 1.0,
-    tags: ['手办', '3D', '商业', 'BANDAI'],
+    tags: ['实体化', '3D渲染', '商品化', '收藏协议'],
   },
 ];
 

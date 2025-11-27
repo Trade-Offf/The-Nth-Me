@@ -5,12 +5,14 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Download, RotateCcw, ArrowLeft, ShieldCheck, Clock } from 'lucide-react';
-import GlowButton from '@/components/GlowButton';
-import GlassCard from '@/components/GlassCard';
+import TechCard from '@/components/TechCard';
+import Navbar from '@/components/Navbar';
+import { useI18n } from '@/lib/i18n';
 import { worldlines } from '@/lib/worldlines';
 
 export default function ResultPage() {
   const router = useRouter();
+  const { t } = useI18n();
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [selectedWorldline, setSelectedWorldline] = useState<string | null>(null);
@@ -94,30 +96,31 @@ export default function ResultPage() {
   }
 
   return (
-    <main className="min-h-screen px-4 py-8 md:py-12">
-      <div className="max-w-6xl mx-auto">
-        {/* Back Button */}
-        <motion.button
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          onClick={() => router.push('/')}
-          className="flex items-center gap-2 text-white/60 hover:text-white mb-6 transition-colors"
-        >
-          <ArrowLeft className="w-5 h-5" />
-          返回首页
-        </motion.button>
+    <main className="min-h-screen bg-tech-bg relative">
+      {/* 网格背景 */}
+      <div className="fixed inset-0 tech-grid-bg opacity-30" />
 
+      {/* 导航栏 */}
+      <Navbar />
+
+      <div className="max-w-6xl mx-auto relative z-10 px-4 pt-24 pb-12">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8"
         >
-          <h1 className="text-3xl md:text-5xl font-bold mb-2">
-            <span className="text-gradient">穿越成功！欢迎来到</span>
+          <h1 className="text-xl md:text-3xl font-mono font-medium mb-2 text-white uppercase tracking-wide">
+            {t.result.title} <span className="text-acid">{t.result.titleHighlight}</span>
           </h1>
-          <h2 className="text-2xl md:text-4xl font-bold glow-text mb-2">{worldlineData?.name}</h2>
-          <p className="text-white/60 text-base">{worldlineData?.description}</p>
+          <div className="inline-flex items-center gap-3 px-3 py-1.5 border border-acid/30 rounded-sm bg-acid/5 mb-4">
+            <span className="w-2 h-2 rounded-full bg-acid animate-pulse" />
+            <span className="font-mono text-xs text-acid uppercase tracking-[0.15em]">
+              {t.result.badge}
+            </span>
+          </div>
+          <h2 className="text-lg md:text-2xl font-mono font-bold text-acid mb-2">{worldlineData?.name}</h2>
+          <p className="text-zinc-500 text-sm font-mono">// {worldlineData?.description}</p>
         </motion.div>
 
         {/* 左右对比布局 */}
@@ -127,34 +130,34 @@ export default function ResultPage() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="mb-8"
         >
-          <GlassCard glow className="p-4 md:p-6">
+          <TechCard className="p-4 md:p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
               {/* 原始图片 */}
               <div className="relative">
-                <div className="relative aspect-square rounded-2xl overflow-hidden bg-white/5 border border-white/10">
+                <div className="relative aspect-square rounded-sm overflow-hidden bg-tech-bg border border-tech-border">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={uploadedImage} alt="原始照片" className="w-full h-full object-cover" />
+                  <img src={uploadedImage} alt={t.result.originalSample} className="w-full h-full object-cover" />
                   {/* 标签 */}
-                  <div className="absolute bottom-3 left-3 px-3 py-1.5 bg-black/70 backdrop-blur-sm rounded-full text-sm font-medium flex items-center gap-1.5">
-                    <div className="w-2 h-2 rounded-full bg-white/60" />
-                    原始照片
+                  <div className="absolute bottom-3 left-3 px-2 py-1 bg-black/70 rounded-sm text-[10px] font-mono text-zinc-400 uppercase flex items-center gap-1.5">
+                    <div className="w-1.5 h-1.5 rounded-full bg-zinc-500" />
+                    {t.result.originalSample}
                   </div>
                 </div>
               </div>
 
               {/* 生成的图片 */}
               <div className="relative">
-                <div className="relative aspect-square rounded-2xl overflow-hidden bg-white/5 border border-cosmic-purple/30 shadow-lg shadow-cosmic-purple/20">
-                  <Image src={generatedImage} alt="生成的照片" fill className="object-cover" />
+                <div className="relative aspect-square rounded-sm overflow-hidden bg-tech-bg border border-acid/30">
+                  <Image src={generatedImage} alt={t.result.generatedImage} fill className="object-cover" />
                   {/* 标签 */}
-                  <div className="absolute bottom-3 left-3 px-3 py-1.5 bg-gradient-to-r from-cosmic-purple to-cosmic-pink backdrop-blur-sm rounded-full text-sm font-medium flex items-center gap-1.5">
-                    <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
+                  <div className="absolute bottom-3 left-3 px-2 py-1 bg-black/70 border border-acid/50 rounded-sm text-[10px] font-mono text-acid uppercase flex items-center gap-1.5">
+                    <div className="w-1.5 h-1.5 rounded-full bg-acid animate-pulse" />
                     {worldlineData?.name}
                   </div>
                   {/* 揭示动效 */}
                   {!revealed && (
                     <motion.div
-                      className="absolute inset-0 bg-cosmic-black"
+                      className="absolute inset-0 bg-tech-bg"
                       animate={{ opacity: [1, 0] }}
                       transition={{ duration: 0.5, delay: 0.3 }}
                     />
@@ -165,11 +168,11 @@ export default function ResultPage() {
 
             {/* 中间箭头指示 */}
             <div className="hidden md:flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
-              <div className="w-12 h-12 rounded-full bg-cosmic-purple/20 backdrop-blur-sm border border-cosmic-purple/40 flex items-center justify-center">
-                <ArrowLeft className="w-5 h-5 text-cosmic-purple rotate-180" />
+              <div className="w-10 h-10 rounded-sm bg-tech-card border border-acid/50 flex items-center justify-center">
+                <ArrowLeft className="w-4 h-4 text-acid rotate-180" strokeWidth={1.5} />
               </div>
             </div>
-          </GlassCard>
+          </TechCard>
         </motion.div>
 
         {/* 隐私提示 */}
@@ -179,15 +182,15 @@ export default function ResultPage() {
           transition={{ delay: 0.4 }}
           className="mb-8"
         >
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 p-4 rounded-2xl bg-white/5 border border-white/10">
-            <div className="flex items-center gap-2 text-green-400/80">
-              <ShieldCheck className="w-5 h-5" />
-              <span className="text-sm">我们不存储任何用户图片</span>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 p-4 rounded-sm bg-tech-card border border-tech-border">
+            <div className="flex items-center gap-2 text-green-500">
+              <ShieldCheck className="w-4 h-4" strokeWidth={1.5} />
+              <span className="text-xs font-mono">{t.result.privacyNotice}</span>
             </div>
-            <div className="hidden sm:block w-px h-4 bg-white/20" />
-            <div className="flex items-center gap-2 text-amber-400/80">
-              <Clock className="w-5 h-5" />
-              <span className="text-sm">关闭页面后图片将无法恢复，请及时保存</span>
+            <div className="hidden sm:block w-px h-4 bg-tech-border" />
+            <div className="flex items-center gap-2 text-amber-500">
+              <Clock className="w-4 h-4" strokeWidth={1.5} />
+              <span className="text-xs font-mono">{t.result.saveReminder}</span>
             </div>
           </div>
         </motion.div>
@@ -199,14 +202,21 @@ export default function ResultPage() {
           transition={{ delay: 0.5 }}
           className="flex flex-wrap justify-center gap-3 md:gap-4"
         >
-          <GlowButton onClick={handleDownload} variant="secondary" disabled={isDownloading}>
-            <Download className="w-5 h-5 mr-2 inline" />
-            {isDownloading ? '下载中...' : '保存照片'}
-          </GlowButton>
-          <GlowButton onClick={handleTryAgain}>
-            <RotateCcw className="w-5 h-5 mr-2 inline" />
-            再试一次
-          </GlowButton>
+          <button
+            onClick={handleDownload}
+            disabled={isDownloading}
+            className="px-6 py-3 rounded-sm border border-acid/50 text-acid hover:bg-acid hover:text-black transition-all font-mono text-sm uppercase flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Download className="w-4 h-4" strokeWidth={1.5} />
+            {isDownloading ? t.result.downloading : t.result.saveImage}
+          </button>
+          <button
+            onClick={handleTryAgain}
+            className="px-6 py-3 rounded-sm bg-acid text-black hover:bg-acid-dim transition-all font-mono text-sm uppercase flex items-center gap-2"
+          >
+            <RotateCcw className="w-4 h-4" strokeWidth={1.5} />
+            {t.result.tryAgain}
+          </button>
         </motion.div>
       </div>
     </main>

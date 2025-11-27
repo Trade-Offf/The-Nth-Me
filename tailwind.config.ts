@@ -9,6 +9,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Legacy colors (保留兼容)
         cosmic: {
           black: '#0a0a0f',
           midnight: '#0f0f1e',
@@ -17,8 +18,17 @@ const config: Config = {
           gold: '#fbbf24',
           pink: '#ec4899',
         },
+        // New Electric Green theme
         acid: {
-          green: '#CCFF00',
+          DEFAULT: '#CCFF00',
+          dim: '#9ECC00',
+          glow: 'rgba(204, 255, 0, 0.15)',
+        },
+        tech: {
+          bg: '#050505',
+          card: '#0A0A0A',
+          border: '#27272a',
+          'border-light': '#3f3f46',
         },
       },
       fontFamily: {
@@ -38,6 +48,9 @@ const config: Config = {
         'glow': 'glow 2s ease-in-out infinite alternate',
         'shimmer': 'shimmer 2s linear infinite',
         'glitch': 'glitch 0.3s ease-in-out',
+        'blink': 'blink 1s step-end infinite',
+        'scanline': 'scanline 8s linear infinite',
+        'marquee': 'marquee 20s linear infinite',
       },
       keyframes: {
         float: {
@@ -56,6 +69,18 @@ const config: Config = {
           '0%, 100%': { transform: 'translate(0)' },
           '33%': { transform: 'translate(-2px, 2px)' },
           '66%': { transform: 'translate(2px, -2px)' },
+        },
+        blink: {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0' },
+        },
+        scanline: {
+          '0%': { transform: 'translateY(-100%)' },
+          '100%': { transform: 'translateY(100%)' },
+        },
+        marquee: {
+          '0%': { transform: 'translateX(0%)' },
+          '100%': { transform: 'translateX(-50%)' },
         },
       },
     },

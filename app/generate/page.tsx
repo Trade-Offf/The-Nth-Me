@@ -3,11 +3,13 @@
 import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import WormholeLoader from '@/components/WormholeLoader';
+import { useI18n } from '@/lib/i18n';
 import { worldlines } from '@/lib/worldlines';
 import type { GenerateRequest, GenerateResponse, ImageAspectRatio } from '@/lib/types';
 
 export default function GeneratePage() {
   const router = useRouter();
+  const { t } = useI18n();
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [userImage, setUserImage] = useState<string | null>(null);
@@ -127,12 +129,15 @@ export default function GeneratePage() {
   // 如果有错误，显示错误信息
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4">
-        <div className="text-center">
-          <div className="text-6xl mb-4">⚠️</div>
-          <h2 className="text-2xl font-bold mb-4 text-red-400">生成失败</h2>
-          <p className="text-white/70 mb-4">{error}</p>
-          <p className="text-sm text-white/50">即将返回上传页面...</p>
+      <div className="min-h-screen bg-tech-bg flex items-center justify-center px-4 relative">
+        <div className="fixed inset-0 tech-grid-bg opacity-30" />
+        <div className="text-center relative z-10">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-sm bg-red-500/10 border border-red-500/30 flex items-center justify-center">
+            <span className="text-2xl">⚠️</span>
+          </div>
+          <h2 className="text-lg font-mono font-medium mb-4 text-red-500">[{t.generate.error}] {t.generate.signalLost}</h2>
+          <p className="text-zinc-400 mb-4 font-mono text-sm">{error}</p>
+          <p className="text-xs text-zinc-600 font-mono">// {t.generate.returning}</p>
         </div>
       </div>
     );

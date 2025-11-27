@@ -1,157 +1,70 @@
 'use client';
 
-import { useState, Suspense } from 'react';
+import { Suspense } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import { Github, Globe } from 'lucide-react';
 import { motion } from 'framer-motion';
-import UserMenu from '@/components/UserMenu';
+import Navbar from '@/components/Navbar';
+import { useI18n } from '@/lib/i18n';
 
 const Hero3DCanvas = dynamic(() => import('../components/Hero3DCanvas'), {
   ssr: false,
   loading: () => (
-    <div className="flex items-center justify-center w-full h-full bg-[#020204]">
-      <div className="w-10 h-10 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+    <div className="flex items-center justify-center w-full h-full bg-tech-bg">
+      <div className="font-mono text-acid text-sm">
+        [<span className="animate-pulse">CALIBRATING</span>]
+      </div>
     </div>
   ),
 });
 
-const content = {
+const heroContent = {
   'zh-CN': {
-    navbar: {
-      brand: '第 N 个我',
-      prompts: '预设剧本',
-      pricing: '获取算力',
-      about: '关于模型',
-    },
-    hero: {
-      title: '遇见',
-      subtitle_gradient: '不同时间线上的第 N 个我',
-      description:
-        '由 Nano Banana 模型驱动的多时间线影像引擎。无需复杂指令，只需上传一张照片，我们精心预设的 Prompt 剧本会自动在不同时间线展开，为你在无数平行宇宙中生成一个又一个“第 N 个我”——从赛博朋克都市，到魔法中世纪，再到星际舰队旗舰之桥。',
-      btn_primary: '探索所有风格',
-      btn_secondary: '为引擎充能 ⚡',
+    sysStatus: '量子核心在线',
+    sysVersion: 'v2.0.4',
+    title: '建立量子链接',
+    subtitle_gradient: '检索第 N 个维度的你',
+    description:
+      '基于 Nano Banana 神经核心驱动的时空观测系统。无需手动编写代码，系统已预载全套时空剧本。只需注入生物特征数据，即可让波函数坍缩，捕捉你在无数平行宇宙中的影像信号。',
+    btn_primary: '[ 浏览时空坐标 ]',
+    btn_secondary: '[ 补充算力能源 ⚡ ]',
+    stats: {
+      latency: '信号延迟',
+      styles: '宇宙扇区',
+      resolution: '影像精度',
     },
   },
   'en-US': {
-    navbar: {
-      brand: 'The Nth Me',
-      prompts: 'Scenarios',
-      pricing: 'Compute Power',
-      about: 'Model Info',
-    },
-    hero: {
-      title: 'Encounter',
-      subtitle_gradient: 'The N-th Me Across Parallel Universes',
-      description:
-        'A multi-timeline portrait engine powered by the Nano Banana model. Upload a single photo, and our carefully crafted scenario prompts will branch your likeness across countless parallel universes—from neon-soaked megacities, to arcane medieval realms, to the command deck of an interstellar fleet.',
-      btn_primary: 'Explore All Styles',
-      btn_secondary: 'Fuel the Engine ⚡',
+    sysStatus: 'QUANTUM CORE ONLINE',
+    sysVersion: 'v2.0.4',
+    title: 'ESTABLISH QUANTUM LINK',
+    subtitle_gradient: 'RETRIEVE THE NTH DIMENSION OF YOU',
+    description:
+      'A spacetime observation system powered by the Nano Banana neural core. No manual coding required. Timeline scripts pre-loaded. Simply inject biometric data to collapse the wave function and capture your image signal across infinite parallel universes.',
+    btn_primary: '[ BROWSE COORDINATES ]',
+    btn_secondary: '[ RECHARGE POWER ⚡ ]',
+    stats: {
+      latency: 'SIGNAL DELAY',
+      styles: 'UNIVERSE SECTORS',
+      resolution: 'IMAGE PRECISION',
     },
   },
 } as const;
 
-// 导航项配置：key -> 路由
-const navbarRoutes: Record<string, string> = {
-  prompts: '/showcase',
-  pricing: '/pricing',
-  about: '#',
-};
-
-const navbarItems = ['prompts', 'pricing', 'about'] as const;
-
-type Lang = keyof typeof content;
-type NavbarKey = (typeof navbarItems)[number];
-
 export default function HomePage() {
-  const [lang, setLang] = useState<Lang>('zh-CN');
-  const t = content[lang];
+  const { lang } = useI18n();
+  const hero = heroContent[lang];
 
   return (
-    <main className="h-screen bg-[#020204] text-white overflow-hidden">
-      {/* 顶部细渐变线 */}
-      <div className="h-px w-full bg-gradient-to-r from-transparent via-purple-500/60 to-transparent" />
+    <main className="h-screen bg-tech-bg text-white overflow-hidden relative">
+      {/* 网格背景 */}
+      <div className="fixed inset-0 tech-grid-bg opacity-50" />
 
       {/* 导航栏 */}
-      <header className="fixed top-0 left-0 right-0 z-20 bg-gradient-to-b from-[#020204] via-[#020204]/95 to-transparent border-b border-white/5 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          {/* 品牌 */}
-          <Link href="/" className="flex items-center space-x-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-purple-500 via-fuchsia-500 to-indigo-500 shadow-[0_0_30px_rgba(192,132,252,0.8)]" />
-            <div className="leading-tight">
-              <div
-                className={
-                  lang === 'zh-CN'
-                    ? 'text-lg tracking-[0.2em] font-headingCn'
-                    : 'text-lg tracking-[0.15em] font-headingEn'
-                }
-              >
-                {t.navbar.brand}
-              </div>
-              <div className="text-[11px] uppercase tracking-[0.3em] text-white/40">
-                Nano Banana · Multi-Timeline Engine
-              </div>
-            </div>
-          </Link>
-
-          {/* 菜单 + 语言切换 */}
-          <div className="flex items-center space-x-8">
-            <nav className="hidden md:flex items-center space-x-6 text-xs text-white/60">
-              {navbarItems.map((key) => {
-                const route = navbarRoutes[key];
-                const isDisabled = route === '#';
-
-                return isDisabled ? (
-                  <span
-                    key={key}
-                    className="flex items-center space-x-1 opacity-50 cursor-not-allowed"
-                  >
-                    <span className="w-1 h-1 rounded-full bg-white/20" />
-                    <span>{t.navbar[key as NavbarKey]}</span>
-                  </span>
-                ) : (
-                  <Link
-                    key={key}
-                    href={route}
-                    className="hover:text-white transition-colors flex items-center space-x-1"
-                  >
-                    <span className="w-1 h-1 rounded-full bg-white/20" />
-                    <span>{t.navbar[key as NavbarKey]}</span>
-                  </Link>
-                );
-              })}
-            </nav>
-
-            <div className="flex items-center space-x-3">
-              <button
-                onClick={() => setLang(lang === 'zh-CN' ? 'en-US' : 'zh-CN')}
-                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-                aria-label="Language"
-              >
-                <Globe className="w-5 h-5" />
-              </button>
-
-              <a
-                href="https://github.com"
-                target="_blank"
-                rel="noreferrer"
-                className="p-2 hover:bg-white/10 rounded-lg transition-colors hidden sm:inline-flex"
-              >
-                <Github className="w-5 h-5" />
-              </a>
-
-              {/* 用户菜单 */}
-              <UserMenu />
-            </div>
-          </div>
-        </div>
-      </header>
+      <Navbar />
 
       {/* Hero 区域 */}
-      <section className="relative w-full" style={{ height: 'calc(100vh - 4rem)' }}>
-        {/* 中央紫色径向光晕 */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(168,85,247,0.18)_0%,_transparent_70%)]" />
-
+      <section className="relative w-full pt-16" style={{ height: 'calc(100vh - 4rem)' }}>
         <div className="relative z-10 max-w-7xl mx-auto px-6 h-full flex items-center">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center w-full">
             {/* 左侧文案 */}
@@ -159,42 +72,84 @@ export default function HomePage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="space-y-8"
+              className="space-y-6"
             >
-              <div className="space-y-4">
-                <h1
-                  className={
-                    lang === 'zh-CN'
-                      ? 'text-4xl sm:text-5xl lg:text-6xl font-headingCn tracking-[0.15em]'
-                      : 'text-4xl sm:text-5xl lg:text-6xl font-headingEn tracking-[0.12em]'
-                  }
-                >
-                  {t.hero.title}
-                </h1>
-
-                <p className="text-3xl sm:text-4xl lg:text-5xl font-semibold bg-gradient-to-r from-purple-400 via-fuchsia-300 to-sky-300 bg-clip-text text-transparent">
-                  {t.hero.subtitle_gradient}
-                </p>
+              {/* 系统状态栏 */}
+              <div className="flex items-center gap-4">
+                <div className="inline-flex items-center gap-3 px-3 py-1.5 border border-acid/30 rounded-sm bg-acid/5">
+                  <span className="w-2 h-2 rounded-full bg-acid animate-pulse" />
+                  <span className="font-mono text-xs text-acid uppercase tracking-[0.15em]">
+                    {hero.sysStatus}
+                  </span>
+                </div>
+                <span className="font-mono text-[10px] text-zinc-600 tracking-wider">
+                  SYS_{hero.sysVersion}
+                </span>
               </div>
 
-              <p className="text-sm sm:text-base text-white/65 max-w-xl leading-relaxed">
-                {t.hero.description}
+              <div className="space-y-3">
+                {/* 系统注释 */}
+                <p className="font-mono text-xs text-zinc-600 uppercase tracking-[0.2em]">
+                  // INITIALIZING QUANTUM BRIDGE
+                </p>
+
+                {/* 主标题 */}
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white uppercase tracking-wide">
+                  {hero.title}
+                </h1>
+
+                {/* 副标题 - 酸性绿下划线效果 */}
+                <div className="relative inline-block">
+                  <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-acid uppercase tracking-wide">
+                    {hero.subtitle_gradient}
+                  </p>
+                  <div className="absolute -bottom-2 left-0 w-full h-px bg-gradient-to-r from-acid via-acid/50 to-transparent" />
+                </div>
+              </div>
+
+              {/* 分隔线 */}
+              <div className="w-full h-px bg-gradient-to-r from-tech-border via-acid/20 to-transparent" />
+
+              <p className="text-sm text-zinc-400 max-w-xl leading-relaxed font-light">
+                {hero.description}
               </p>
 
+              {/* 按钮组 */}
               <div className="flex flex-wrap items-center gap-4 pt-2">
+                {/* Primary 按钮 - 实心 */}
                 <Link
                   href="/showcase"
-                  className="inline-flex items-center px-5 py-2.5 rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-indigo-500 text-sm font-medium shadow-[0_0_25px_rgba(192,132,252,0.75)] hover:shadow-[0_0_40px_rgba(192,132,252,0.95)] transition-shadow"
+                  className="group inline-flex items-center px-6 py-3 rounded-sm bg-acid text-black font-mono text-xs uppercase tracking-[0.15em] font-medium hover:bg-transparent hover:text-acid border border-acid transition-all duration-200"
                 >
-                  {t.hero.btn_primary}
+                  {hero.btn_primary}
+                  <span className="ml-2 group-hover:translate-x-1 transition-transform">→</span>
                 </Link>
 
+                {/* Secondary 按钮 - 描边 */}
                 <Link
                   href="/pricing"
-                  className="inline-flex items-center px-5 py-2.5 rounded-full border border-white/15 bg-white/5 text-sm text-white/80 hover:bg-white/10 transition-colors"
+                  className="inline-flex items-center px-6 py-3 rounded-sm border border-zinc-700 text-zinc-400 font-mono text-xs uppercase tracking-[0.15em] hover:border-acid hover:text-acid transition-colors duration-200"
                 >
-                  {t.hero.btn_secondary}
+                  {hero.btn_secondary}
                 </Link>
+              </div>
+
+              {/* 技术指标 */}
+              <div className="flex items-center gap-6 pt-4 border-t border-tech-border">
+                <div>
+                  <p className="font-mono text-[10px] text-zinc-600 uppercase tracking-[0.15em]">{hero.stats.latency}</p>
+                  <p className="font-mono text-lg text-acid">~2.5s</p>
+                </div>
+                <div className="w-px h-8 bg-tech-border" />
+                <div>
+                  <p className="font-mono text-[10px] text-zinc-600 uppercase tracking-[0.15em]">{hero.stats.styles}</p>
+                  <p className="font-mono text-lg text-acid">20+</p>
+                </div>
+                <div className="w-px h-8 bg-tech-border" />
+                <div>
+                  <p className="font-mono text-[10px] text-zinc-600 uppercase tracking-[0.15em]">{hero.stats.resolution}</p>
+                  <p className="font-mono text-lg text-acid">1024px</p>
+                </div>
               </div>
             </motion.div>
 
@@ -205,17 +160,31 @@ export default function HomePage() {
               transition={{ duration: 0.7, delay: 0.1 }}
               className="relative h-[450px] sm:h-[500px] md:h-[550px] lg:h-[600px]"
             >
-              {/* 背景透明，不再单独加高亮阴影卡片 */}
-              <div className="relative h-full rounded-[32px] overflow-hidden">
+              {/* 边框容器 */}
+              <div className="relative h-full border border-tech-border rounded-sm overflow-hidden bg-tech-card/50">
+                {/* 顶部角标 */}
+                <span className="absolute top-2 left-3 font-mono text-[10px] text-zinc-600 uppercase tracking-wider z-10">
+                  [QUANTUM_PREVIEW]
+                </span>
+                <span className="absolute top-2 right-3 font-mono text-[10px] text-acid/50 uppercase tracking-wider z-10">
+                  LAT: 40.22
+                </span>
                 <Suspense
                   fallback={
-                    <div className="flex items-center justify-center w-full h-full bg-transparent">
-                      <div className="w-10 h-10 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+                    <div className="flex items-center justify-center w-full h-full">
+                      <div className="font-mono text-acid text-sm">
+                        [<span className="animate-pulse">CALIBRATING</span>]
+                      </div>
                     </div>
                   }
                 >
                   <Hero3DCanvas />
                 </Suspense>
+                {/* 底部状态栏 */}
+                <div className="absolute bottom-0 left-0 right-0 h-8 bg-tech-bg/80 border-t border-tech-border flex items-center px-3 justify-between z-10">
+                  <span className="font-mono text-[10px] text-zinc-600 tracking-wider">RENDER_ENGINE: ACTIVE</span>
+                  <span className="font-mono text-[10px] text-acid animate-pulse">● SIGNAL_STABLE</span>
+                </div>
               </div>
             </motion.div>
           </div>

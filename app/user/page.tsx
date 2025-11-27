@@ -13,12 +13,14 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import {
   Zap,
-  ArrowLeft,
   Link as LinkIcon,
   History,
   User,
   Loader2,
 } from 'lucide-react';
+import TechCard from '@/components/TechCard';
+import Navbar from '@/components/Navbar';
+import { useI18n } from '@/lib/i18n';
 
 interface CreditData {
   balance: number;
@@ -39,6 +41,7 @@ interface Transaction {
 export default function UserPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const { t } = useI18n();
 
   const [credits, setCredits] = useState<CreditData | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -69,8 +72,8 @@ export default function UserPage() {
 
   if (status === 'loading' || isLoading) {
     return (
-      <main className="min-h-screen bg-[#020204] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-purple-500 animate-spin" />
+      <main className="min-h-screen bg-tech-bg flex items-center justify-center">
+        <Loader2 className="w-6 h-6 text-acid animate-spin" />
       </main>
     );
   }
@@ -78,71 +81,78 @@ export default function UserPage() {
   if (!session) return null;
 
   return (
-    <main className="min-h-screen bg-[#020204] text-white">
-      <div className="fixed inset-0 bg-[radial-gradient(circle_at_center,_rgba(168,85,247,0.15)_0%,_transparent_70%)]" />
+    <main className="min-h-screen bg-tech-bg text-white relative">
+      {/* 网格背景 */}
+      <div className="fixed inset-0 tech-grid-bg opacity-30" />
 
-      <div className="relative z-10 max-w-4xl mx-auto px-6 py-20">
-        {/* 返回 */}
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-white/60 hover:text-white mb-8 transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          返回首页
-        </Link>
+      {/* 导航栏 */}
+      <Navbar />
+
+      <div className="relative z-10 max-w-4xl mx-auto px-6 pt-24 pb-20">
+        {/* 页面标题 */}
+        <div className="mb-8">
+          <h1 className="text-2xl md:text-3xl font-bold text-white uppercase tracking-wide mb-4">
+            {t.user.title} <span className="text-acid">{t.user.titleHighlight}</span>
+          </h1>
+          <div className="inline-flex items-center gap-3 px-3 py-1.5 border border-acid/30 rounded-sm bg-acid/5">
+            <span className="w-2 h-2 rounded-full bg-acid animate-pulse" />
+            <span className="font-mono text-xs text-acid uppercase tracking-[0.15em]">
+              {t.user.badge}
+            </span>
+          </div>
+        </div>
 
         {/* 用户信息卡片 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white/5 rounded-2xl p-6 border border-white/10 mb-8"
         >
-          <div className="flex items-center gap-4 mb-6">
-            {session.user?.image ? (
-              <Image
-                src={session.user.image}
-                alt="头像"
-                width={64}
-                height={64}
-                className="rounded-full"
-              />
-            ) : (
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
-                <User className="w-8 h-8" />
+          <TechCard className="p-6 mb-8">
+            <div className="flex flex-col items-center text-center mb-6">
+              {session.user?.image ? (
+                <Image
+                  src={session.user.image}
+                  alt={t.user.avatar}
+                  width={80}
+                  height={80}
+                  className="rounded-sm border border-tech-border mb-4"
+                />
+              ) : (
+                <div className="w-20 h-20 rounded-sm bg-tech-bg border border-tech-border flex items-center justify-center mb-4">
+                  <User className="w-10 h-10 text-acid" strokeWidth={1.5} />
+                </div>
+              )}
+              <h1 className="text-lg font-mono font-medium text-white">{session.user?.name || t.user.defaultName}</h1>
+              <p className="text-zinc-500 text-xs font-mono mt-1">{session.user?.email}</p>
+            </div>
+
+            {/* 能量余额 */}
+            {credits && (
+              <div className="grid grid-cols-3 gap-4">
+                <div className="bg-acid/10 border border-acid/30 rounded-sm p-4 text-center">
+                  <Zap className="w-5 h-5 mx-auto mb-2 text-acid" strokeWidth={1.5} />
+                  <p className="text-2xl font-mono font-bold text-acid">{credits.balance}</p>
+                  <p className="text-zinc-600 text-[10px] font-mono uppercase">{t.user.currentEnergy}</p>
+                </div>
+                <div className="bg-tech-bg border border-tech-border rounded-sm p-4 text-center">
+                  <p className="text-2xl font-mono font-bold text-green-500">{credits.totalEarned}</p>
+                  <p className="text-zinc-600 text-[10px] font-mono uppercase">{t.user.totalEarned}</p>
+                </div>
+                <div className="bg-tech-bg border border-tech-border rounded-sm p-4 text-center">
+                  <p className="text-2xl font-mono font-bold text-orange-500">{credits.totalUsed}</p>
+                  <p className="text-zinc-600 text-[10px] font-mono uppercase">{t.user.totalUsed}</p>
+                </div>
               </div>
             )}
-            <div>
-              <h1 className="text-xl font-bold">{session.user?.name || '用户'}</h1>
-              <p className="text-white/50 text-sm">{session.user?.email}</p>
-            </div>
-          </div>
 
-          {/* 能量余额 */}
-          {credits && (
-            <div className="grid grid-cols-3 gap-4">
-              <div className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-xl p-4 text-center">
-                <Zap className="w-6 h-6 mx-auto mb-2 text-purple-400" />
-                <p className="text-2xl font-bold text-purple-400">{credits.balance}</p>
-                <p className="text-white/50 text-xs">当前能量</p>
-              </div>
-              <div className="bg-white/5 rounded-xl p-4 text-center">
-                <p className="text-2xl font-bold text-green-400">{credits.totalEarned}</p>
-                <p className="text-white/50 text-xs">累计获得</p>
-              </div>
-              <div className="bg-white/5 rounded-xl p-4 text-center">
-                <p className="text-2xl font-bold text-orange-400">{credits.totalUsed}</p>
-                <p className="text-white/50 text-xs">已使用</p>
-              </div>
-            </div>
-          )}
-
-          {/* 充值按钮 */}
-          <Link
-            href="/pricing"
-            className="mt-6 block w-full py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-center font-medium hover:shadow-[0_0_30px_rgba(168,85,247,0.5)] transition-shadow"
-          >
-            ⚡️ 获取更多能量
-          </Link>
+            {/* 充值按钮 */}
+            <Link
+              href="/pricing"
+              className="mt-6 block w-full py-3 rounded-sm bg-acid text-black text-center font-mono text-sm uppercase hover:bg-acid-dim transition-colors"
+            >
+              ⚡ {t.user.rechargeButton}
+            </Link>
+          </TechCard>
         </motion.div>
 
         {/* 充值说明 */}
@@ -150,20 +160,21 @@ export default function UserPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white/5 rounded-2xl p-6 border border-white/10 mb-8"
         >
-          <div className="flex items-center gap-2 mb-4">
-            <LinkIcon className="w-5 h-5 text-purple-400" />
-            <h2 className="text-lg font-bold">充值说明</h2>
-          </div>
-
-          <div className="space-y-3 text-white/70 text-sm">
-            <p>📧 充值时请在爱发电<span className="text-purple-400 font-medium">「留言」</span>中填写您的注册邮箱：</p>
-            <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-3">
-              <code className="text-purple-300">{session.user?.email}</code>
+          <TechCard className="p-6 mb-8">
+            <div className="flex items-center gap-2 mb-4">
+              <LinkIcon className="w-4 h-4 text-acid" strokeWidth={1.5} />
+              <h2 className="text-sm font-mono font-medium text-white uppercase">{t.user.rechargeGuideTitle}</h2>
             </div>
-            <p className="text-white/50">能量将在支付成功后自动到账，请确保邮箱填写正确。</p>
-          </div>
+
+            <div className="space-y-3 text-zinc-400 text-xs font-mono">
+              <p>// {t.user.rechargeGuideStep1}<span className="text-acid">{t.user.rechargeGuideHighlight}</span>{t.user.rechargeGuideStep2}</p>
+              <div className="bg-acid/10 border border-acid/30 rounded-sm p-3">
+                <code className="text-acid">{session.user?.email}</code>
+              </div>
+              <p className="text-zinc-600">// {t.user.rechargeGuideNote}</p>
+            </div>
+          </TechCard>
         </motion.div>
 
         {/* 交易记录 */}
@@ -171,38 +182,39 @@ export default function UserPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white/5 rounded-2xl p-6 border border-white/10"
         >
-          <div className="flex items-center gap-2 mb-4">
-            <History className="w-5 h-5 text-purple-400" />
-            <h2 className="text-lg font-bold">充值记录</h2>
-          </div>
-
-          {transactions.length === 0 ? (
-            <p className="text-white/50 text-center py-8">暂无记录</p>
-          ) : (
-            <div className="space-y-3">
-              {transactions.map((tx) => (
-                <div
-                  key={tx.id}
-                  className="flex items-center justify-between py-3 border-b border-white/5 last:border-0"
-                >
-                  <div>
-                    <p className="font-medium">{tx.planName || '能量变更'}</p>
-                    <p className="text-white/50 text-xs">
-                      {new Date(tx.createdAt).toLocaleString('zh-CN')}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-green-400 font-bold">+{tx.creditsAdded} ⚡️</p>
-                    {tx.amountCny && (
-                      <p className="text-white/50 text-xs">¥{tx.amountCny}</p>
-                    )}
-                  </div>
-                </div>
-              ))}
+          <TechCard className="p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <History className="w-4 h-4 text-acid" strokeWidth={1.5} />
+              <h2 className="text-sm font-mono font-medium text-white uppercase">{t.user.transactionHistory}</h2>
             </div>
-          )}
+
+            {transactions.length === 0 ? (
+              <p className="text-zinc-600 text-center py-8 font-mono text-xs">{t.user.noRecords}</p>
+            ) : (
+              <div className="space-y-3">
+                {transactions.map((tx) => (
+                  <div
+                    key={tx.id}
+                    className="flex items-center justify-between py-3 border-b border-tech-border last:border-0"
+                  >
+                    <div>
+                      <p className="font-mono text-sm text-white">{tx.planName || t.user.energyChange}</p>
+                      <p className="text-zinc-600 text-[10px] font-mono">
+                        {new Date(tx.createdAt).toLocaleString('zh-CN')}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-acid font-mono font-bold">+{tx.creditsAdded} ⚡</p>
+                      {tx.amountCny && (
+                        <p className="text-zinc-600 text-[10px] font-mono">¥{tx.amountCny}</p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </TechCard>
         </motion.div>
       </div>
     </main>

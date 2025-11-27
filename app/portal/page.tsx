@@ -6,16 +6,18 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Upload, ArrowRight, X, RefreshCw, ChevronLeft, ChevronRight, AlertCircle, Square, Smartphone, Monitor, LogIn } from 'lucide-react';
-import GlassCard from '@/components/GlassCard';
+import { Upload, ArrowRight, ArrowLeft, X, RefreshCw, ChevronLeft, ChevronRight, AlertCircle, Square, Smartphone, Monitor, LogIn } from 'lucide-react';
+import TechCard from '@/components/TechCard';
+import Navbar from '@/components/Navbar';
+import { useI18n } from '@/lib/i18n';
 import { worldlines } from '@/lib/worldlines';
 import { Worldline, ImageAspectRatio } from '@/lib/types';
 
 // 图片尺寸选项配置
 const IMAGE_SIZE_OPTIONS: { value: ImageAspectRatio; label: string; icon: React.ReactNode; description: string }[] = [
-  { value: '1:1', label: '正方形', icon: <Square className="w-4 h-4" />, description: '适合头像、社交媒体' },
-  { value: '9:16', label: '人像', icon: <Smartphone className="w-4 h-4" />, description: '适合手机壁纸、故事' },
-  { value: '16:9', label: '横屏', icon: <Monitor className="w-4 h-4" />, description: '适合桌面壁纸、封面' },
+  { value: '1:1', label: '1:1', icon: <Square className="w-4 h-4" strokeWidth={1.5} />, description: '适合头像、社交媒体' },
+  { value: '9:16', label: '9:16', icon: <Smartphone className="w-4 h-4" strokeWidth={1.5} />, description: '适合手机壁纸、故事' },
+  { value: '16:9', label: '16:9', icon: <Monitor className="w-4 h-4" strokeWidth={1.5} />, description: '适合桌面壁纸、封面' },
 ];
 
 /**
@@ -61,7 +63,7 @@ function MiniCompareSlider({ worldlineId }: { worldlineId: string }) {
   return (
     <div
       ref={containerRef}
-      className="relative w-full aspect-square rounded-xl overflow-hidden cursor-ew-resize select-none"
+      className="relative w-full aspect-square rounded-sm overflow-hidden cursor-ew-resize select-none border border-tech-border"
       onMouseDown={handleMouseDown}
       onTouchStart={(e) => { setIsDragging(true); updatePosition(e.touches[0].clientX); }}
       onTouchMove={(e) => isDragging && updatePosition(e.touches[0].clientX)}
@@ -69,20 +71,20 @@ function MiniCompareSlider({ worldlineId }: { worldlineId: string }) {
     >
       <div className="absolute inset-0">
         <Image src={afterSrc} alt="After" fill className="object-cover" draggable={false} />
-        <div className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-black/50 text-[10px] text-white/80">After</div>
+        <div className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded-sm bg-black/70 text-[10px] text-acid font-mono uppercase">After</div>
       </div>
       <div className="absolute inset-0 overflow-hidden" style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}>
         <Image src={beforeSrc} alt="Before" fill className="object-cover" draggable={false} />
-        <div className="absolute bottom-1 left-1 px-1.5 py-0.5 rounded bg-black/50 text-[10px] text-white/80">Before</div>
+        <div className="absolute bottom-1 left-1 px-1.5 py-0.5 rounded-sm bg-black/70 text-[10px] text-zinc-400 font-mono uppercase">Before</div>
       </div>
       <div
-        className="absolute top-0 bottom-0 w-0.5 bg-white shadow-lg z-10 pointer-events-none"
+        className="absolute top-0 bottom-0 w-0.5 bg-acid z-10 pointer-events-none"
         style={{ left: `${sliderPosition}%`, transform: 'translateX(-50%)' }}
       >
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-white shadow-lg flex items-center justify-center">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-sm bg-tech-card border border-acid flex items-center justify-center">
           <div className="flex gap-0">
-            <ChevronLeft className="w-3 h-3 text-gray-600" />
-            <ChevronRight className="w-3 h-3 text-gray-600" />
+            <ChevronLeft className="w-3 h-3 text-acid" strokeWidth={1.5} />
+            <ChevronRight className="w-3 h-3 text-acid" strokeWidth={1.5} />
           </div>
         </div>
       </div>
@@ -93,6 +95,7 @@ function MiniCompareSlider({ worldlineId }: { worldlineId: string }) {
 export default function PortalPage() {
   const router = useRouter();
   const { data: session, status } = useSession();
+  const { t } = useI18n();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [selectedWorldline, setSelectedWorldline] = useState<string | null>(null);
@@ -236,21 +239,33 @@ export default function PortalPage() {
   const canGenerate = uploadedImage && selectedWorldline && isLoggedIn;
 
   return (
-    <main className="min-h-screen px-4 py-8 md:py-12">
-      <div className="max-w-6xl mx-auto">
+    <main className="min-h-screen bg-tech-bg relative">
+      {/* 网格背景 */}
+      <div className="fixed inset-0 tech-grid-bg opacity-30" />
+
+      {/* 导航栏 */}
+      <Navbar />
+
+      <div className="max-w-6xl mx-auto relative z-10 px-4 pt-24 pb-12">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8 md:mb-12"
         >
-          <Link href="/" className="inline-block mb-4 text-white/60 hover:text-white transition-colors text-sm">
-            ← 返回首页
-          </Link>
-          <h1 className="text-3xl md:text-5xl font-bold mb-3">
-            <span className="text-gradient">时空传送门</span>
+          {/* 标题区域 */}
+          <h1 className="text-2xl md:text-4xl font-bold mb-3 text-white uppercase tracking-wide">
+            {t.portal.title} <span className="text-acid">{t.portal.titleHighlight}</span>
           </h1>
-          <p className="text-white/60 text-base md:text-lg">上传照片，选择风格，开启你的平行宇宙之旅</p>
+          <p className="text-zinc-500 font-mono text-sm tracking-wider mb-4">{t.portal.description}</p>
+
+          {/* 状态标签 */}
+          <div className="inline-flex items-center gap-3 px-3 py-1.5 border border-acid/30 rounded-sm bg-acid/5">
+            <span className="w-2 h-2 rounded-full bg-acid animate-pulse" />
+            <span className="font-mono text-xs text-acid uppercase tracking-[0.15em]">
+              {t.portal.badge}
+            </span>
+          </div>
         </motion.div>
 
         {/* 左右分栏布局 */}
@@ -261,10 +276,10 @@ export default function PortalPage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
           >
-            <GlassCard className="p-6 md:p-8 h-full">
-              <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-                <Upload className="w-5 h-5 text-cosmic-purple" />
-                上传你的照片
+            <TechCard className="p-6 md:p-8 h-full">
+              <h2 className="text-lg font-mono font-medium mb-4 flex items-center gap-2 text-white uppercase tracking-wider">
+                <Upload className="w-4 h-4 text-acid" strokeWidth={1.5} />
+                {t.portal.uploadTitle}
               </h2>
 
               <input
@@ -281,17 +296,17 @@ export default function PortalPage() {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/30 flex items-start gap-3"
+                  className="mb-4 p-3 rounded-sm bg-red-500/10 border border-red-500/30 flex items-start gap-3"
                 >
-                  <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                  <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" strokeWidth={1.5} />
                   <div className="flex-1">
-                    <p className="text-sm text-red-300">{uploadError}</p>
+                    <p className="text-xs text-red-400 font-mono">[ERROR] {uploadError}</p>
                   </div>
                   <button
                     onClick={() => setUploadError(null)}
                     className="text-red-400/60 hover:text-red-400 transition-colors"
                   >
-                    <X className="w-4 h-4" />
+                    <X className="w-4 h-4" strokeWidth={1.5} />
                   </button>
                 </motion.div>
               )}
@@ -303,38 +318,36 @@ export default function PortalPage() {
                   onDragLeave={() => setIsDragging(false)}
                   onClick={() => fileInputRef.current?.click()}
                   className={`
-                    relative border-2 border-dashed rounded-2xl p-8 md:p-10 text-center cursor-pointer
+                    relative border border-dashed rounded-sm p-8 md:p-10 text-center cursor-pointer
                     transition-all duration-300 overflow-hidden
                     ${isDragging
-                      ? 'border-cosmic-purple bg-cosmic-purple/10'
+                      ? 'border-acid bg-acid/10'
                       : uploadError
                         ? 'border-red-500/50 hover:border-red-500/70'
-                        : 'border-white/20 hover:border-cosmic-purple/50 hover:bg-white/5'}
+                        : 'border-tech-border hover:border-acid/50 hover:bg-acid/5'}
                   `}
                 >
-                  {/* 渐变边框效果 */}
-                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-500/20 via-fuchsia-500/20 to-indigo-500/20 opacity-0 hover:opacity-100 transition-opacity -z-10" />
-
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-purple-500/30 to-indigo-500/30 flex items-center justify-center">
-                    <Upload className="w-8 h-8 text-white/60" />
+                  <div className="w-14 h-14 mx-auto mb-4 rounded-sm bg-tech-bg border border-tech-border flex items-center justify-center">
+                    <Upload className="w-6 h-6 text-acid" strokeWidth={1.5} />
                   </div>
-                  <p className="text-lg font-medium mb-3 text-white/90">点击上传或拖拽图片</p>
+                  <p className="text-sm font-mono mb-3 text-zinc-300">{t.portal.uploadHint}</p>
+                  <p className="text-xs text-zinc-500 mb-3">{t.portal.uploadFormats}</p>
 
                   {/* 格式和尺寸限制说明 */}
-                  <div className="space-y-1.5 text-sm">
-                    <div className="flex items-center justify-center gap-2 text-white/50">
-                      <span className="px-2 py-0.5 rounded bg-white/10 text-xs">JPG</span>
-                      <span className="px-2 py-0.5 rounded bg-white/10 text-xs">PNG</span>
-                      <span className="px-2 py-0.5 rounded bg-white/10 text-xs">WebP</span>
+                  <div className="space-y-1.5 text-xs font-mono">
+                    <div className="flex items-center justify-center gap-2 text-zinc-500">
+                      <span className="px-2 py-0.5 rounded-sm bg-tech-bg border border-tech-border">JPG</span>
+                      <span className="px-2 py-0.5 rounded-sm bg-tech-bg border border-tech-border">PNG</span>
+                      <span className="px-2 py-0.5 rounded-sm bg-tech-bg border border-tech-border">WebP</span>
                     </div>
-                    <p className="text-white/40 text-xs">最大 10MB · 建议清晰的正面人像照</p>
-                    <p className="text-red-400/60 text-xs">⚠️ 不支持 iPhone 的 HEIC 格式</p>
+                    <p className="text-zinc-600">最大 10MB · 推荐清晰正脸照</p>
+                    <p className="text-red-500/60">⚠️ 不支持 HEIC 格式</p>
                   </div>
                 </div>
               ) : (
                 <div className="space-y-4">
                   {/* 已上传图片预览 */}
-                  <div className="relative aspect-square rounded-2xl overflow-hidden bg-white/5 border border-white/10">
+                  <div className="relative aspect-square rounded-sm overflow-hidden bg-tech-bg border border-tech-border">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={uploadedImage}
@@ -344,55 +357,55 @@ export default function PortalPage() {
                     {/* 删除按钮 */}
                     <button
                       onClick={() => setUploadedImage(null)}
-                      className="absolute top-3 right-3 w-10 h-10 rounded-full bg-black/60 backdrop-blur-sm
-                               flex items-center justify-center hover:bg-red-500/80 transition-colors"
+                      className="absolute top-3 right-3 w-8 h-8 rounded-sm bg-black/70 border border-tech-border
+                               flex items-center justify-center hover:border-red-500 hover:text-red-500 transition-colors text-zinc-400"
                     >
-                      <X className="w-5 h-5 text-white" />
+                      <X className="w-4 h-4" strokeWidth={1.5} />
                     </button>
                     {/* 上传成功标识 */}
-                    <div className="absolute bottom-3 left-3 px-2.5 py-1 rounded-lg bg-green-500/80 backdrop-blur-sm text-xs text-white flex items-center gap-1.5">
-                      <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                      已准备就绪
+                    <div className="absolute bottom-3 left-3 px-2 py-1 rounded-sm bg-black/70 border border-acid/50 text-[10px] text-acid font-mono flex items-center gap-1.5">
+                      <div className="w-1.5 h-1.5 rounded-full bg-acid animate-pulse" />
+                      样本就绪
                     </div>
                   </div>
 
                   {/* 重新上传按钮 */}
                   <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="w-full py-2.5 rounded-xl border border-white/10 bg-white/5
-                             text-white/70 hover:bg-white/10 hover:text-white transition-all
-                             flex items-center justify-center gap-2 text-sm"
+                    className="w-full py-2.5 rounded-sm border border-tech-border bg-transparent
+                             text-zinc-500 hover:border-acid/50 hover:text-acid transition-all
+                             flex items-center justify-center gap-2 text-xs font-mono uppercase"
                   >
-                    <RefreshCw className="w-4 h-4" />
-                    更换照片
+                    <RefreshCw className="w-4 h-4" strokeWidth={1.5} />
+                    重新注入样本
                   </button>
                 </div>
               )}
 
               {/* 图片尺寸选择 - 放在左侧容器底部 */}
-              <div className="mt-6 pt-5 border-t border-white/10">
-                <p className="text-sm text-white/60 mb-3">生成图片尺寸</p>
+              <div className="mt-6 pt-5 border-t border-tech-border">
+                <p className="text-xs text-zinc-600 mb-3 font-mono uppercase tracking-wider">{t.portal.imageSize}</p>
                 <div className="flex gap-2">
                   {IMAGE_SIZE_OPTIONS.map((option) => (
                     <button
                       key={option.value}
                       onClick={() => setSelectedImageSize(option.value)}
                       className={`
-                        flex-1 flex flex-col items-center gap-1 py-2.5 rounded-xl border transition-all duration-200
+                        flex-1 flex flex-col items-center gap-1 py-2.5 rounded-sm border transition-all duration-200
                         ${selectedImageSize === option.value
-                          ? 'border-cosmic-purple bg-cosmic-purple/20 text-white'
-                          : 'border-white/10 bg-white/5 text-white/60 hover:bg-white/10 hover:text-white'}
+                          ? 'border-acid bg-acid/10 text-acid'
+                          : 'border-tech-border bg-transparent text-zinc-500 hover:border-acid/50 hover:text-acid'}
                       `}
                     >
-                      <div className={`${selectedImageSize === option.value ? 'text-cosmic-purple' : ''}`}>
+                      <div>
                         {option.icon}
                       </div>
-                      <span className="text-xs font-medium">{option.label}</span>
+                      <span className="text-[10px] font-mono">{option.label}</span>
                     </button>
                   ))}
                 </div>
               </div>
-            </GlassCard>
+            </TechCard>
           </motion.div>
 
           {/* 右侧：风格选择区域 */}
@@ -401,20 +414,20 @@ export default function PortalPage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <GlassCard className="p-6 md:p-8 h-full flex flex-col">
-              <h2 className="text-xl font-bold mb-4">选择风格</h2>
+            <TechCard className="p-6 md:p-8 h-full flex flex-col">
+              <h2 className="text-lg font-mono font-medium mb-4 text-white uppercase tracking-wider">{t.portal.selectSector}</h2>
 
               {currentWorldline ? (
                 <div className="flex-1 flex flex-col">
                   {/* 已选风格预览 */}
                   <div className="mb-4">
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                      <span className="text-sm text-white/60">已选择风格</span>
+                      <div className="w-2 h-2 rounded-full bg-acid animate-pulse" />
+                      <span className="text-xs text-zinc-500 font-mono uppercase">{t.portal.lockedSector}</span>
                     </div>
-                    <div className="p-4 rounded-xl bg-gradient-to-r from-purple-500/10 to-indigo-500/10 border border-cosmic-purple/30">
-                      <h3 className="text-lg font-bold text-white mb-1">{currentWorldline.name}</h3>
-                      <p className="text-sm text-white/60 mb-3">{currentWorldline.description}</p>
+                    <div className="p-4 rounded-sm bg-acid/5 border border-acid/30">
+                      <h3 className="text-base font-mono font-medium text-white mb-1">{currentWorldline.name}</h3>
+                      <p className="text-xs text-zinc-500 mb-3">{currentWorldline.description}</p>
                       {/* 迷你对比滑动器 */}
                       <MiniCompareSlider worldlineId={currentWorldline.id} />
                     </div>
@@ -422,7 +435,7 @@ export default function PortalPage() {
 
                   {/* 切换其他风格 */}
                   <div className="mt-auto">
-                    <p className="text-sm text-white/40 mb-3">或选择其他风格：</p>
+                    <p className="text-xs text-zinc-600 mb-3 font-mono uppercase">切换其他扇区:</p>
                     <div className="grid grid-cols-3 gap-2">
                       {worldlines.filter(w => w.id !== selectedWorldline).map((wl) => (
                         <button
@@ -431,11 +444,11 @@ export default function PortalPage() {
                             setSelectedWorldline(wl.id);
                             sessionStorage.setItem('selectedWorldline', wl.id);
                           }}
-                          className="p-2 rounded-xl border border-white/10 bg-white/5
-                                   hover:border-cosmic-purple/50 hover:bg-white/10 transition-all
+                          className="p-2 rounded-sm border border-tech-border bg-transparent
+                                   hover:border-acid/50 hover:bg-acid/5 transition-all
                                    text-center"
                         >
-                          <div className="w-full aspect-square rounded-lg overflow-hidden mb-1.5 relative">
+                          <div className="w-full aspect-square rounded-sm overflow-hidden mb-1.5 relative">
                             <Image
                               src={`/showcase/${wl.id}/after.png`}
                               alt={wl.name}
@@ -443,7 +456,7 @@ export default function PortalPage() {
                               className="object-cover"
                             />
                           </div>
-                          <span className="text-xs text-white/70 line-clamp-1">{wl.name}</span>
+                          <span className="text-[10px] text-zinc-500 font-mono line-clamp-1">{wl.name}</span>
                         </button>
                       ))}
                     </div>
@@ -451,22 +464,21 @@ export default function PortalPage() {
                 </div>
               ) : (
                 <div className="flex-1 flex flex-col items-center justify-center text-center py-8">
-                  <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
-                    <RefreshCw className="w-8 h-8 text-white/30" />
+                  <div className="w-14 h-14 rounded-sm bg-tech-bg border border-tech-border flex items-center justify-center mb-4">
+                    <RefreshCw className="w-6 h-6 text-zinc-600" strokeWidth={1.5} />
                   </div>
-                  <p className="text-white/50 mb-4">尚未选择风格</p>
+                  <p className="text-zinc-500 mb-4 font-mono text-sm">尚未锁定扇区</p>
                   <Link
                     href="/showcase"
-                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500/20 to-indigo-500/20
-                             border border-cosmic-purple/30 text-cosmic-purple hover:bg-purple-500/30
-                             transition-all text-sm"
+                    className="px-4 py-2 rounded-sm border border-acid/50 text-acid hover:bg-acid hover:text-black
+                             transition-all text-xs font-mono uppercase"
                   >
-                    浏览所有风格 →
+                    浏览全部时空坐标 →
                   </Link>
 
                   {/* 快速选择 */}
                   <div className="mt-6 w-full">
-                    <p className="text-sm text-white/40 mb-3">快速选择：</p>
+                    <p className="text-xs text-zinc-600 mb-3 font-mono uppercase">快速选择:</p>
                     <div className="grid grid-cols-3 gap-2">
                       {worldlines.map((wl) => (
                         <button
@@ -475,10 +487,10 @@ export default function PortalPage() {
                             setSelectedWorldline(wl.id);
                             sessionStorage.setItem('selectedWorldline', wl.id);
                           }}
-                          className="p-2 rounded-xl border border-white/10 bg-white/5
-                                   hover:border-cosmic-purple/50 hover:bg-white/10 transition-all"
+                          className="p-2 rounded-sm border border-tech-border bg-transparent
+                                   hover:border-acid/50 hover:bg-acid/5 transition-all"
                         >
-                          <div className="w-full aspect-square rounded-lg overflow-hidden mb-1.5 relative">
+                          <div className="w-full aspect-square rounded-sm overflow-hidden mb-1.5 relative">
                             <Image
                               src={`/showcase/${wl.id}/after.png`}
                               alt={wl.name}
@@ -486,14 +498,14 @@ export default function PortalPage() {
                               className="object-cover"
                             />
                           </div>
-                          <span className="text-xs text-white/70 line-clamp-1">{wl.name}</span>
+                          <span className="text-[10px] text-zinc-500 font-mono line-clamp-1">{wl.name}</span>
                         </button>
                       ))}
                     </div>
                   </div>
                 </div>
               )}
-            </GlassCard>
+            </TechCard>
           </motion.div>
         </div>
 
@@ -506,17 +518,17 @@ export default function PortalPage() {
         >
           {/* 未登录时显示登录提示 */}
           {!isLoggedIn && uploadedImage && selectedWorldline && (
-            <div className="mb-4 p-4 rounded-xl bg-cosmic-purple/10 border border-cosmic-purple/30 max-w-md mx-auto">
-              <p className="text-sm text-white/70 mb-3">
-                <LogIn className="inline w-4 h-4 mr-2" />
-                登录后即可生成图像
+            <div className="mb-4 p-4 rounded-sm bg-acid/5 border border-acid/30 max-w-md mx-auto">
+              <p className="text-xs text-zinc-400 mb-3 font-mono">
+                <LogIn className="inline w-4 h-4 mr-2" strokeWidth={1.5} />
+                {t.portal.loginRequired}
               </p>
               <Link
                 href="/login?callbackUrl=/portal"
-                className="inline-block px-6 py-2 rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-indigo-500
-                         text-white font-medium text-sm shadow-lg hover:shadow-purple-500/25 hover:scale-105 transition-all"
+                className="inline-block px-6 py-2 rounded-sm bg-acid text-black
+                         font-mono text-xs uppercase hover:bg-acid-dim transition-all"
               >
-                立即登录
+                {t.portal.loginBtn}
               </Link>
             </div>
           )}
@@ -525,30 +537,18 @@ export default function PortalPage() {
             onClick={handleGenerate}
             disabled={!canGenerate}
             className={`
-              px-8 py-4 rounded-full text-lg font-medium transition-all duration-300
+              px-8 py-4 rounded-sm font-mono text-sm uppercase transition-all duration-300
               ${canGenerate
-                ? 'bg-gradient-to-r from-purple-500 via-fuchsia-500 to-indigo-500 text-white shadow-[0_0_30px_rgba(192,132,252,0.5)] hover:shadow-[0_0_50px_rgba(192,132,252,0.7)] hover:scale-105'
-                : 'bg-white/10 text-white/30 cursor-not-allowed'}
+                ? 'bg-acid text-black hover:bg-acid-dim'
+                : 'bg-tech-card border border-tech-border text-zinc-600 cursor-not-allowed'}
             `}
           >
             {canGenerate ? (
-              <>生成第 N 个我 <ArrowRight className="inline ml-2 w-5 h-5" /></>
+              <>[{t.portal.generateBtn}] <ArrowRight className="inline ml-2 w-4 h-4" strokeWidth={1.5} /></>
             ) : (
-              <>请上传照片并选择风格</>
+              <>[{t.portal.generateBtn}]</>
             )}
           </button>
-
-          {!canGenerate && (
-            <p className="mt-3 text-sm text-white/40">
-              {!uploadedImage
-                ? '👆 请先上传你的照片'
-                : !selectedWorldline
-                  ? '👆 请选择一个风格'
-                  : !isLoggedIn
-                    ? '👆 请先登录'
-                    : ''}
-            </p>
-          )}
         </motion.div>
       </div>
     </main>
