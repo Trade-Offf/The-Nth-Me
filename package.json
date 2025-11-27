@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.28.4",
-    "@next/swc-darwin-arm64": "^14.2.3",
     "@react-three/drei": "^9.112.1",
     "@react-three/fiber": "^8.18.0",
     "@splinetool/react-spline": "^4.1.0",
