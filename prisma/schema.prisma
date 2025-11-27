@@ -1,0 +1,156 @@
+// Prisma Schema for "第 N 个我" 用户系统
+// 支持 NextAuth.js 认证 + 用户积分系统
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==================== NextAuth.js 必需模型 ====================
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ==================== 用户模型 ====================
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?   // 邮箱密码登录用
+
+  // 爱发电关联 (后续付费功能用)
+  afdianId      String?   @unique
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // 关联
+  accounts      Account[]
+  sessions      Session[]
+  credits       Credit?
+  transactions  Transaction[]
+  generations   Generation[]
+
+  @@map("users")
+}
+
+// ==================== 积分系统 (后续付费功能用) ====================
+
+model Credit {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  balance     Int      @default(0)  // 当前剩余次数
+  totalEarned Int      @default(0)  // 累计获得次数
+  totalUsed   Int      @default(0)  // 累计使用次数
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("credits")
+}
+
+model Transaction {
+  id            String   @id @default(cuid())
+  userId        String
+  afdianOrderId String?  @unique  // 爱发电订单号
+  amountCny     Decimal? @db.Decimal(10, 2)  // 充值金额
+  creditsAdded  Int      // 增加的次数
+  planName      String?  // 方案名称
+  status        String   @default("completed")  // pending/completed/failed
+  rawWebhook    Json?    // 原始 Webhook 数据
+  createdAt     DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("transactions")
+}
+
+// ==================== 生成记录 ====================
+
+model Generation {
+  id             String   @id @default(cuid())
+  userId         String
+  worldlineId    String
+  originalImage  String?  // 原图 URL/路径
+  generatedImage String?  // 生成图 URL
+  creditsUsed    Int      @default(1)
+  status         String   @default("pending")  // pending/completed/failed
+  createdAt      DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("generations")
+}
+
+// ==================== 兑换码系统 ====================
+
+model RedeemCode {
+  id          String    @id @default(cuid())
+  code        String    @unique  // 兑换码
+  credits     Int       // 可兑换的积分数量
+  maxUses     Int       @default(1)  // 最大使用次数
+  usedCount   Int       @default(0)  // 已使用次数
+  expiresAt   DateTime?  // 过期时间
+  createdBy   String?   // 创建者
+  createdAt   DateTime  @default(now())
+
+  redemptions CodeRedemption[]
+
+  @@map("redeem_codes")
+}
+
+model CodeRedemption {
+  id         String   @id @default(cuid())
+  codeId     String
+  userId     String
+  credits    Int      // 实际兑换的积分
+  redeemedAt DateTime @default(now())
+
+  code RedeemCode @relation(fields: [codeId], references: [id])
+
+  @@unique([codeId, userId])  // 每个用户每个码只能用一次
+  @@map("code_redemptions")
+}

@@ -3,9 +3,10 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Upload, ArrowRight, X, RefreshCw, ChevronLeft, ChevronRight, AlertCircle, Square, Smartphone, Monitor } from 'lucide-react';
+import { Upload, ArrowRight, X, RefreshCw, ChevronLeft, ChevronRight, AlertCircle, Square, Smartphone, Monitor, LogIn } from 'lucide-react';
 import GlassCard from '@/components/GlassCard';
 import { worldlines } from '@/lib/worldlines';
 import { Worldline, ImageAspectRatio } from '@/lib/types';
@@ -91,6 +92,7 @@ function MiniCompareSlider({ worldlineId }: { worldlineId: string }) {
 
 export default function PortalPage() {
   const router = useRouter();
+  const { data: session, status } = useSession();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [selectedWorldline, setSelectedWorldline] = useState<string | null>(null);
@@ -98,6 +100,8 @@ export default function PortalPage() {
   const [currentWorldline, setCurrentWorldline] = useState<Worldline | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [selectedImageSize, setSelectedImageSize] = useState<ImageAspectRatio>('1:1');
+
+  const isLoggedIn = status === 'authenticated' && !!session;
 
   // 从 sessionStorage 读取已选风格
   useEffect(() => {
@@ -229,7 +233,7 @@ export default function PortalPage() {
     }
   };
 
-  const canGenerate = uploadedImage && selectedWorldline;
+  const canGenerate = uploadedImage && selectedWorldline && isLoggedIn;
 
   return (
     <main className="min-h-screen px-4 py-8 md:py-12">
@@ -500,6 +504,23 @@ export default function PortalPage() {
           transition={{ delay: 0.3 }}
           className="mt-8 text-center"
         >
+          {/* 未登录时显示登录提示 */}
+          {!isLoggedIn && uploadedImage && selectedWorldline && (
+            <div className="mb-4 p-4 rounded-xl bg-cosmic-purple/10 border border-cosmic-purple/30 max-w-md mx-auto">
+              <p className="text-sm text-white/70 mb-3">
+                <LogIn className="inline w-4 h-4 mr-2" />
+                登录后即可生成图像
+              </p>
+              <Link
+                href="/login?callbackUrl=/portal"
+                className="inline-block px-6 py-2 rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-indigo-500
+                         text-white font-medium text-sm shadow-lg hover:shadow-purple-500/25 hover:scale-105 transition-all"
+              >
+                立即登录
+              </Link>
+            </div>
+          )}
+
           <button
             onClick={handleGenerate}
             disabled={!canGenerate}
@@ -519,7 +540,13 @@ export default function PortalPage() {
 
           {!canGenerate && (
             <p className="mt-3 text-sm text-white/40">
-              {!uploadedImage ? '👆 请先上传你的照片' : !selectedWorldline ? '👆 请选择一个风格' : ''}
+              {!uploadedImage
+                ? '👆 请先上传你的照片'
+                : !selectedWorldline
+                  ? '👆 请选择一个风格'
+                  : !isLoggedIn
+                    ? '👆 请先登录'
+                    : ''}
             </p>
           )}
         </motion.div>

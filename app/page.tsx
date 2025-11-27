@@ -5,6 +5,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { Github, Globe } from 'lucide-react';
 import { motion } from 'framer-motion';
+import UserMenu from '@/components/UserMenu';
 
 const Hero3DCanvas = dynamic(() => import('../components/Hero3DCanvas'), {
   ssr: false,
@@ -19,7 +20,6 @@ const content = {
   'zh-CN': {
     navbar: {
       brand: '第 N 个我',
-      gallery: '时空画廊',
       prompts: '预设剧本',
       pricing: '获取算力',
       about: '关于模型',
@@ -36,7 +36,6 @@ const content = {
   'en-US': {
     navbar: {
       brand: 'The Nth Me',
-      gallery: 'Gallery',
       prompts: 'Scenarios',
       pricing: 'Compute Power',
       about: 'Model Info',
@@ -54,13 +53,12 @@ const content = {
 
 // 导航项配置：key -> 路由
 const navbarRoutes: Record<string, string> = {
-  gallery: '/result',
   prompts: '/showcase',
-  pricing: '#',
+  pricing: '/pricing',
   about: '#',
 };
 
-const navbarItems = ['gallery', 'prompts', 'pricing', 'about'] as const;
+const navbarItems = ['prompts', 'pricing', 'about'] as const;
 
 type Lang = keyof typeof content;
 type NavbarKey = (typeof navbarItems)[number];
@@ -141,6 +139,9 @@ export default function HomePage() {
               >
                 <Github className="w-5 h-5" />
               </a>
+
+              {/* 用户菜单 */}
+              <UserMenu />
             </div>
           </div>
         </div>
@@ -188,14 +189,12 @@ export default function HomePage() {
                   {t.hero.btn_primary}
                 </Link>
 
-                <a
-                  href="https://afdian.com/a/tradeofff"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Link
+                  href="/pricing"
                   className="inline-flex items-center px-5 py-2.5 rounded-full border border-white/15 bg-white/5 text-sm text-white/80 hover:bg-white/10 transition-colors"
                 >
                   {t.hero.btn_secondary}
-                </a>
+                </Link>
               </div>
             </motion.div>
 

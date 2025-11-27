@@ -9,21 +9,26 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@auth/prisma-adapter": "^2.11.1",
     "@babel/runtime": "^7.28.4",
+    "@prisma/client": "^6.19.0",
     "@react-three/drei": "^9.112.1",
     "@react-three/fiber": "^8.18.0",
     "@splinetool/react-spline": "^4.1.0",
     "@splinetool/runtime": "^1.12.0",
+    "bcryptjs": "^3.0.3",
     "clsx": "^2.1.1",
     "dotenv": "^17.2.3",
     "framer-motion": "^12.23.24",
     "lucide-react": "^0.554.0",
     "next": "14.2.3",
+    "next-auth": "^4.24.13",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "three": "^0.166.0"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20.12.12",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
@@ -31,6 +36,7 @@
     "eslint": "^8.57.0",
     "eslint-config-next": "14.2.3",
     "postcss": "^8.4.38",
+    "prisma": "^6.19.0",
     "tailwindcss": "^3.4.3",
     "typescript": "^5.4.5"
   }
