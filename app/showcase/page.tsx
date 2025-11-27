@@ -342,7 +342,7 @@ export default function ShowcasePage() {
             {t.showcase.title} <span className="text-acid">{t.showcase.titleHighlight}</span>
           </h1>
           <p className="text-zinc-500 font-mono text-sm tracking-wider mb-4">
-            // {t.showcase.description.replace('{count}', String(prompts.length))}
+            {`// ${t.showcase.description.replace('{count}', String(prompts.length))}`}
           </p>
 
           {/* 状态标签 */}

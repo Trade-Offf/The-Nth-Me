@@ -90,7 +90,7 @@ export default function HomePage() {
               <div className="space-y-3">
                 {/* 系统注释 */}
                 <p className="font-mono text-xs text-zinc-600 uppercase tracking-[0.2em]">
-                  // INITIALIZING QUANTUM BRIDGE
+                  {`// INITIALIZING QUANTUM BRIDGE`}
                 </p>
 
                 {/* 主标题 */}

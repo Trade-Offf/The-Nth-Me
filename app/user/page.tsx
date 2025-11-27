@@ -168,11 +168,11 @@ export default function UserPage() {
             </div>
 
             <div className="space-y-3 text-zinc-400 text-xs font-mono">
-              <p>// {t.user.rechargeGuideStep1}<span className="text-acid">{t.user.rechargeGuideHighlight}</span>{t.user.rechargeGuideStep2}</p>
+              <p>{`// ${t.user.rechargeGuideStep1}`}<span className="text-acid">{t.user.rechargeGuideHighlight}</span>{t.user.rechargeGuideStep2}</p>
               <div className="bg-acid/10 border border-acid/30 rounded-sm p-3">
                 <code className="text-acid">{session.user?.email}</code>
               </div>
-              <p className="text-zinc-600">// {t.user.rechargeGuideNote}</p>
+              <p className="text-zinc-600">{`// ${t.user.rechargeGuideNote}`}</p>
             </div>
           </TechCard>
         </motion.div>

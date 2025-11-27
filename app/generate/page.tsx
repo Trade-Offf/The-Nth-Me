@@ -137,7 +137,7 @@ export default function GeneratePage() {
           </div>
           <h2 className="text-lg font-mono font-medium mb-4 text-red-500">[{t.generate.error}] {t.generate.signalLost}</h2>
           <p className="text-zinc-400 mb-4 font-mono text-sm">{error}</p>
-          <p className="text-xs text-zinc-600 font-mono">// {t.generate.returning}</p>
+          <p className="text-xs text-zinc-600 font-mono">{`// ${t.generate.returning}`}</p>
         </div>
       </div>
     );

@@ -120,7 +120,7 @@ export default function ResultPage() {
             </span>
           </div>
           <h2 className="text-lg md:text-2xl font-mono font-bold text-acid mb-2">{worldlineData?.name}</h2>
-          <p className="text-zinc-500 text-sm font-mono">// {worldlineData?.description}</p>
+          <p className="text-zinc-500 text-sm font-mono">{`// ${worldlineData?.description}`}</p>
         </motion.div>
 
         {/* 左右对比布局 */}
