@@ -1,13 +1,9 @@
 'use client';
 
-import { Canvas, extend } from '@react-three/fiber';
+import { Canvas } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera } from '@react-three/drei';
 import HeroRobot from './HeroRobot';
 import { Suspense } from 'react';
-import * as THREE from 'three';
-
-// 扩展 Three.js 元素以支持 JSX
-extend(THREE);
 
 export default function Hero3DCanvas() {
   return (
@@ -18,17 +14,17 @@ export default function Hero3DCanvas() {
         style={{ background: 'transparent' }}
       >
         <PerspectiveCamera makeDefault position={[0, 0, 8]} fov={50} />
-        
+
         {/* Ambient light for overall illumination */}
         <ambientLight intensity={0.3} />
-        
+
         {/* Main directional light */}
         <directionalLight position={[5, 5, 5]} intensity={1} />
-        
+
         <Suspense fallback={null}>
           <HeroRobot />
         </Suspense>
-        
+
         {/* Optional: Allow user to rotate the scene */}
         <OrbitControls
           enableZoom={false}

@@ -1,20 +1,17 @@
 'use client';
 
 import { useRef, useEffect } from 'react';
-import { useFrame, extend } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
 import { Environment, Text } from '@react-three/drei';
 import * as THREE from 'three';
 
-// 扩展 Three.js 元素以支持 JSX
-extend(THREE);
-
 export default function HeroRobot() {
-  const groupRef = useRef<THREE.Group>(null);
-  const headRef = useRef<THREE.Mesh>(null);
+  const groupRef = useRef(null);
+  const headRef = useRef(null);
 
   // 鼠标位置（视口坐标）
   useEffect(() => {
-    const handleMove = (event: MouseEvent) => {
+    const handleMove = (event) => {
       const { innerWidth, innerHeight } = window;
 
       // 归一化到 [-1, 1]
