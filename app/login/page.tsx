@@ -5,7 +5,7 @@
  * 支持 Google OAuth 和邮箱密码登录
  */
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -15,7 +15,7 @@ import GlassCard from '@/components/GlassCard';
 
 type AuthMode = 'login' | 'register';
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || '/portal';
@@ -279,6 +279,21 @@ export default function LoginPage() {
         </p>
       </motion.div>
     </main>
+  );
+}
+
+// 使用 Suspense 包裹，解决 useSearchParams 静态渲染问题
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="min-h-screen flex items-center justify-center">
+          <Loader2 className="w-8 h-8 text-purple-500 animate-spin" />
+        </main>
+      }
+    >
+      <LoginForm />
+    </Suspense>
   );
 }
 

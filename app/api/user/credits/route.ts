@@ -8,6 +8,9 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { getUserCreditDetails, CREDITS_PER_GENERATION } from '@/lib/services/creditService';
 
+// 标记为动态路由，不进行静态渲染
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
