@@ -29,8 +29,8 @@ const content = {
       subtitle_gradient: '不同时间线上的第 N 个我',
       description:
         '由 Nano Banana 模型驱动的多时间线影像引擎。无需复杂指令，只需上传一张照片，我们精心预设的 Prompt 剧本会自动在不同时间线展开，为你在无数平行宇宙中生成一个又一个“第 N 个我”——从赛博朋克都市，到魔法中世纪，再到星际舰队旗舰之桥。',
-      btn_primary: '生成第 N 个我',
-      btn_secondary: '为引擎加注能量',
+      btn_primary: '探索所有风格',
+      btn_secondary: '为引擎充能 ⚡',
     },
   },
   'en-US': {
@@ -46,11 +46,19 @@ const content = {
       subtitle_gradient: 'The N-th Me Across Parallel Universes',
       description:
         'A multi-timeline portrait engine powered by the Nano Banana model. Upload a single photo, and our carefully crafted scenario prompts will branch your likeness across countless parallel universes—from neon-soaked megacities, to arcane medieval realms, to the command deck of an interstellar fleet.',
-      btn_primary: 'Generate The Nth Me',
-      btn_secondary: 'Fuel the Engine',
+      btn_primary: 'Explore All Styles',
+      btn_secondary: 'Fuel the Engine ⚡',
     },
   },
 } as const;
+
+// 导航项配置：key -> 路由
+const navbarRoutes: Record<string, string> = {
+  gallery: '/result',
+  prompts: '/showcase',
+  pricing: '#',
+  about: '#',
+};
 
 const navbarItems = ['gallery', 'prompts', 'pricing', 'about'] as const;
 
@@ -91,16 +99,29 @@ export default function HomePage() {
           {/* 菜单 + 语言切换 */}
           <div className="flex items-center space-x-8">
             <nav className="hidden md:flex items-center space-x-6 text-xs text-white/60">
-              {navbarItems.map((key) => (
-                <button
-                  key={key}
-                  type="button"
-                  className="hover:text-white transition-colors flex items-center space-x-1"
-                >
-                  <span className="w-1 h-1 rounded-full bg-white/20" />
-                  <span>{t.navbar[key as NavbarKey]}</span>
-                </button>
-              ))}
+              {navbarItems.map((key) => {
+                const route = navbarRoutes[key];
+                const isDisabled = route === '#';
+
+                return isDisabled ? (
+                  <span
+                    key={key}
+                    className="flex items-center space-x-1 opacity-50 cursor-not-allowed"
+                  >
+                    <span className="w-1 h-1 rounded-full bg-white/20" />
+                    <span>{t.navbar[key as NavbarKey]}</span>
+                  </span>
+                ) : (
+                  <Link
+                    key={key}
+                    href={route}
+                    className="hover:text-white transition-colors flex items-center space-x-1"
+                  >
+                    <span className="w-1 h-1 rounded-full bg-white/20" />
+                    <span>{t.navbar[key as NavbarKey]}</span>
+                  </Link>
+                );
+              })}
             </nav>
 
             <div className="flex items-center space-x-3">
@@ -126,12 +147,12 @@ export default function HomePage() {
       </header>
 
       {/* Hero 区域 */}
-      <section className="relative h-full w-full pt-20">
+      <section className="relative w-full" style={{ height: 'calc(100vh - 4rem)' }}>
         {/* 中央紫色径向光晕 */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(168,85,247,0.18)_0%,_transparent_70%)]" />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-6 h-full">
-          <div className="grid lg:grid-cols-2 gap-10 items-center h-full">
+        <div className="relative z-10 max-w-7xl mx-auto px-6 h-full flex items-center">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center w-full">
             {/* 左侧文案 */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -161,18 +182,20 @@ export default function HomePage() {
 
               <div className="flex flex-wrap items-center gap-4 pt-2">
                 <Link
-                  href="/portal"
+                  href="/showcase"
                   className="inline-flex items-center px-5 py-2.5 rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-indigo-500 text-sm font-medium shadow-[0_0_25px_rgba(192,132,252,0.75)] hover:shadow-[0_0_40px_rgba(192,132,252,0.95)] transition-shadow"
                 >
                   {t.hero.btn_primary}
                 </Link>
 
-                <button
-                  type="button"
+                <a
+                  href="https://afdian.com/a/tradeofff"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center px-5 py-2.5 rounded-full border border-white/15 bg-white/5 text-sm text-white/80 hover:bg-white/10 transition-colors"
                 >
                   {t.hero.btn_secondary}
-                </button>
+                </a>
               </div>
             </motion.div>
 
@@ -181,7 +204,7 @@ export default function HomePage() {
               initial={{ opacity: 0, x: 40 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="relative h-[320px] sm:h-[380px] md:h-[420px] lg:h-[460px]"
+              className="relative h-[450px] sm:h-[500px] md:h-[550px] lg:h-[600px]"
             >
               {/* 背景透明，不再单独加高亮阴影卡片 */}
               <div className="relative h-full rounded-[32px] overflow-hidden">

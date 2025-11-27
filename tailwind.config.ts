@@ -17,6 +17,9 @@ const config: Config = {
           gold: '#fbbf24',
           pink: '#ec4899',
         },
+        acid: {
+          green: '#CCFF00',
+        },
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
