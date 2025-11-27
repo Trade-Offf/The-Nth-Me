@@ -2,7 +2,7 @@
 
 import { useRef, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { Text } from '@react-three/drei';
+import { Text, Environment } from '@react-three/drei';
 import * as THREE from 'three';
 
 export default function HeroRobot() {
@@ -106,12 +106,8 @@ export default function HeroRobot() {
       {/* Rim Lighting - Purple */}
       <pointLight position={[3, -2, 2]} color="#a855f7" intensity={3} />
 
-      {/* Ambient light for soft illumination (no external HDRI to avoid loading issues in China) */}
-      <ambientLight intensity={0.4} />
-
-      {/* Additional fill light for better metallic reflections */}
-      <directionalLight position={[5, 5, 5]} intensity={0.5} color="#ffffff" />
-      <directionalLight position={[-5, -5, -5]} intensity={0.3} color="#4f46e5" />
+      {/* Environment for reflections - using local HDRI file */}
+      <Environment files="/hdri/potsdamer_platz_1k.hdr" />
     </group>
   );
 }
