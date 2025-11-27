@@ -116,6 +116,7 @@ export const translations = {
       privacyNote: '登录即表示您同意我们的服务协议和隐私政策',
       errorCredentials: '认证失败，请检查通讯频道和安全密钥',
       errorRegister: '注册失败，请稍后重试',
+      errorGeneric: '连接失败，请稍后重试',
     },
     result: {
       badge: '量子纠缠完成',
@@ -256,6 +257,7 @@ export const translations = {
       privacyNote: 'By logging in, you agree to our Terms of Service and Privacy Policy',
       errorCredentials: 'Authentication failed, please check your credentials',
       errorRegister: 'Registration failed, please try again later',
+      errorGeneric: 'Connection failed, please try again later',
     },
     result: {
       badge: 'QUANTUM ENTANGLEMENT COMPLETE',
