@@ -5,6 +5,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
 import Navbar from '@/components/Navbar';
+import BinaryRain from '@/components/BinaryRain';
 import { useI18n } from '@/lib/i18n';
 
 const Hero3DCanvas = dynamic(() => import('../components/Hero3DCanvas'), {
@@ -57,6 +58,9 @@ export default function HomePage() {
 
   return (
     <main className="h-screen bg-tech-bg text-white overflow-hidden relative">
+      {/* 二进制雨背景 */}
+      <BinaryRain />
+
       {/* 网格背景 */}
       <div className="fixed inset-0 tech-grid-bg opacity-50" />
 
