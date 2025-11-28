@@ -34,14 +34,14 @@ export const prompts: PromptConfig[] = [
     prompt:
       '将图片转换为摄影棚风格的顶级半身肖像照。人物穿着都市休闲服饰，动作自然放松，镜头特写、聚焦面部。背景为柔和的渐变色，层次分明，突出主体与背景的分离，并加入 gobo lighting 光影投射，形成几何或窗棂状的光影效果。画面氛围静谧而温柔，细腻胶片颗粒质感，柔和定向光轻抚面庞，在眼神处留下光点，营造经典黑白摄影的高级氛围。中心构图',
     sampleStrength: 0.75,
-    tags: ['光子捕捉', '生物扫描', '单色矩阵', '高保真'],
+    tags: ['光子捕捉', '生物扫描', '单色矩阵'],
   },
   {
     id: 'tech-startup',
     name: '硅谷原型体',
     prompt: `Edit this image. I need a professional, high-resolution, profile photo, maintaining the exact facial structure, identity, and key features of the person in the input image. The subject is framed from the chest up, with ample headroom and negative space above their head, ensuring the top of their head is not cropped. The person looks directly at the camera with a relaxed, approachable expression, and the subject's body is casually positioned with a slight lean. They are styled for a professional photo studio shoot, wearing a modern henley shirt in heather gray with rolled sleeves. The background is a solid '#141414' neutral studio. Shot from a high angle with bright and airy soft, diffused studio lighting, gently illuminating the face and creating a subtle catchlight in the eyes, conveying a sense of innovation and accessibility. Captured on an 85mm f/1.8 lens with a shallow depth of field, exquisite focus on the eyes, and beautiful, soft bokeh. Observe crisp detail on the fabric texture of the henley, individual strands of hair, and natural, realistic skin texture，keep the glass if the picture has . The atmosphere exudes confidence, innovation, and modern professionalism. Clean and bright cinematic color grading with subtle warmth and balanced tones, ensuring a polished and contemporary feel.`,
     sampleStrength: 1.0,
-    tags: ['企业协议', '神经链接', '创始人模式', '高清渲染'],
+    tags: ['企业协议', '神经链接', '创始人模式'],
   },
   {
     id: 'collectible-figure',
@@ -49,7 +49,28 @@ export const prompts: PromptConfig[] = [
     prompt:
       'Create a 1/7 scale commercialized figure of the character in the illustration, in a realistic style and environment. Place the figure on a computer desk, using a circular transparent acrylic base without any text. On the computer screen, display the ZBrush modeling process of the figure. Next to the computer screen, place a BANDAI-style toy packaging box printed with the original artwork.',
     sampleStrength: 1.0,
-    tags: ['实体化', '3D渲染', '商品化', '收藏协议'],
+    tags: ['实体化', '3D渲染', '收藏协议'],
+  },
+  {
+    id: 'federal-diplomat',
+    name: '联邦特使',
+    prompt: `Keep the facial features of the person in the uploaded image exactly consistent. Dress them in a professional navy blue business suit with a white shirt, similar to the reference image. Background: Place the subject against a clean, solid dark gray studio photography backdrop. The background should have a subtle gradient, slightly lighter behind the subject and darker towards the edges (vignette effect). There should be no other objects. Photography Style: Shot on a Sony A7III with an 85mm f/1.4 lens, creating a flattering portrait compression. Lighting: Use a classic three-point lighting setup. The main key light should create soft, defining shadows on the face. A subtle rim light should separate the subject's shoulders and hair from the dark background. Crucial Details: Render natural skin texture with visible pores, not an airbrushed look. Add natural catchlights to the eyes. The fabric of the suit should show a subtle wool texture. Final image should be an ultra-realistic, 8k professional headshot.`,
+    sampleStrength: 1.0,
+    tags: ['外交权重', '第一类接触', '创始人模式'],
+  },
+  {
+    id: 'puzzle-deconstruction',
+    name: '解构协议',
+    prompt: `Edit this image. Keep the facial features of the person in the uploaded image exactly consistent, maintaining identity and structure perfectly. The subject is posing against a clean white background. Render the face as if it is composed of interlocking jigsaw puzzle pieces—each piece is distinct with sharp edges and subtle 3D depth. The subject is delicately holding one puzzle piece removed from their cheek, revealing a hollow, pitch-black void underneath (cosmic horror style). Their gaze is direct, intense, and unwavering. Lighting is focused and directional, creating a surreal yet hyper-realistic atmosphere, accentuating the contours of the puzzle pieces and skin texture. A bold, fashion magazine title 'NTHME' is positioned behind the subject's head. Avant-garde, surrealism, 8k resolution, cinematic lighting.`,
+    sampleStrength: 1.0,
+    tags: ['拓扑重构', '虚空引索', '刊物封面'],
+  },
+  {
+    id: 'reverse-engineering',
+    name: '逆向工程',
+    prompt: `Edit this image. Generate a technical 'reverse engineering' style character concept sheet on beige sketch-paper. Center: full-body illustration of the person in the uploaded image, maintaining facial features and identity, rendered in clean line art. Around the center: deconstruct the subject's outfit like a technical schematic with thin pencil arrows pointing to separated components. Analyze and display: 1. Clothing layers (outer shell, inner lining, bottoms, footwear). 2. Material analysis (close-ups of fabric textures, stitching patterns). 3. Inventory loadout (an open bag displaying daily items/gadgets inferred from the subject's style). 4. Three expressive headshots (emotional states). Add handwritten English annotations explaining the 'specs' of the gear. Style: 2D hand-drawn engineering blueprint, soft shadows, concept art, 4K HD.`,
+    sampleStrength: 0.8,
+    tags: ['工程权重', '大师工匠'],
   },
 ];
 
