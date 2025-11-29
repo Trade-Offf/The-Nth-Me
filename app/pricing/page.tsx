@@ -13,6 +13,7 @@ import { useSession } from 'next-auth/react';
 import { motion } from 'framer-motion';
 import { Lock, Unlock, Flame } from 'lucide-react';
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import BinaryRain from '@/components/BinaryRain';
 import { useI18n } from '@/lib/i18n';
 import { PRICING_TIERS, AFDIAN_URL } from '@/lib/config/pricingTiers';
@@ -222,6 +223,9 @@ export default function PricingPage() {
           </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <Footer />
     </main>
   );
 }

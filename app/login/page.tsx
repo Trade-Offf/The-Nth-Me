@@ -13,6 +13,7 @@ import { motion } from 'framer-motion';
 import { Mail, Lock, User, ArrowRight, Loader2 } from 'lucide-react';
 import TechCard from '@/components/TechCard';
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import BinaryRain from '@/components/BinaryRain';
 import { useI18n } from '@/lib/i18n';
 
@@ -292,6 +293,9 @@ function LoginForm() {
           </TechCard>
         </motion.div>
       </div>
+
+      {/* Footer */}
+      <Footer />
     </main>
   );
 }

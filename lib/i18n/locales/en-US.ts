@@ -227,6 +227,51 @@ const enUS: Translations = {
     progress: 'Transfer Progress',
     establishing: 'Establishing Quantum Link',
   },
+  footer: {
+    copyright: 'The Nth Me - Meet the Nth version of yourself',
+    terms: 'Terms of Service',
+    privacy: 'Privacy Policy',
+    contact: 'Contact Us',
+  },
+  terms: {
+    title: 'Terms of Service',
+    lastUpdated: 'Last Updated',
+    sections: {
+      intro: {
+        title: '1. Service Description',
+        content: '"The Nth Me" is an AI-powered image generation service. After you upload a photo, our AI system generates artistic portrait images based on preset style templates.',
+      },
+      usage: {
+        title: '2. Usage Guidelines',
+        content: 'When using this service, you must ensure that uploaded photos are of yourself or you have obtained proper authorization. Uploading illegal, infringing, or inappropriate content is prohibited. We reserve the right to refuse processing any content we deem inappropriate.',
+      },
+      payment: {
+        title: '3. Payment & Refunds',
+        content: 'This service uses a credit system. Purchased credits are non-refundable but never expire. Due to the nature of AI generation, we cannot guarantee every result will meet expectations. Consumed credits are non-refundable.',
+      },
+      privacy: {
+        title: '4. Privacy Protection',
+        content: 'We value your privacy. This service does not store your uploaded photos. Images are transmitted directly to Google Nano Banana API for processing, and results are returned immediately. Our servers do not retain any image data.',
+      },
+      intellectual: {
+        title: '5. Intellectual Property',
+        content: 'Generated images belong to you and can be used freely. However, the technology, interface design, and style templates of this service are the intellectual property of "The Nth Me".',
+      },
+      disclaimer: {
+        title: '6. Disclaimer',
+        content: 'This service is provided "as is". We make no guarantees regarding the accuracy or suitability of AI-generated results. We are not liable for any direct or indirect damages arising from the use of this service.',
+      },
+      changes: {
+        title: '7. Terms Changes',
+        content: 'We may update these terms from time to time. Continued use of the service indicates acceptance of updated terms. For significant changes, we will notify you via website announcements.',
+      },
+    },
+  },
+  privacy: {
+    title: 'Privacy Policy',
+    lastUpdated: 'Last Updated',
+    content: 'We take your privacy very seriously. This policy explains how we collect, use, and protect your personal information.',
+  },
 } as const;
 
 export default enUS;

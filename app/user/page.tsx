@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import TechCard from '@/components/TechCard';
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import { useI18n } from '@/lib/i18n';
 
 interface CreditData {
@@ -217,6 +218,9 @@ export default function UserPage() {
           </TechCard>
         </motion.div>
       </div>
+
+      {/* Footer */}
+      <Footer />
     </main>
   );
 }
