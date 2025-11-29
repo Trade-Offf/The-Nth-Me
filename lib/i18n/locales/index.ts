@@ -20,9 +20,10 @@ export const SUPPORTED_LANGS: LangMeta[] = [
 
 /**
  * 翻译内容映射
+ * 使用类型断言处理 as const 的 readonly 问题
  */
 export const translations: Record<LangCode, Translations> = {
-  'zh-CN': zhCN,
+  'zh-CN': zhCN as unknown as Translations,
   'en-US': enUS,
 };
 
