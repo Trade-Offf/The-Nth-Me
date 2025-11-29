@@ -195,24 +195,26 @@ export default function ResultPage() {
           </div>
         </motion.div>
 
-        {/* Action Buttons */}
+        {/* Action Buttons - 保存图片高亮，再次尝试调暗 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
           className="flex flex-wrap justify-center gap-3 md:gap-4"
         >
+          {/* 保存图片 - 高亮主按钮 */}
           <button
             onClick={handleDownload}
             disabled={isDownloading}
-            className="px-6 py-3 rounded-sm border border-acid/50 text-acid hover:bg-acid hover:text-black transition-all font-mono text-sm uppercase flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-3 rounded-sm bg-acid text-black hover:bg-acid-dim transition-all font-mono text-sm uppercase flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_15px_rgba(57,255,20,0.3)]"
           >
             <Download className="w-4 h-4" strokeWidth={1.5} />
             {isDownloading ? t.result.downloading : t.result.saveImage}
           </button>
+          {/* 再次尝试 - 次要按钮，调暗 */}
           <button
             onClick={handleTryAgain}
-            className="px-6 py-3 rounded-sm bg-acid text-black hover:bg-acid-dim transition-all font-mono text-sm uppercase flex items-center gap-2"
+            className="px-6 py-3 rounded-sm border border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-zinc-300 transition-all font-mono text-sm uppercase flex items-center gap-2"
           >
             <RotateCcw className="w-4 h-4" strokeWidth={1.5} />
             {t.result.tryAgain}

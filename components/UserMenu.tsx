@@ -2,18 +2,19 @@
 
 /**
  * 用户菜单组件 - Electric Green Tech Style
- * 显示登录状态、头像和下拉菜单
+ * 显示登录状态、头像、积分和下拉菜单
  */
 
 import { useState, useRef, useEffect } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { User, LogOut, Settings } from 'lucide-react';
+import { User, LogOut, Settings, Zap } from 'lucide-react';
 
 export default function UserMenu() {
   const { data: session, status } = useSession();
   const [isOpen, setIsOpen] = useState(false);
+  const [credits, setCredits] = useState<number | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
   // 点击外部关闭菜单
@@ -27,6 +28,20 @@ export default function UserMenu() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  // 获取用户积分
+  useEffect(() => {
+    if (session?.user) {
+      fetch('/api/user/credits')
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success) {
+            setCredits(data.data.balance);
+          }
+        })
+        .catch(console.error);
+    }
+  }, [session]);
 
   // 加载中
   if (status === 'loading') {
@@ -51,62 +66,77 @@ export default function UserMenu() {
 
   // 已登录
   return (
-    <div className="relative" ref={menuRef}>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 p-1 rounded-sm hover:bg-acid/10 transition-colors"
+    <div className="flex items-center gap-3">
+      {/* 积分显示 */}
+      <Link
+        href="/pricing"
+        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-sm bg-acid/10 border border-acid/30 hover:bg-acid/20 transition-colors"
+        title="充值积分"
       >
-        {session.user?.image ? (
-          <Image
-            src={session.user.image}
-            alt={session.user.name || '用户头像'}
-            width={32}
-            height={32}
-            className="rounded-sm"
-          />
-        ) : (
-          <div className="w-8 h-8 rounded-sm bg-acid flex items-center justify-center">
-            <User className="w-4 h-4 text-black" strokeWidth={1.5} />
+        <Zap className="w-3.5 h-3.5 text-acid" strokeWidth={2} />
+        <span className="font-mono text-xs text-acid font-medium">
+          {credits !== null ? credits : '...'}
+        </span>
+      </Link>
+
+      {/* 用户头像菜单 */}
+      <div className="relative" ref={menuRef}>
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="flex items-center gap-2 p-1 rounded-sm hover:bg-acid/10 transition-colors"
+        >
+          {session.user?.image ? (
+            <Image
+              src={session.user.image}
+              alt={session.user.name || '用户头像'}
+              width={32}
+              height={32}
+              className="rounded-sm"
+            />
+          ) : (
+            <div className="w-8 h-8 rounded-sm bg-acid flex items-center justify-center">
+              <User className="w-4 h-4 text-black" strokeWidth={1.5} />
+            </div>
+          )}
+        </button>
+
+        {/* 下拉菜单 */}
+        {isOpen && (
+          <div className="absolute right-0 mt-2 w-56 rounded-sm bg-tech-card border border-tech-border overflow-hidden z-50">
+            {/* 用户信息 */}
+            <div className="px-4 py-3 border-b border-tech-border">
+              <p className="text-sm font-medium text-white truncate">
+                {session.user?.name || '用户'}
+              </p>
+              <p className="text-xs text-zinc-500 font-mono truncate">
+                {session.user?.email}
+              </p>
+            </div>
+
+            {/* 菜单项 */}
+            <div className="py-1">
+              <Link
+                href="/user"
+                onClick={() => setIsOpen(false)}
+                className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-400 hover:bg-acid/10 hover:text-acid transition-colors"
+              >
+                <Settings className="w-4 h-4" strokeWidth={1.5} />
+                <span className="font-mono text-xs uppercase tracking-wider">用户中心</span>
+              </Link>
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  signOut({ callbackUrl: '/' });
+                }}
+                className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-500/10 transition-colors"
+              >
+                <LogOut className="w-4 h-4" strokeWidth={1.5} />
+                <span className="font-mono text-xs uppercase tracking-wider">退出登录</span>
+              </button>
+            </div>
           </div>
         )}
-      </button>
-
-      {/* 下拉菜单 */}
-      {isOpen && (
-        <div className="absolute right-0 mt-2 w-56 rounded-sm bg-tech-card border border-tech-border overflow-hidden z-50">
-          {/* 用户信息 */}
-          <div className="px-4 py-3 border-b border-tech-border">
-            <p className="text-sm font-medium text-white truncate">
-              {session.user?.name || '用户'}
-            </p>
-            <p className="text-xs text-zinc-500 font-mono truncate">
-              {session.user?.email}
-            </p>
-          </div>
-
-          {/* 菜单项 */}
-          <div className="py-1">
-            <Link
-              href="/user"
-              onClick={() => setIsOpen(false)}
-              className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-400 hover:bg-acid/10 hover:text-acid transition-colors"
-            >
-              <Settings className="w-4 h-4" strokeWidth={1.5} />
-              <span className="font-mono text-xs uppercase tracking-wider">用户中心</span>
-            </Link>
-            <button
-              onClick={() => {
-                setIsOpen(false);
-                signOut({ callbackUrl: '/' });
-              }}
-              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-500/10 transition-colors"
-            >
-              <LogOut className="w-4 h-4" strokeWidth={1.5} />
-              <span className="font-mono text-xs uppercase tracking-wider">退出登录</span>
-            </button>
-          </div>
-        </div>
-      )}
+      </div>
     </div>
   );
 }
