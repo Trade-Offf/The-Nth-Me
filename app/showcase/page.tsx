@@ -47,11 +47,19 @@ function getPrimaryTags(): string[] {
  * - 展开按钮只控制 Prompt 内容
  * - 去生成按钮跳转到上传页
  */
-function PromptCard({ prompt, index, localizedName, tagTranslations }: {
+function PromptCard({ prompt, index, localizedName, tagTranslations, showcaseT }: {
   prompt: PromptConfig;
   index: number;
   localizedName: string;
   tagTranslations: Record<string, string>;
+  showcaseT: {
+    signalStrength: string;
+    script: string;
+    collapse: string;
+    entangle: string;
+    copy: string;
+    copySuccess: string;
+  };
 }) {
   const router = useRouter();
   const [copied, setCopied] = useState(false);
@@ -119,7 +127,7 @@ function PromptCard({ prompt, index, localizedName, tagTranslations }: {
                        text-zinc-500 hover:text-acid hover:border-acid/50 transition-all duration-200"
           >
             <Sparkles className="w-4 h-4" strokeWidth={1.5} />
-            <span className="text-xs font-mono uppercase">{showPrompt ? '收起' : '时空剧本'}</span>
+            <span className="text-xs font-mono uppercase">{showPrompt ? showcaseT.collapse : showcaseT.script}</span>
             {showPrompt ? (
               <ChevronUp className="w-4 h-4" strokeWidth={1.5} />
             ) : (
@@ -137,7 +145,7 @@ function PromptCard({ prompt, index, localizedName, tagTranslations }: {
                        transition-all duration-200"
           >
             <Wand2 className="w-4 h-4" strokeWidth={1.5} />
-            <span>建立纠缠</span>
+            <span>{showcaseT.entangle}</span>
           </button>
         </div>
 
@@ -162,7 +170,7 @@ function PromptCard({ prompt, index, localizedName, tagTranslations }: {
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2 text-xs text-zinc-500 font-mono">
-                    <span>信号强度: {prompt.sampleStrength}</span>
+                    <span>{showcaseT.signalStrength}: {prompt.sampleStrength}</span>
                   </div>
                   <button
                     onClick={handleCopy}
@@ -172,12 +180,12 @@ function PromptCard({ prompt, index, localizedName, tagTranslations }: {
                     {copied ? (
                       <>
                         <Check className="w-3.5 h-3.5 text-acid" strokeWidth={1.5} />
-                        <span className="text-acid">已复制</span>
+                        <span className="text-acid">{showcaseT.copySuccess}</span>
                       </>
                     ) : (
                       <>
                         <Copy className="w-3.5 h-3.5 text-zinc-500" strokeWidth={1.5} />
-                        <span className="text-zinc-500">复制</span>
+                        <span className="text-zinc-500">{showcaseT.copy}</span>
                       </>
                     )}
                   </button>
@@ -304,6 +312,7 @@ export default function ShowcasePage() {
                 index={index}
                 localizedName={t.worldlines[prompt.id as keyof typeof t.worldlines]?.name ?? prompt.name}
                 tagTranslations={t.tags}
+                showcaseT={t.showcase}
               />
             ))}
           </AnimatePresence>

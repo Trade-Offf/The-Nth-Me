@@ -97,7 +97,9 @@ const enUS: Translations = {
     allTags: 'All',
     signalStrength: 'Signal Strength',
     script: 'Timeline Script',
+    collapse: 'Collapse',
     entangle: 'Establish Link',
+    copy: 'Copy',
     copySuccess: 'Copied',
   },
   pricing: {

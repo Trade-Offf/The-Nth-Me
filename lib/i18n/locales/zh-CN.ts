@@ -95,7 +95,9 @@ const zhCN = {
     allTags: '全部',
     signalStrength: '信号强度',
     script: '时空剧本',
+    collapse: '收起',
     entangle: '建立纠缠',
+    copy: '复制',
     copySuccess: '已复制',
   },
   pricing: {
