@@ -1,42 +1,26 @@
 'use client';
 
 /**
- * 充值页面 - Electric Green Tech Style
- * 展示三档充值方案，跳转爱发电支付
+ * 充值页面 - Steins;Gate x Cyberpunk 风格
+ * 量子观测终端 - 能源补给站
+ *
+ * 展示三档充值方案：微型奇点 / 超弦引擎 / 拉普拉斯妖
+ * 包含 Pro Model 访问权限标识
  */
 
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { motion } from 'framer-motion';
-import { Zap, Sparkles, Crown, Check } from 'lucide-react';
+import { Lock, Unlock, Flame } from 'lucide-react';
 import Navbar from '@/components/Navbar';
+import BinaryRain from '@/components/BinaryRain';
 import { useI18n } from '@/lib/i18n';
-
-const AFDIAN_URL = 'https://afdian.com/a/tradeofff';
-
-const planConfigs = [
-  { id: 'basic' as const, price: 19.9, credits: 200, icon: Zap },
-  { id: 'pro' as const, price: 39.9, credits: 550, popular: true, icon: Sparkles },
-  { id: 'ultra' as const, price: 99, credits: 1500, premium: true, icon: Crown },
-];
+import { PRICING_TIERS, AFDIAN_URL } from '@/lib/config/pricingTiers';
 
 export default function PricingPage() {
   const { data: session } = useSession();
   const { t } = useI18n();
   const [balance, setBalance] = useState<number | null>(null);
-
-  // 构建带 i18n 的价格方案
-  const pricingPlans = planConfigs.map((config) => {
-    const planT = t.pricing.plans[config.id];
-    return {
-      ...config,
-      name: planT.name,
-      nameEn: planT.nameEn,
-      tag: planT.tag,
-      features: planT.features,
-      savings: 'savings' in planT ? planT.savings : undefined,
-    };
-  });
 
   useEffect(() => {
     if (session?.user) {
@@ -53,6 +37,9 @@ export default function PricingPage() {
 
   return (
     <main className="min-h-screen bg-tech-bg text-white relative">
+      {/* 二进制雨背景 */}
+      <BinaryRain />
+
       {/* 网格背景 */}
       <div className="fixed inset-0 tech-grid-bg opacity-30" />
 
@@ -81,98 +68,139 @@ export default function PricingPage() {
           </div>
         </div>
 
-        {/* 价格卡片 */}
+        {/* 价格卡片 - Cyberpunk Style */}
         <div className="grid md:grid-cols-3 gap-6">
-          {pricingPlans.map((plan, index) => (
-            <motion.div
-              key={plan.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className={`relative rounded-sm p-6 bg-tech-card ${
-                plan.premium
-                  ? 'border-2 border-acid'
-                  : plan.popular
-                    ? 'border border-acid/50'
-                    : 'border border-tech-border'
-              }`}
-            >
-              {/* 角标装饰 */}
-              <span className="absolute -top-px -left-px text-zinc-700 text-[10px] font-mono select-none">[</span>
-              <span className="absolute -top-px -right-px text-zinc-700 text-[10px] font-mono select-none">]</span>
-              <span className="absolute -bottom-px -left-px text-zinc-700 text-[10px] font-mono select-none">[</span>
-              <span className="absolute -bottom-px -right-px text-zinc-700 text-[10px] font-mono select-none">]</span>
+          {PRICING_TIERS.map((tier, index) => {
+            const isUltimate = tier.id === 'ultimate';
+            const isAdvanced = tier.id === 'advanced';
+            const TierIcon = tier.icon;
+            const tierI18n = t.pricing.tiers[tier.id];
 
-              {/* 标签 */}
-              <div
-                className={`absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-sm text-[10px] font-mono uppercase tracking-wider ${
-                  plan.premium
-                    ? 'bg-acid text-black font-bold'
-                    : plan.popular
-                      ? 'bg-acid/20 text-acid border border-acid/50'
-                      : 'bg-tech-bg text-zinc-500 border border-tech-border'
-                }`}
+            return (
+              <motion.div
+                key={tier.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.15 }}
+                className={`
+                  relative rounded-sm p-6 bg-[#0A0A0A] backdrop-blur-sm
+                  border ${tier.glowColor}
+                  ${isUltimate ? 'ring-1 ring-yellow-500/20' : ''}
+                  transition-all duration-300 hover:scale-[1.02]
+                `}
               >
-                {plan.tag}
-              </div>
+                {/* 角标装饰 - Cyberpunk brackets */}
+                <span className="absolute -top-px -left-px text-zinc-700 text-[10px] font-mono select-none">[</span>
+                <span className="absolute -top-px -right-px text-zinc-700 text-[10px] font-mono select-none">]</span>
+                <span className="absolute -bottom-px -left-px text-zinc-700 text-[10px] font-mono select-none">[</span>
+                <span className="absolute -bottom-px -right-px text-zinc-700 text-[10px] font-mono select-none">]</span>
 
-              {/* 图标 */}
-              <div
-                className={`w-10 h-10 rounded-sm flex items-center justify-center mb-4 mt-4 ${
-                  plan.premium ? 'bg-acid' : 'bg-tech-bg border border-tech-border'
-                }`}
-              >
-                <plan.icon className={`w-5 h-5 ${plan.premium ? 'text-black' : 'text-acid'}`} strokeWidth={1.5} />
-              </div>
+                {/* 推荐/终极标签 */}
+                {(tier.isRecommended || isUltimate) && (
+                  <div
+                    className={`absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-sm text-[10px] font-mono uppercase tracking-wider
+                      ${isUltimate
+                        ? 'bg-yellow-500 text-black font-bold shadow-[0_0_10px_rgba(234,179,8,0.5)]'
+                        : 'bg-green-500/20 text-green-400 border border-green-500/50'
+                      }
+                    `}
+                  >
+                    {isUltimate ? t.pricing.laplaceCore : t.pricing.recommended}
+                  </div>
+                )}
 
-              {/* 名称 */}
-              <h3 className={`text-lg font-bold mb-1 ${plan.premium ? 'text-acid' : 'text-white'}`}>
-                {plan.name}
-              </h3>
-              <p className="text-xs font-mono text-zinc-600 mb-4">{plan.nameEn}</p>
+                {/* 图标 */}
+                <div
+                  className={`w-12 h-12 rounded-sm flex items-center justify-center mb-4 mt-4
+                    ${isUltimate
+                      ? 'bg-yellow-500/20 border border-yellow-500/50'
+                      : isAdvanced
+                        ? 'bg-green-500/10 border border-green-500/30'
+                        : 'bg-tech-bg border border-tech-border'
+                    }
+                  `}
+                >
+                  <TierIcon
+                    className={`w-6 h-6 ${
+                      isUltimate ? 'text-yellow-400' : isAdvanced ? 'text-green-400' : 'text-zinc-500'
+                    }`}
+                    strokeWidth={1.5}
+                  />
+                </div>
 
-              {/* 价格 */}
-              <div className="mb-6">
-                <span className={`text-3xl font-mono font-bold ${plan.premium ? 'text-acid' : 'text-white'}`}>
-                  ¥{plan.price}
-                </span>
-                <span className="ml-2 text-zinc-500 font-mono text-sm">/ {plan.credits} ⚡️</span>
-              </div>
+                {/* 名称 */}
+                <h3 className={`text-xl font-bold mb-1 ${
+                  isUltimate ? 'text-yellow-400' : isAdvanced ? 'text-green-400' : 'text-white'
+                }`}>
+                  {tierI18n.name}
+                </h3>
+                <p className="text-xs font-mono text-zinc-600 mb-1">{tierI18n.subName}</p>
 
-              {/* 省钱提示 */}
-              {plan.savings && (
-                <p className="text-xs font-mono text-acid mb-4">
-                  ✨ {plan.savings}
-                </p>
-              )}
+                {/* Pro 权限标识 */}
+                <div className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-sm text-[10px] font-mono mb-4
+                  ${tier.isPro
+                    ? 'bg-green-500/10 text-green-400 border border-green-500/30'
+                    : 'bg-zinc-800/50 text-zinc-600 border border-zinc-700/50'
+                  }
+                `}>
+                  {tier.isPro ? (
+                    <>
+                      <Unlock className="w-3 h-3" strokeWidth={2} />
+                      <span>PRO ACCESS</span>
+                    </>
+                  ) : (
+                    <>
+                      <Lock className="w-3 h-3" strokeWidth={2} />
+                      <span>STANDARD</span>
+                    </>
+                  )}
+                </div>
 
-              {/* 特性列表 */}
-              <ul className="space-y-3 mb-6">
-                {plan.features.map((feature, i) => (
-                  <li key={i} className="flex items-center gap-2 text-sm text-zinc-400">
-                    <Check className="w-4 h-4 flex-shrink-0 text-acid" strokeWidth={1.5} />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
+                {/* 价格 */}
+                <div className="mb-6">
+                  <span className={`text-3xl font-mono font-bold ${
+                    isUltimate ? 'text-yellow-400' : 'text-white'
+                  }`}>
+                    ¥{tier.price}
+                  </span>
+                  <span className="ml-2 text-zinc-500 font-mono text-sm">/ {tier.credits} ⚡️</span>
+                </div>
 
-              {/* 购买按钮 */}
-              <a
-                href={AFDIAN_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`block w-full py-3 rounded-sm text-center font-mono text-sm uppercase tracking-wider font-medium transition-all ${
-                  plan.premium
-                    ? 'bg-acid text-black border-2 border-acid hover:bg-transparent hover:text-acid'
-                    : plan.popular
-                      ? 'bg-acid/20 text-acid border border-acid/50 hover:bg-acid hover:text-black'
-                      : 'bg-transparent text-zinc-400 border border-tech-border hover:border-acid hover:text-acid'
-                }`}
-              >
-                {plan.premium ? t.pricing.rechargeNow : t.pricing.rechargeBtn}
-              </a>
-            </motion.div>
-          ))}
+                {/* 特性列表 */}
+                <ul className="space-y-2.5 mb-6">
+                  {tierI18n.features.map((feature, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm text-zinc-400 font-mono">
+                      <span className="text-zinc-600 mt-0.5">›</span>
+                      <span className={feature.includes('Pro') || feature.includes('🔥') ? 'text-green-400' : ''}>
+                        {feature}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* 购买按钮 */}
+                <a
+                  href={AFDIAN_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`
+                    group flex items-center justify-center gap-2
+                    w-full py-3 rounded-sm text-center font-mono text-sm uppercase tracking-wider font-medium
+                    transition-all duration-300
+                    ${isUltimate
+                      ? 'bg-yellow-500 text-black border-2 border-yellow-500 hover:bg-transparent hover:text-yellow-400'
+                      : isAdvanced
+                        ? 'bg-green-500/20 text-green-400 border border-green-500/50 hover:bg-green-500 hover:text-black'
+                        : 'bg-transparent text-zinc-400 border border-tech-border hover:border-green-500/50 hover:text-green-400'
+                    }
+                  `}
+                >
+                  {isUltimate && <Flame className="w-4 h-4" strokeWidth={2} />}
+                  <span>{isUltimate ? t.pricing.activateNow : t.pricing.rechargeBtn}</span>
+                </a>
+              </motion.div>
+            );
+          })}
         </div>
 
         {/* 说明 */}

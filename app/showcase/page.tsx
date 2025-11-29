@@ -1,9 +1,8 @@
 'use client';
 
-import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import Image from 'next/image';
 import {
   ChevronLeft,
   ChevronRight,
@@ -18,10 +17,11 @@ import {
 import { useRouter } from 'next/navigation';
 import TechCard from '@/components/TechCard';
 import Navbar from '@/components/Navbar';
+import BinaryRain from '@/components/BinaryRain';
+import ImageCompareSlider from '@/components/ImageCompareSlider';
 import { useI18n } from '@/lib/i18n';
 import {
   prompts,
-  getAllTags,
   buildFullPrompt,
   type PromptConfig,
 } from '@/lib/prompts';
@@ -29,127 +29,16 @@ import {
 const ITEMS_PER_PAGE = 6;
 
 /**
- * 滑动对比器组件
- * 支持鼠标离开容器后继续拖动（只要不松开鼠标）
+ * 获取所有唯一的主分类 Tags（每个 prompt 的第一个 tag）
  */
-function ImageCompareSlider({ promptId }: { promptId: string }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [sliderPosition, setSliderPosition] = useState(50);
-  const [isDragging, setIsDragging] = useState(false);
-
-  const beforeSrc = `/showcase/${promptId}/before.png`;
-  const afterSrc = `/showcase/${promptId}/after.png`;
-
-  // 计算滑块位置
-  const updatePosition = useCallback((clientX: number) => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const x = clientX - rect.left;
-    const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
-    setSliderPosition(percentage);
-  }, []);
-
-  // 鼠标按下开始拖动
-  const handleMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-    updatePosition(e.clientX);
-  };
-
-  // 触摸开始
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setIsDragging(true);
-    updatePosition(e.touches[0].clientX);
-  };
-
-  // 全局鼠标事件监听（解决鼠标离开容器后拖动丢失的问题）
-  useEffect(() => {
-    if (!isDragging) return;
-
-    const handleMouseMove = (e: MouseEvent) => {
-      updatePosition(e.clientX);
-    };
-
-    const handleMouseUp = () => {
-      setIsDragging(false);
-    };
-
-    // 在 document 级别监听，这样鼠标移出容器也能继续拖动
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isDragging, updatePosition]);
-
-  // 触摸移动
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (isDragging) {
-      updatePosition(e.touches[0].clientX);
+function getPrimaryTags(): string[] {
+  const tagSet = new Set<string>();
+  prompts.forEach((p) => {
+    if (p.tags.length > 0) {
+      tagSet.add(p.tags[0]);
     }
-  };
-
-  return (
-    <div
-      ref={containerRef}
-      className="relative w-full aspect-square rounded-sm overflow-hidden cursor-ew-resize select-none border border-tech-border"
-      onMouseDown={handleMouseDown}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={() => setIsDragging(false)}
-    >
-      {/* After 图片（底层） */}
-      <div className="absolute inset-0">
-        <Image
-          src={afterSrc}
-          alt="After"
-          fill
-          className="object-cover"
-          draggable={false}
-        />
-        <div className="absolute bottom-2 right-2 px-2 py-1 rounded-sm bg-black/70 text-[10px] text-acid font-mono uppercase">
-          After
-        </div>
-      </div>
-
-      {/* Before 图片（裁剪层） */}
-      <div
-        className="absolute inset-0 overflow-hidden"
-        style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
-      >
-        <Image
-          src={beforeSrc}
-          alt="Before"
-          fill
-          className="object-cover"
-          draggable={false}
-        />
-        <div className="absolute bottom-2 left-2 px-2 py-1 rounded-sm bg-black/70 text-[10px] text-zinc-400 font-mono uppercase">
-          Before
-        </div>
-      </div>
-
-      {/* 滑动条 */}
-      <div
-        className="absolute top-0 bottom-0 w-0.5 bg-acid z-10 pointer-events-none"
-        style={{ left: `${sliderPosition}%`, transform: 'translateX(-50%)' }}
-      >
-        {/* 滑块手柄 */}
-        <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-                     w-8 h-8 rounded-sm bg-tech-card border border-acid
-                     flex items-center justify-center"
-        >
-          <div className="flex gap-0">
-            <ChevronLeft className="w-3 h-3 text-acid" strokeWidth={1.5} />
-            <ChevronRight className="w-3 h-3 text-acid" strokeWidth={1.5} />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  });
+  return Array.from(tagSet);
 }
 
 /**
@@ -158,7 +47,12 @@ function ImageCompareSlider({ promptId }: { promptId: string }) {
  * - 展开按钮只控制 Prompt 内容
  * - 去生成按钮跳转到上传页
  */
-function PromptCard({ prompt, index }: { prompt: PromptConfig; index: number }) {
+function PromptCard({ prompt, index, localizedName, tagTranslations }: {
+  prompt: PromptConfig;
+  index: number;
+  localizedName: string;
+  tagTranslations: Record<string, string>;
+}) {
   const router = useRouter();
   const [copied, setCopied] = useState(false);
   const [showPrompt, setShowPrompt] = useState(false);
@@ -194,14 +88,18 @@ function PromptCard({ prompt, index }: { prompt: PromptConfig; index: number }) 
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex-1 min-w-0">
-            <h3 className="text-base font-mono font-medium text-white truncate">{prompt.name}</h3>
+            <h3 className="text-base font-mono font-medium text-white truncate">{localizedName}</h3>
             <div className="flex flex-wrap gap-1 mt-2">
-              {prompt.tags.map((tag) => (
+              {prompt.tags.map((tag, tagIndex) => (
                 <span
                   key={tag}
-                  className="px-2 py-0.5 rounded-sm text-[10px] font-mono uppercase tracking-wider bg-acid/10 text-acid border border-acid/30"
+                  className={`px-2 py-0.5 rounded-sm text-[10px] font-mono uppercase tracking-wider ${
+                    tagIndex === 0
+                      ? 'bg-acid/10 text-acid border border-acid/30'
+                      : 'bg-zinc-800/50 text-zinc-500 border border-zinc-700/50'
+                  }`}
                 >
-                  {tag}
+                  {tagTranslations[tag] ?? tag}
                 </span>
               ))}
             </div>
@@ -209,7 +107,7 @@ function PromptCard({ prompt, index }: { prompt: PromptConfig; index: number }) 
         </div>
 
         {/* 图片对比器 - 始终显示 */}
-        <ImageCompareSlider promptId={prompt.id} />
+        <ImageCompareSlider worldlineId={prompt.id} variant="full" />
 
         {/* 按钮组 */}
         <div className="mt-4 flex gap-3">
@@ -301,12 +199,13 @@ export default function ShowcasePage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
 
-  const allTags = useMemo(() => getAllTags(), []);
+  // 只获取主分类 Tags（每个 prompt 的第一个 tag，去重）
+  const primaryTags = useMemo(() => getPrimaryTags(), []);
 
-  // 过滤后的 prompts
+  // 过滤后的 prompts - 只按主分类（第一个 tag）筛选
   const filteredPrompts = useMemo(() => {
     if (!selectedTag) return prompts;
-    return prompts.filter((p) => p.tags.includes(selectedTag));
+    return prompts.filter((p) => p.tags[0] === selectedTag);
   }, [selectedTag]);
 
   // 分页
@@ -324,6 +223,9 @@ export default function ShowcasePage() {
 
   return (
     <main className="min-h-screen bg-tech-bg relative">
+      {/* 二进制雨背景 */}
+      <BinaryRain />
+
       {/* 网格背景 */}
       <div className="fixed inset-0 tech-grid-bg opacity-30" />
 
@@ -376,7 +278,7 @@ export default function ShowcasePage() {
             >
               {t.showcase.allTags}
             </button>
-            {allTags.map((tag) => (
+            {primaryTags.map((tag) => (
               <button
                 key={tag}
                 onClick={() => handleTagSelect(tag)}
@@ -386,7 +288,7 @@ export default function ShowcasePage() {
                     : 'bg-transparent text-zinc-500 border border-tech-border hover:border-acid/50 hover:text-acid'
                 }`}
               >
-                {tag}
+                {t.tags[tag as keyof typeof t.tags] ?? tag}
               </button>
             ))}
           </div>
@@ -396,7 +298,13 @@ export default function ShowcasePage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           <AnimatePresence mode="popLayout">
             {paginatedPrompts.map((prompt, index) => (
-              <PromptCard key={prompt.id} prompt={prompt} index={index} />
+              <PromptCard
+                key={prompt.id}
+                prompt={prompt}
+                index={index}
+                localizedName={t.worldlines[prompt.id as keyof typeof t.worldlines]?.name ?? prompt.name}
+                tagTranslations={t.tags}
+              />
             ))}
           </AnimatePresence>
         </div>

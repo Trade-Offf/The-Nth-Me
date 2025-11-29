@@ -1,17 +1,22 @@
 'use client';
 
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Upload, ArrowRight, ArrowLeft, X, RefreshCw, ChevronLeft, ChevronRight, AlertCircle, Square, Smartphone, Monitor, LogIn } from 'lucide-react';
+import { Upload, ArrowRight, X, RefreshCw, AlertCircle, Square, Smartphone, Monitor, LogIn, Lock, Flame, Zap } from 'lucide-react';
 import TechCard from '@/components/TechCard';
 import Navbar from '@/components/Navbar';
+import ImageCompareSlider from '@/components/ImageCompareSlider';
 import { useI18n } from '@/lib/i18n';
 import { worldlines } from '@/lib/worldlines';
 import { Worldline, ImageAspectRatio } from '@/lib/types';
+
+// TODO: 后续从用户数据中读取 Pro 状态
+// 暂时设置为 false，所有用户都是非 Pro 用户
+const USER_HAS_PRO_ACCESS = false;
 
 // 图片尺寸选项配置
 const IMAGE_SIZE_OPTIONS: { value: ImageAspectRatio; label: string; icon: React.ReactNode; description: string }[] = [
@@ -20,75 +25,90 @@ const IMAGE_SIZE_OPTIONS: { value: ImageAspectRatio; label: string; icon: React.
   { value: '16:9', label: '16:9', icon: <Monitor className="w-4 h-4" strokeWidth={1.5} />, description: '适合桌面壁纸、封面' },
 ];
 
+
+
 /**
- * 迷你图片对比滑动器（用于风格预览）
+ * 世界线选择卡片
+ * 显示 Pro 徽章和锁定状态
  */
-function MiniCompareSlider({ worldlineId }: { worldlineId: string }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [sliderPosition, setSliderPosition] = useState(50);
-  const [isDragging, setIsDragging] = useState(false);
-
-  const beforeSrc = `/showcase/${worldlineId}/before.png`;
-  const afterSrc = `/showcase/${worldlineId}/after.png`;
-
-  const updatePosition = useCallback((clientX: number) => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const x = clientX - rect.left;
-    const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
-    setSliderPosition(percentage);
-  }, []);
-
-  const handleMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-    updatePosition(e.clientX);
-  };
-
-  useEffect(() => {
-    if (!isDragging) return;
-
-    const handleMouseMove = (e: MouseEvent) => updatePosition(e.clientX);
-    const handleMouseUp = () => setIsDragging(false);
-
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isDragging, updatePosition]);
+function WorldlineSelectCard({
+  worldline,
+  isSelected,
+  onSelect,
+  hasProAccess,
+  localizedName,
+}: {
+  worldline: Worldline;
+  isSelected: boolean;
+  onSelect: () => void;
+  hasProAccess: boolean;
+  localizedName: string;
+}) {
+  const isPro = worldline.isPro ?? false;
+  const isLocked = isPro && !hasProAccess;
 
   return (
-    <div
-      ref={containerRef}
-      className="relative w-full aspect-square rounded-sm overflow-hidden cursor-ew-resize select-none border border-tech-border"
-      onMouseDown={handleMouseDown}
-      onTouchStart={(e) => { setIsDragging(true); updatePosition(e.touches[0].clientX); }}
-      onTouchMove={(e) => isDragging && updatePosition(e.touches[0].clientX)}
-      onTouchEnd={() => setIsDragging(false)}
+    <button
+      onClick={() => {
+        if (!isLocked) {
+          onSelect();
+        }
+      }}
+      disabled={isLocked}
+      className={`
+        relative p-2 rounded-sm border transition-all group
+        ${isSelected
+          ? 'border-acid bg-acid/10'
+          : isLocked
+            ? 'border-zinc-800 bg-zinc-900/50 cursor-not-allowed opacity-60'
+            : 'border-tech-border bg-transparent hover:border-acid/50 hover:bg-acid/5'
+        }
+      `}
     >
-      <div className="absolute inset-0">
-        <Image src={afterSrc} alt="After" fill className="object-cover" draggable={false} />
-        <div className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded-sm bg-black/70 text-[10px] text-acid font-mono uppercase">After</div>
-      </div>
-      <div className="absolute inset-0 overflow-hidden" style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}>
-        <Image src={beforeSrc} alt="Before" fill className="object-cover" draggable={false} />
-        <div className="absolute bottom-1 left-1 px-1.5 py-0.5 rounded-sm bg-black/70 text-[10px] text-zinc-400 font-mono uppercase">Before</div>
-      </div>
-      <div
-        className="absolute top-0 bottom-0 w-0.5 bg-acid z-10 pointer-events-none"
-        style={{ left: `${sliderPosition}%`, transform: 'translateX(-50%)' }}
-      >
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-sm bg-tech-card border border-acid flex items-center justify-center">
-          <div className="flex gap-0">
-            <ChevronLeft className="w-3 h-3 text-acid" strokeWidth={1.5} />
-            <ChevronRight className="w-3 h-3 text-acid" strokeWidth={1.5} />
-          </div>
+      {/* Pro 徽章 */}
+      {isPro && (
+        <div className={`
+          absolute -top-1.5 -right-1.5 z-10 px-1.5 py-0.5 rounded-sm
+          text-[8px] font-mono font-bold uppercase tracking-wider
+          ${isLocked
+            ? 'bg-zinc-700 text-zinc-400'
+            : 'bg-green-500 text-black shadow-[0_0_8px_rgba(34,197,94,0.5)]'
+          }
+        `}>
+          {isLocked ? (
+            <Lock className="w-2.5 h-2.5 inline" strokeWidth={2.5} />
+          ) : (
+            <>
+              <Flame className="w-2.5 h-2.5 inline mr-0.5" strokeWidth={2.5} />
+              PRO
+            </>
+          )}
         </div>
+      )}
+
+      {/* 缩略图 */}
+      <div className="w-full aspect-square rounded-sm overflow-hidden mb-1.5 relative">
+        <Image
+          src={`/showcase/${worldline.id}/after.png`}
+          alt={localizedName}
+          fill
+          className={`object-cover transition-all ${isLocked ? 'grayscale' : ''}`}
+        />
+        {/* 锁定遮罩 */}
+        {isLocked && (
+          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+            <Lock className="w-5 h-5 text-zinc-500" strokeWidth={1.5} />
+          </div>
+        )}
       </div>
-    </div>
+
+      {/* 名称 */}
+      <span className={`text-[10px] font-mono line-clamp-1 ${
+        isSelected ? 'text-acid' : isLocked ? 'text-zinc-600' : 'text-zinc-500'
+      }`}>
+        {localizedName}
+      </span>
+    </button>
   );
 }
 
@@ -424,40 +444,56 @@ export default function PortalPage() {
                     <div className="flex items-center gap-3 mb-3">
                       <div className="w-2 h-2 rounded-full bg-acid animate-pulse" />
                       <span className="text-xs text-zinc-500 font-mono uppercase">{t.portal.lockedSector}</span>
+                      {/* Pro 徽章 */}
+                      {currentWorldline.isPro && (
+                        <span className="px-2 py-0.5 rounded-sm bg-green-500/20 text-green-400 text-[10px] font-mono font-bold uppercase border border-green-500/30">
+                          <Flame className="w-3 h-3 inline mr-1" strokeWidth={2} />
+                          PRO
+                        </span>
+                      )}
                     </div>
-                    <div className="p-4 rounded-sm bg-acid/5 border border-acid/30">
-                      <h3 className="text-base font-mono font-medium text-white mb-1">{currentWorldline.name}</h3>
-                      <p className="text-xs text-zinc-500 mb-3">{currentWorldline.description}</p>
+                    <div className={`p-4 rounded-sm ${
+                      currentWorldline.isPro
+                        ? 'bg-green-500/5 border border-green-500/30'
+                        : 'bg-acid/5 border border-acid/30'
+                    }`}>
+                      <h3 className="text-base font-mono font-medium text-white mb-1">
+                        {t.worldlines[currentWorldline.id as keyof typeof t.worldlines]?.name ?? currentWorldline.name}
+                      </h3>
+                      <p className="text-xs text-zinc-500 mb-3">
+                        {t.worldlines[currentWorldline.id as keyof typeof t.worldlines]?.description ?? currentWorldline.description}
+                      </p>
                       {/* 迷你对比滑动器 */}
-                      <MiniCompareSlider worldlineId={currentWorldline.id} />
+                      <ImageCompareSlider worldlineId={currentWorldline.id} variant="mini" />
                     </div>
                   </div>
 
                   {/* 切换其他风格 */}
                   <div className="mt-auto">
-                    <p className="text-xs text-zinc-600 mb-3 font-mono uppercase">切换其他扇区:</p>
+                    <div className="flex items-center gap-2 mb-3">
+                      <p className="text-xs text-zinc-600 font-mono uppercase">{t.portal.switchSector}:</p>
+                      {!USER_HAS_PRO_ACCESS && (
+                        <Link
+                          href="/pricing"
+                          className="text-[10px] text-green-400 font-mono hover:underline"
+                        >
+                          🔓 {t.portal.unlockPro}
+                        </Link>
+                      )}
+                    </div>
                     <div className="grid grid-cols-3 gap-2">
                       {worldlines.filter(w => w.id !== selectedWorldline).map((wl) => (
-                        <button
+                        <WorldlineSelectCard
                           key={wl.id}
-                          onClick={() => {
+                          worldline={wl}
+                          isSelected={false}
+                          hasProAccess={USER_HAS_PRO_ACCESS}
+                          localizedName={t.worldlines[wl.id as keyof typeof t.worldlines]?.name ?? wl.name}
+                          onSelect={() => {
                             setSelectedWorldline(wl.id);
                             sessionStorage.setItem('selectedWorldline', wl.id);
                           }}
-                          className="p-2 rounded-sm border border-tech-border bg-transparent
-                                   hover:border-acid/50 hover:bg-acid/5 transition-all
-                                   text-center"
-                        >
-                          <div className="w-full aspect-square rounded-sm overflow-hidden mb-1.5 relative">
-                            <Image
-                              src={`/showcase/${wl.id}/after.png`}
-                              alt={wl.name}
-                              fill
-                              className="object-cover"
-                            />
-                          </div>
-                          <span className="text-[10px] text-zinc-500 font-mono line-clamp-1">{wl.name}</span>
-                        </button>
+                        />
                       ))}
                     </div>
                   </div>
@@ -465,41 +501,44 @@ export default function PortalPage() {
               ) : (
                 <div className="flex-1 flex flex-col items-center justify-center text-center py-8">
                   <div className="w-14 h-14 rounded-sm bg-tech-bg border border-tech-border flex items-center justify-center mb-4">
-                    <RefreshCw className="w-6 h-6 text-zinc-600" strokeWidth={1.5} />
+                    <Zap className="w-6 h-6 text-zinc-600" strokeWidth={1.5} />
                   </div>
-                  <p className="text-zinc-500 mb-4 font-mono text-sm">尚未锁定扇区</p>
+                  <p className="text-zinc-500 mb-4 font-mono text-sm">{t.portal.noSectorLocked}</p>
                   <Link
                     href="/showcase"
                     className="px-4 py-2 rounded-sm border border-acid/50 text-acid hover:bg-acid hover:text-black
                              transition-all text-xs font-mono uppercase"
                   >
-                    浏览全部时空坐标 →
+                    {t.portal.browseAllSectors} →
                   </Link>
 
                   {/* 快速选择 */}
                   <div className="mt-6 w-full">
-                    <p className="text-xs text-zinc-600 mb-3 font-mono uppercase">快速选择:</p>
+                    <div className="flex items-center justify-between mb-3">
+                      <p className="text-xs text-zinc-600 font-mono uppercase">{t.portal.quickSelect}:</p>
+                      {!USER_HAS_PRO_ACCESS && (
+                        <Link
+                          href="/pricing"
+                          className="flex items-center gap-1 text-[10px] text-green-400 font-mono hover:underline"
+                        >
+                          <Lock className="w-3 h-3" strokeWidth={2} />
+                          {t.portal.unlockProModel}
+                        </Link>
+                      )}
+                    </div>
                     <div className="grid grid-cols-3 gap-2">
                       {worldlines.map((wl) => (
-                        <button
+                        <WorldlineSelectCard
                           key={wl.id}
-                          onClick={() => {
+                          worldline={wl}
+                          isSelected={selectedWorldline === wl.id}
+                          hasProAccess={USER_HAS_PRO_ACCESS}
+                          localizedName={t.worldlines[wl.id as keyof typeof t.worldlines]?.name ?? wl.name}
+                          onSelect={() => {
                             setSelectedWorldline(wl.id);
                             sessionStorage.setItem('selectedWorldline', wl.id);
                           }}
-                          className="p-2 rounded-sm border border-tech-border bg-transparent
-                                   hover:border-acid/50 hover:bg-acid/5 transition-all"
-                        >
-                          <div className="w-full aspect-square rounded-sm overflow-hidden mb-1.5 relative">
-                            <Image
-                              src={`/showcase/${wl.id}/after.png`}
-                              alt={wl.name}
-                              fill
-                              className="object-cover"
-                            />
-                          </div>
-                          <span className="text-[10px] text-zinc-500 font-mono line-clamp-1">{wl.name}</span>
-                        </button>
+                        />
                       ))}
                     </div>
                   </div>

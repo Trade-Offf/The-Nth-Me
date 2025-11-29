@@ -1,7 +1,8 @@
 'use client';
 
+import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { Globe, Terminal } from 'lucide-react';
+import { Globe, Terminal, ChevronDown, Check } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import UserMenu from './UserMenu';
 
@@ -15,7 +16,22 @@ const navbarItems = ['portal', 'prompts', 'pricing'] as const;
 type NavbarKey = (typeof navbarItems)[number];
 
 export default function Navbar() {
-  const { lang, setLang, t } = useI18n();
+  const { lang, setLang, t, supportedLangs } = useI18n();
+  const [isLangOpen, setIsLangOpen] = useState(false);
+  const langMenuRef = useRef<HTMLDivElement>(null);
+
+  // 点击外部关闭下拉菜单
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (langMenuRef.current && !langMenuRef.current.contains(e.target as Node)) {
+        setIsLangOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const currentLang = supportedLangs.find((l) => l.code === lang);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-tech-bg/95 border-b border-tech-border backdrop-blur-sm">
@@ -53,13 +69,46 @@ export default function Navbar() {
           </nav>
 
           <div className="flex items-center space-x-1">
-            <button
-              onClick={() => setLang(lang === 'zh-CN' ? 'en-US' : 'zh-CN')}
-              className="p-2 text-zinc-500 hover:text-acid hover:bg-acid/10 rounded-sm transition-colors"
-              aria-label="Language"
-            >
-              <Globe className="w-4 h-4" strokeWidth={1.5} />
-            </button>
+            {/* 语言切换下拉菜单 */}
+            <div className="relative" ref={langMenuRef}>
+              <button
+                onClick={() => setIsLangOpen(!isLangOpen)}
+                className="flex items-center gap-1.5 px-2 py-1.5 text-zinc-500 hover:text-acid hover:bg-acid/10 rounded-sm transition-colors"
+                aria-label="Language"
+              >
+                <Globe className="w-4 h-4" strokeWidth={1.5} />
+                <span className="text-xs font-mono uppercase tracking-wider hidden sm:inline">{currentLang?.code.split('-')[0]}</span>
+                <ChevronDown className={`w-3 h-3 transition-transform ${isLangOpen ? 'rotate-180' : ''}`} strokeWidth={2} />
+              </button>
+
+              {/* 下拉菜单 */}
+              {isLangOpen && (
+                <div className="absolute right-0 top-full mt-1 py-1 min-w-[120px] bg-tech-card border border-tech-border rounded-sm shadow-xl z-50">
+                  {supportedLangs.map((langOption) => (
+                    <button
+                      key={langOption.code}
+                      onClick={() => {
+                        setLang(langOption.code);
+                        setIsLangOpen(false);
+                      }}
+                      className={`
+                        w-full flex items-center justify-between gap-2 px-3 py-2
+                        font-mono text-xs transition-colors
+                        ${lang === langOption.code
+                          ? 'text-acid bg-acid/10'
+                          : 'text-zinc-400 hover:text-white hover:bg-white/5'
+                        }
+                      `}
+                    >
+                      <span>{langOption.name}</span>
+                      {lang === langOption.code && (
+                        <Check className="w-3 h-3 text-acid" strokeWidth={2} />
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
 
             {/* 分隔线 */}
             <div className="w-px h-6 bg-tech-border mx-2" />

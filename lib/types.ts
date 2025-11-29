@@ -6,6 +6,7 @@ export interface Worldline {
   imageUrl: string;
   prompt: string;           // Flux Kontext Prompt
   sampleStrength?: number;  // 0-1，风格强度，默认 0.7
+  isPro?: boolean;          // 是否为 Pro 专属模型，需要高级权限才能使用
 }
 
 export interface GenerationResult {

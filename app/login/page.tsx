@@ -13,6 +13,7 @@ import { motion } from 'framer-motion';
 import { Mail, Lock, User, ArrowRight, Loader2 } from 'lucide-react';
 import TechCard from '@/components/TechCard';
 import Navbar from '@/components/Navbar';
+import BinaryRain from '@/components/BinaryRain';
 import { useI18n } from '@/lib/i18n';
 
 type AuthMode = 'login' | 'register';
@@ -107,6 +108,9 @@ function LoginForm() {
 
   return (
     <main className="min-h-screen bg-tech-bg relative">
+      {/* 二进制雨背景 */}
+      <BinaryRain />
+
       {/* 网格背景 */}
       <div className="fixed inset-0 tech-grid-bg opacity-30" />
 

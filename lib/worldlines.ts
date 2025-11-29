@@ -4,6 +4,10 @@ import { prompts, buildFullPrompt } from './prompts';
 /**
  * 世界线配置
  * prompt 相关配置从 lib/prompts.ts 引用
+ *
+ * isPro 标记：
+ * - false/undefined: 标准时间线，所有用户可用
+ * - true: Pro 专属时间线，需要购买「超弦引擎」或更高档位才能访问
  */
 export const worldlines: Worldline[] = [
   {
@@ -14,6 +18,7 @@ export const worldlines: Worldline[] = [
     imageUrl: '/prompt_cover/01_高级摄影棚.png',
     prompt: buildFullPrompt(prompts.find((p) => p.id === 'studio-portrait')!),
     sampleStrength: prompts.find((p) => p.id === 'studio-portrait')?.sampleStrength || 0.75,
+    isPro: false, // 标准时间线
   },
   {
     id: 'tech-startup',
@@ -23,6 +28,7 @@ export const worldlines: Worldline[] = [
     imageUrl: '/prompt_cover/02_科技创业风.png',
     prompt: buildFullPrompt(prompts.find((p) => p.id === 'tech-startup')!),
     sampleStrength: prompts.find((p) => p.id === 'tech-startup')?.sampleStrength || 1.0,
+    isPro: false, // 标准时间线
   },
   {
     id: 'collectible-figure',
@@ -32,6 +38,7 @@ export const worldlines: Worldline[] = [
     imageUrl: '/prompt_cover/03_人偶手办.png',
     prompt: buildFullPrompt(prompts.find((p) => p.id === 'collectible-figure')!),
     sampleStrength: prompts.find((p) => p.id === 'collectible-figure')?.sampleStrength || 1.0,
+    isPro: false, // 标准时间线
   },
   {
     id: 'federal-diplomat',
@@ -41,6 +48,7 @@ export const worldlines: Worldline[] = [
     imageUrl: '/prompt_cover/04_联邦特使.png',
     prompt: buildFullPrompt(prompts.find((p) => p.id === 'federal-diplomat')!),
     sampleStrength: prompts.find((p) => p.id === 'federal-diplomat')?.sampleStrength || 1.0,
+    isPro: false, // 标准时间线
   },
   {
     id: 'puzzle-deconstruction',
@@ -50,6 +58,7 @@ export const worldlines: Worldline[] = [
     imageUrl: '/prompt_cover/05_解构协议.png',
     prompt: buildFullPrompt(prompts.find((p) => p.id === 'puzzle-deconstruction')!),
     sampleStrength: prompts.find((p) => p.id === 'puzzle-deconstruction')?.sampleStrength || 1.0,
+    isPro: false, // 标准时间线
   },
   {
     id: 'reverse-engineering',
@@ -59,5 +68,16 @@ export const worldlines: Worldline[] = [
     imageUrl: '/prompt_cover/06_逆向工程.png',
     prompt: buildFullPrompt(prompts.find((p) => p.id === 'reverse-engineering')!),
     sampleStrength: prompts.find((p) => p.id === 'reverse-engineering')?.sampleStrength || 0.8,
+    isPro: true, // 🔥 Pro 专属时间线
   },
 ];
+
+/**
+ * 获取标准时间线（非 Pro）
+ */
+export const getStandardWorldlines = () => worldlines.filter(w => !w.isPro);
+
+/**
+ * 获取 Pro 专属时间线
+ */
+export const getProWorldlines = () => worldlines.filter(w => w.isPro);

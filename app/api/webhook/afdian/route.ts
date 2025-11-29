@@ -9,11 +9,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { addCredits } from '@/lib/services/creditService';
 
-// 充值档位配置
+// 充值档位配置（金额需与爱发电后台一致）
 const PRICING_PLANS: Record<string, { name: string; credits: number }> = {
-  '19.90': { name: '基础版 (Basic)', credits: 200 },
-  '39.90': { name: '进阶版 (Pro)', credits: 550 },
-  '99.00': { name: '终极版 (Ultra)', credits: 1500 },
+  '19.90': { name: '微型奇点 (Basic)', credits: 200 },
+  '39.90': { name: '超弦引擎 (Pro)', credits: 550 },
+  '99.90': { name: '拉普拉斯妖 (Ultra)', credits: 1500 },
 };
 
 // 爱发电 Webhook 数据结构
