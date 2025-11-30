@@ -2,7 +2,8 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { Globe, Terminal, ChevronDown, Check } from 'lucide-react';
+import Image from 'next/image';
+import { Globe, ChevronDown, Check } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import UserMenu from './UserMenu';
 
@@ -36,19 +37,16 @@ export default function Navbar() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-tech-bg/95 border-b border-tech-border backdrop-blur-sm">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        {/* 品牌 */}
-        <Link href="/" className="flex items-center space-x-3 group">
-          <div className="w-9 h-9 rounded-sm bg-acid flex items-center justify-center">
-            <Terminal className="w-5 h-5 text-black" strokeWidth={1.5} />
-          </div>
-          <div className="leading-tight">
-            <div className="font-mono text-sm tracking-wider text-white group-hover:text-acid transition-colors">
-              [{t.navbar.brand}]
-            </div>
-            <div className="text-[10px] uppercase tracking-[0.2em] text-zinc-600 font-mono hidden sm:block">
-              QUANTUM OBSERVATION TERMINAL
-            </div>
-          </div>
+        {/* 品牌 Logo */}
+        <Link href="/" className="flex items-center group">
+          <Image
+            src="/logo.svg"
+            alt="The Nth Me"
+            width={120}
+            height={32}
+            className="h-6 w-auto group-hover:drop-shadow-[0_0_8px_rgba(204,255,0,0.6)] transition-all duration-300"
+            priority
+          />
         </Link>
 
         {/* 菜单 + 语言切换 */}
