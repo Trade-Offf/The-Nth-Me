@@ -22,6 +22,8 @@ export interface PromptConfig {
   sampleStrength: number;
   tags: string[];
   hasShowcase?: boolean; // 默认 true，表示有展示图片
+  proBetter?: boolean; // 是否 Pro 模型效果更好
+  showCompare?: boolean; // 默认 true，是否显示 before/after 对比；false 则只显示 after.png
 }
 
 /**
@@ -76,6 +78,53 @@ export const prompts: PromptConfig[] = [
     prompt: `Edit this image. Generate a technical 'reverse engineering' style character concept sheet on beige sketch-paper. Center: full-body illustration of the person in the uploaded image, maintaining facial features and identity, rendered in clean line art. Around the center: deconstruct the subject's outfit like a technical schematic with thin pencil arrows pointing to separated components. Analyze and display: 1. Clothing layers (outer shell, inner lining, bottoms, footwear). 2. Material analysis (close-ups of fabric textures, stitching patterns). 3. Inventory loadout (an open bag displaying daily items/gadgets inferred from the subject's style). 4. Three expressive headshots (emotional states). Add handwritten English annotations explaining the 'specs' of the gear. Style: 2D hand-drawn engineering blueprint, soft shadows, concept art, 4K HD.`,
     sampleStrength: 0.8,
     tags: ['concept', 'engineering-weight', 'master-craftsman'],
+  },
+  {
+    id: 'post-apocalyptic',
+    name: '末日幸存者',
+    prompt: `Generate a cinematic image of [the person in this image] as a rugged survivor walking through an overgrown ruined city. Outfit: Wearing a faded plaid flannel shirt and a dirty denim jacket with holes, dark grey muddy jeans. Look: Keep the person's identity exactly as is, but make their hair messy and windblown. Apply realistic dirt, grime, and sweat to their face to match the post-apocalyptic atmosphere. The face should look weathered, not clean. Background: A desolate city street reclaimed by nature, ivy covering concrete, rusted cars, overcast soft lighting. 35mm cinematic photography.`,
+    sampleStrength: 1.0,
+    tags: ['cinematic', 'survival-protocol', 'wasteland-era'],
+    proBetter: true,
+    showCompare: false,
+  },
+  {
+    id: 'hairstyle-matrix',
+    name: '发型矩阵',
+    prompt: `Create a 2x4 grid showing the man in the reference image with 8 radically different hairstyles from various subcultures.
+
+Crucial: The hairstyles must have distinct silhouettes. Do not just generate short hair. Include long hair, shaved heads, and textured hair.
+Facial Hair: Change the beard/mustache to match the personality of the hair.
+
+The 8 Styles:
+
+Punk Mohawk (Shaved sides, tall strip of hair)
+Viking Warrior (Long braided hair + Big Beard)
+The Mullet (Business front, party back + Mustache)
+Slicked Undercut (Sharp, professional, clean shaven)
+Long Dreadlocks (Thick texture, down to shoulders)
+The Afro (Big volume, round shape)
+Greaser Pompadour (High volume 50s style)
+Samurai Bun (Top knot, shaved undercut)
+Label each style clearly with text at the bottom.`,
+    sampleStrength: 1.0,
+    tags: ['portrait', 'style-morph', 'multi-variant'],
+    showCompare: false,
+  },
+  {
+    id: 'cartoon-diner',
+    name: '漫画餐厅',
+    prompt: `Create a mixed-media masterpiece featuring [the person in the attached image] sitting in a retro American diner.
+
+The Style: A "Who Framed Roger Rabbit" style composite. The person must look photorealistic (keep their exact facial identity), while the food around them comes to life as flat, 2D thick-line cartoons.
+
+The Scene: The person is holding a burger, looking shocked as their lunch attacks them.
+The Cartoons: A pizza slice surfing on cheese, an angry french fry box, and flying ketchup bottles.
+Details: Add comic book text bubbles like "ÑAM!" and "CRUNCH!" floating in the air.
+Lighting: Warm, cinematic diner lighting. Maximum chaos, screen filled with doodles`,
+    sampleStrength: 1.0,
+    tags: ['surreal', 'mixed-media', 'retro-pop'],
+    showCompare: false,
   },
 ];
 

@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   ChevronLeft,
   ChevronRight,
@@ -102,8 +103,19 @@ function PromptCard({ prompt, index, localizedName, tagTranslations, showcaseT }
           </div>
         </div>
 
-        {/* 图片对比器 - 始终显示 */}
-        <ImageCompareSlider worldlineId={prompt.id} variant="full" />
+        {/* 图片展示 - 根据 showCompare 决定显示对比滑块还是单张图 */}
+        {prompt.showCompare !== false ? (
+          <ImageCompareSlider worldlineId={prompt.id} variant="full" />
+        ) : (
+          <div className="relative w-full aspect-square rounded-sm overflow-hidden border border-tech-border">
+            <Image
+              src={`/showcase/${prompt.id}/after.webp`}
+              alt={localizedName}
+              fill
+              className="object-cover"
+            />
+          </div>
+        )}
 
         {/* 按钮组 */}
         <div className="mt-4 flex gap-3">

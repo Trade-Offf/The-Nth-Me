@@ -1,51 +1,53 @@
 /**
  * 图片下载代理 API Route
- * POST /api/download
- * 
+ * GET /api/download?url=xxx
+ *
  * 用于代理下载远程图片，避免 CORS 问题
+ * 直接返回二进制流，性能更好
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function POST(request: NextRequest) {
+export async function GET(request: NextRequest) {
   try {
-    const { imageUrl } = await request.json();
+    const imageUrl = request.nextUrl.searchParams.get('url');
 
     if (!imageUrl) {
-      return NextResponse.json(
-        { error: '缺少图片 URL' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: '缺少图片 URL' }, { status: 400 });
     }
 
-    console.log('[Download] 代理下载图片:', imageUrl);
-
-    // 如果是 base64 图片，直接返回
+    // 如果是 base64 图片，解码并返回
     if (imageUrl.startsWith('data:')) {
-      return NextResponse.json({
-        success: true,
-        base64: imageUrl,
-      });
+      const matches = imageUrl.match(/^data:(.+);base64,(.+)$/);
+      if (matches) {
+        const mimeType = matches[1];
+        const base64Data = matches[2];
+        const buffer = Buffer.from(base64Data, 'base64');
+        return new NextResponse(buffer, {
+          headers: {
+            'Content-Type': mimeType,
+            'Content-Disposition': `attachment; filename="nthme-${Date.now()}.png"`,
+          },
+        });
+      }
     }
 
-    // 如果是远程 URL，fetch 并返回 blob
+    // 直接代理远程图片，返回二进制流
     const response = await fetch(imageUrl);
-    
+
     if (!response.ok) {
       throw new Error(`下载失败: ${response.status}`);
     }
 
-    const blob = await response.blob();
-    const arrayBuffer = await blob.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-    const base64 = buffer.toString('base64');
-    const mimeType = response.headers.get('content-type') || 'image/jpeg';
+    const contentType = response.headers.get('content-type') || 'image/png';
+    const arrayBuffer = await response.arrayBuffer();
 
-    console.log('[Download] 下载成功，大小:', buffer.length, 'bytes');
-
-    return NextResponse.json({
-      success: true,
-      base64: `data:${mimeType};base64,${base64}`,
+    return new NextResponse(arrayBuffer, {
+      headers: {
+        'Content-Type': contentType,
+        'Content-Disposition': `attachment; filename="nthme-${Date.now()}.png"`,
+        'Content-Length': String(arrayBuffer.byteLength),
+      },
     });
   } catch (error) {
     console.error('[Download] 下载失败:', error);
@@ -58,4 +60,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-

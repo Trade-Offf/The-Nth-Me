@@ -19,7 +19,8 @@ const enUS: Translations = {
   worldlines: {
     'studio-portrait': {
       name: 'Studio B&W Portrait',
-      description: 'Professional studio lighting, cinematic black & white, perfect for profile pics',
+      description:
+        'Professional studio lighting, cinematic black & white, perfect for profile pics',
     },
     'tech-startup': {
       name: 'Silicon Valley VC',
@@ -41,6 +42,18 @@ const enUS: Translations = {
       name: 'Blueprint Style',
       description: 'Technical drawing aesthetic, engineer vibes, hardcore tech look',
     },
+    'post-apocalyptic': {
+      name: 'Post-Apocalyptic',
+      description: 'Wasteland survivor style, cinematic quality, desolation meets hope',
+    },
+    'hairstyle-matrix': {
+      name: 'Hairstyle Matrix',
+      description: 'Multiple subculture hairstyle variants in one grid',
+    },
+    'cartoon-diner': {
+      name: 'Cartoon Diner',
+      description: 'Roger Rabbit style mixed-media chaos in a retro diner',
+    },
   },
   tags: {
     // Primary Tags (for filtering)
@@ -49,6 +62,7 @@ const enUS: Translations = {
     '3d': '3D Render',
     surreal: 'Surreal',
     concept: 'Concept Art',
+    cinematic: 'Cinematic',
     // Descriptive Tags (user-friendly version)
     'photon-capture': 'Pro Lighting',
     'monochrome-matrix': 'B&W Texture',
@@ -62,6 +76,12 @@ const enUS: Translations = {
     'void-index': 'Deconstructed',
     'engineering-weight': 'Industrial',
     'master-craftsman': 'Precision Design',
+    'survival-protocol': 'Survival',
+    'wasteland-era': 'Wasteland',
+    'style-morph': 'Style Morph',
+    'multi-variant': 'Multi-Variant',
+    'mixed-media': 'Mixed Media',
+    'retro-pop': 'Retro Pop',
   },
   portal: {
     badge: 'NEURAL ROAMING INTERFACE',
@@ -118,7 +138,7 @@ const enUS: Translations = {
     download: 'Download',
     copyPrompt: 'Copy Prompt',
     copied: 'Copied!',
-    privacyNotice: 'We don\'t store your data. Please save your images promptly.',
+    privacyNotice: "We don't store your data. Please save your images promptly.",
   },
   showcase: {
     badge: 'SPACETIME COORDINATE LIBRARY',
@@ -188,8 +208,6 @@ const enUS: Translations = {
         ],
       },
     },
-    costPerObservation: '⚡️ Each observation costs 4 energy units',
-    neverExpires: '🔒 Energy never expires',
     importantNotice: '📧 Important Notice',
     // CNY payment hint (Afdian)
     paymentHintCny: 'Please fill in your registered email in Afdian',
@@ -263,31 +281,38 @@ const enUS: Translations = {
     sections: {
       intro: {
         title: '1. Service Description',
-        content: '"The Nth Me" (operated by Jialin Li as sole proprietor) is an AI-powered image generation service. After you upload a photo, our AI system generates artistic portrait images based on preset style templates.',
+        content:
+          '"The Nth Me" (operated by Jialin Li as sole proprietor) is an AI-powered image generation service. After you upload a photo, our AI system generates artistic portrait images based on preset style templates.',
       },
       usage: {
         title: '2. Usage Guidelines',
-        content: 'When using this service, you must ensure that uploaded photos are of yourself or you have obtained proper authorization. Uploading illegal, infringing, or inappropriate content is prohibited. We reserve the right to refuse processing any content we deem inappropriate.',
+        content:
+          'When using this service, you must ensure that uploaded photos are of yourself or you have obtained proper authorization. Uploading illegal, infringing, or inappropriate content is prohibited. We reserve the right to refuse processing any content we deem inappropriate.',
       },
       payment: {
         title: '3. Payment & Refunds',
-        content: 'This service uses a credit system. Purchased credits never expire. Refund requests must be submitted within 3 days of purchase and with no more than 20 credits used. Orders exceeding these conditions are non-refundable. Please refer to our Refund Policy page for details.',
+        content:
+          'This service uses a credit system. Purchased credits never expire. Refund requests must be submitted within 3 days of purchase and with no more than 20 credits used. Orders exceeding these conditions are non-refundable. Please refer to our Refund Policy page for details.',
       },
       privacy: {
         title: '4. Privacy Protection',
-        content: 'We value your privacy. This service does not store your uploaded photos. Images are transmitted directly to Google Nano Banana API for processing, and results are returned immediately. Our servers do not retain any image data.',
+        content:
+          'We value your privacy. This service does not store your uploaded photos. Images are transmitted directly to Google Nano Banana API for processing, and results are returned immediately. Our servers do not retain any image data.',
       },
       intellectual: {
         title: '5. Intellectual Property',
-        content: 'Generated images belong to you and can be used freely. However, the technology, interface design, and style templates of this service are the intellectual property of "The Nth Me".',
+        content:
+          'Generated images belong to you and can be used freely. However, the technology, interface design, and style templates of this service are the intellectual property of "The Nth Me".',
       },
       disclaimer: {
         title: '6. Disclaimer',
-        content: 'This service is provided "as is". We make no guarantees regarding the accuracy or suitability of AI-generated results. We are not liable for any direct or indirect damages arising from the use of this service.',
+        content:
+          'This service is provided "as is". We make no guarantees regarding the accuracy or suitability of AI-generated results. We are not liable for any direct or indirect damages arising from the use of this service.',
       },
       changes: {
         title: '7. Terms Changes',
-        content: 'We may update these terms from time to time. Continued use of the service indicates acceptance of updated terms. For significant changes, we will notify you via website announcements.',
+        content:
+          'We may update these terms from time to time. Continued use of the service indicates acceptance of updated terms. For significant changes, we will notify you via website announcements.',
       },
     },
   },
@@ -297,23 +322,28 @@ const enUS: Translations = {
     sections: {
       collection: {
         title: '1. Information Collection',
-        content: 'We collect the following information: your email address (for account registration and login), photos you upload (used only for AI generation and deleted immediately after processing), and payment records (for credit purchases).',
+        content:
+          'We collect the following information: your email address (for account registration and login), photos you upload (used only for AI generation and deleted immediately after processing), and payment records (for credit purchases).',
       },
       usage: {
         title: '2. Information Usage',
-        content: 'Your information is used solely to provide this service, including: account management, AI image generation, and credit management. We do not sell or share your information with third parties unless required by law.',
+        content:
+          'Your information is used solely to provide this service, including: account management, AI image generation, and credit management. We do not sell or share your information with third parties unless required by law.',
       },
       photos: {
         title: '3. Photo Processing',
-        content: 'This service does not store your uploaded photos. Images are transmitted directly to Google Gemini API for AI processing, and results are returned to you immediately after processing. Our servers do not retain any image data, and images are not stored, analyzed, or used for any other purpose.',
+        content:
+          'This service does not store your uploaded photos. Images are transmitted directly to Google Gemini API for AI processing, and results are returned to you immediately after processing. Our servers do not retain any image data, and images are not stored, analyzed, or used for any other purpose.',
       },
       security: {
         title: '4. Data Security',
-        content: 'We employ industry-standard security measures to protect your data, including HTTPS encrypted transmission and secure database storage. However, please note that no internet transmission is 100% secure.',
+        content:
+          'We employ industry-standard security measures to protect your data, including HTTPS encrypted transmission and secure database storage. However, please note that no internet transmission is 100% secure.',
       },
       cookies: {
         title: '5. Cookie Usage',
-        content: 'We use cookies to maintain your login status and language preferences. You can disable cookies in your browser, but this may affect the normal use of some features.',
+        content:
+          'We use cookies to maintain your login status and language preferences. You can disable cookies in your browser, but this may affect the normal use of some features.',
       },
       contact: {
         title: '6. Contact Us',
@@ -324,27 +354,35 @@ const enUS: Translations = {
   refund: {
     title: 'Refund Policy',
     lastUpdated: 'Last Updated',
-    intro: 'At The Nth Me, we are committed to providing an exceptional experience for our users. We understand that circumstances may change, and you may need to request a refund. Please read our refund policy carefully before making a purchase.',
+    intro:
+      'At The Nth Me, we are committed to providing an exceptional experience for our users. We understand that circumstances may change, and you may need to request a refund. Please read our refund policy carefully before making a purchase.',
     sections: {
       eligibility: {
         title: 'Refund Eligibility',
-        timeLimit: 'Time Limit: Refund requests must be made within 3 days of your purchase. After this period, we will be unable to process any refund requests.',
-        creditUsage: 'Credit Usage: If you have used more than 20 credits, regardless of the purchase date, you will no longer be eligible for a refund.',
+        timeLimit:
+          'Time Limit: Refund requests must be made within 3 days of your purchase. After this period, we will be unable to process any refund requests.',
+        creditUsage:
+          'Credit Usage: If you have used more than 20 credits, regardless of the purchase date, you will no longer be eligible for a refund.',
       },
       howTo: {
         title: 'How to Request a Refund',
-        intro: 'If you meet the above eligibility criteria and wish to request a refund, please follow these steps:',
+        intro:
+          'If you meet the above eligibility criteria and wish to request a refund, please follow these steps:',
         contact: 'Contact Us: Reach out to our support team via email.',
-        details: 'Provide Details: Include your account information, order number, purchase date, and the reason for your refund request in the email.',
-        submit: 'Submit on Time: Ensure your refund request is submitted within 3 days of purchase.',
+        details:
+          'Provide Details: Include your account information, order number, purchase date, and the reason for your refund request in the email.',
+        submit:
+          'Submit on Time: Ensure your refund request is submitted within 3 days of purchase.',
       },
       processing: {
         title: 'Refund Processing',
-        content: 'Once we receive your refund request, we will review it and notify you of the result as soon as possible. If approved, the refund will be processed through your original payment method.',
+        content:
+          'Once we receive your refund request, we will review it and notify you of the result as soon as possible. If approved, the refund will be processed through your original payment method.',
       },
       changes: {
         title: 'Policy Changes',
-        content: 'We reserve the right to update the refund policy at any time. Any changes will be posted on this page, and we recommend checking regularly for the latest information.',
+        content:
+          'We reserve the right to update the refund policy at any time. Any changes will be posted on this page, and we recommend checking regularly for the latest information.',
       },
     },
     contactNote: 'If you have any questions, please contact:',
@@ -352,4 +390,3 @@ const enUS: Translations = {
 } as const;
 
 export default enUS;
-

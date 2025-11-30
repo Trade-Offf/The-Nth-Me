@@ -26,8 +26,8 @@ export default function ImageCompareSlider({
   const [sliderPosition, setSliderPosition] = useState(50);
   const [isDragging, setIsDragging] = useState(false);
 
-  const beforeSrc = `/showcase/${worldlineId}/before.png`;
-  const afterSrc = `/showcase/${worldlineId}/after.png`;
+  const beforeSrc = `/showcase/${worldlineId}/before.webp`;
+  const afterSrc = `/showcase/${worldlineId}/after.webp`;
 
   const isMini = variant === 'mini';
 

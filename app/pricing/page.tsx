@@ -85,37 +85,42 @@ export default function PricingPage() {
   const visibleTiers = getVisibleTiers(currency);
 
   // 处理购买按钮点击
-  const handleBuyClick = useCallback((tier: PricingTier) => {
-    if (currency === 'CNY') {
-      // 跳转爱发电
-      window.open(AFDIAN_URL, '_blank');
-    } else {
-      // 使用 Paddle Checkout
-      if (!tier.paddlePriceId) {
-        // Paddle Price ID 未配置，提示用户
-        alert('USD payment is being set up. Please use CNY payment for now, or check back later.');
-        return;
-      }
+  const handleBuyClick = useCallback(
+    (tier: PricingTier) => {
+      if (currency === 'CNY') {
+        // 跳转爱发电
+        window.open(AFDIAN_URL, '_blank');
+      } else {
+        // 使用 Paddle Checkout
+        if (!tier.paddlePriceId) {
+          // Paddle Price ID 未配置，提示用户
+          alert(
+            'USD payment is being set up. Please use CNY payment for now, or check back later.'
+          );
+          return;
+        }
 
-      if (!paddleReady || !isPaddleAvailable()) {
-        alert('Payment system is loading. Please try again in a moment.');
-        return;
-      }
+        if (!paddleReady || !isPaddleAvailable()) {
+          alert('Payment system is loading. Please try again in a moment.');
+          return;
+        }
 
-      // 打开 Paddle Checkout
-      openPaddleCheckout({
-        items: [{ priceId: tier.paddlePriceId, quantity: 1 }],
-        customer: session?.user?.email ? { email: session.user.email } : undefined,
-        customData: {
-          userId: (session?.user as { id?: string })?.id,
-          tierId: tier.id,
-        },
-        settings: {
-          successUrl: `${window.location.origin}/user?payment=success`,
-        },
-      });
-    }
-  }, [currency, paddleReady, session?.user]);
+        // 打开 Paddle Checkout
+        openPaddleCheckout({
+          items: [{ priceId: tier.paddlePriceId, quantity: 1 }],
+          customer: session?.user?.email ? { email: session.user.email } : undefined,
+          customData: {
+            userId: (session?.user as { id?: string })?.id,
+            tierId: tier.id,
+          },
+          settings: {
+            successUrl: `${window.location.origin}/user?payment=success`,
+          },
+        });
+      }
+    },
+    [currency, paddleReady, session?.user]
+  );
 
   // 获取档位翻译（新的 tier ID 格式）
   const getTierI18n = (tierId: TierId) => {
@@ -188,11 +193,11 @@ export default function PricingPage() {
 
         {/* 价格卡片 - Cyberpunk Style */}
         {/* CNY 4档用 2x2 布局更宽松，USD 3档用 1x3 */}
-        <div className={`grid gap-6 ${
-          visibleTiers.length === 4
-            ? 'md:grid-cols-2 lg:grid-cols-4'
-            : 'md:grid-cols-3'
-        }`}>
+        <div
+          className={`grid gap-6 ${
+            visibleTiers.length === 4 ? 'md:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-3'
+          }`}
+        >
           {visibleTiers.map((tier, index) => {
             const isUltimate = tier.id === 'tier_ultra';
             const isPro = tier.id === 'tier_pro';
@@ -214,18 +219,27 @@ export default function PricingPage() {
                 `}
               >
                 {/* 角标装饰 - Cyberpunk brackets */}
-                <span className="absolute -top-px -left-px text-zinc-700 text-[10px] font-mono select-none">[</span>
-                <span className="absolute -top-px -right-px text-zinc-700 text-[10px] font-mono select-none">]</span>
-                <span className="absolute -bottom-px -left-px text-zinc-700 text-[10px] font-mono select-none">[</span>
-                <span className="absolute -bottom-px -right-px text-zinc-700 text-[10px] font-mono select-none">]</span>
+                <span className="absolute -top-px -left-px text-zinc-700 text-[10px] font-mono select-none">
+                  [
+                </span>
+                <span className="absolute -top-px -right-px text-zinc-700 text-[10px] font-mono select-none">
+                  ]
+                </span>
+                <span className="absolute -bottom-px -left-px text-zinc-700 text-[10px] font-mono select-none">
+                  [
+                </span>
+                <span className="absolute -bottom-px -right-px text-zinc-700 text-[10px] font-mono select-none">
+                  ]
+                </span>
 
                 {/* 推荐/终极标签 */}
                 {(tier.isRecommended || isUltimate) && (
                   <div
                     className={`absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-sm text-[10px] font-mono uppercase tracking-wider
-                      ${isUltimate
-                        ? 'bg-yellow-500 text-black font-bold shadow-[0_0_10px_rgba(234,179,8,0.5)]'
-                        : 'bg-green-500/20 text-green-400 border border-green-500/50'
+                      ${
+                        isUltimate
+                          ? 'bg-yellow-500 text-black font-bold shadow-[0_0_10px_rgba(234,179,8,0.5)]'
+                          : 'bg-green-500/20 text-green-400 border border-green-500/50'
                       }
                     `}
                   >
@@ -236,9 +250,10 @@ export default function PricingPage() {
                 {/* 图标 */}
                 <div
                   className={`w-12 h-12 rounded-sm flex items-center justify-center mb-4 mt-4
-                    ${isUltimate
-                      ? 'bg-yellow-500/20 border border-yellow-500/50'
-                      : isPro
+                    ${
+                      isUltimate
+                        ? 'bg-yellow-500/20 border border-yellow-500/50'
+                        : isPro
                         ? 'bg-green-500/10 border border-green-500/30'
                         : 'bg-tech-bg border border-tech-border'
                     }
@@ -253,20 +268,25 @@ export default function PricingPage() {
                 </div>
 
                 {/* 名称 */}
-                <h3 className={`text-xl font-bold mb-1 ${
-                  isUltimate ? 'text-yellow-400' : isPro ? 'text-green-400' : 'text-white'
-                }`}>
+                <h3
+                  className={`text-xl font-bold mb-1 ${
+                    isUltimate ? 'text-yellow-400' : isPro ? 'text-green-400' : 'text-white'
+                  }`}
+                >
                   {tierI18n.name}
                 </h3>
                 <p className="text-xs font-mono text-zinc-600 mb-1">{tierI18n.subName}</p>
 
                 {/* Pro 权限标识 */}
-                <div className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-sm text-[10px] font-mono mb-4
-                  ${tier.isPro
-                    ? 'bg-green-500/10 text-green-400 border border-green-500/30'
-                    : 'bg-zinc-800/50 text-zinc-600 border border-zinc-700/50'
+                <div
+                  className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-sm text-[10px] font-mono mb-4
+                  ${
+                    tier.isPro
+                      ? 'bg-green-500/10 text-green-400 border border-green-500/30'
+                      : 'bg-zinc-800/50 text-zinc-600 border border-zinc-700/50'
                   }
-                `}>
+                `}
+                >
                   {tier.isPro ? (
                     <>
                       <Unlock className="w-3 h-3" strokeWidth={2} />
@@ -282,9 +302,11 @@ export default function PricingPage() {
 
                 {/* 价格 - 动态显示 */}
                 <div className="mb-6">
-                  <div className={`text-3xl font-mono font-bold ${
-                    isUltimate ? 'text-yellow-400' : 'text-white'
-                  }`}>
+                  <div
+                    className={`text-3xl font-mono font-bold ${
+                      isUltimate ? 'text-yellow-400' : 'text-white'
+                    }`}
+                  >
                     {formatCurrencyAmount(price, currency)}
                   </div>
                   <div className="text-zinc-500 font-mono text-sm mt-1">
@@ -297,7 +319,11 @@ export default function PricingPage() {
                   {tierI18n.features.map((feature, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm text-zinc-400 font-mono">
                       <span className="text-zinc-600 mt-0.5">›</span>
-                      <span className={feature.includes('Pro') || feature.includes('🔥') ? 'text-green-400' : ''}>
+                      <span
+                        className={
+                          feature.includes('Pro') || feature.includes('🔥') ? 'text-green-400' : ''
+                        }
+                      >
                         {formatFeature(feature, tier.credits)}
                       </span>
                     </li>
@@ -311,9 +337,10 @@ export default function PricingPage() {
                     group flex items-center justify-center gap-2
                     w-full py-3 rounded-sm text-center font-mono text-sm uppercase tracking-wider font-medium
                     transition-all duration-300 cursor-pointer
-                    ${isUltimate
-                      ? 'bg-yellow-500 text-black border-2 border-yellow-500 hover:bg-transparent hover:text-yellow-400'
-                      : isPro
+                    ${
+                      isUltimate
+                        ? 'bg-yellow-500 text-black border-2 border-yellow-500 hover:bg-transparent hover:text-yellow-400'
+                        : isPro
                         ? 'bg-green-500/20 text-green-400 border border-green-500/50 hover:bg-green-500 hover:text-black'
                         : 'bg-transparent text-zinc-400 border border-tech-border hover:border-green-500/50 hover:text-green-400'
                     }
@@ -327,21 +354,22 @@ export default function PricingPage() {
           })}
         </div>
 
-        {/* 说明 */}
+        {/* 重要提示 - 根据货币显示不同内容 */}
         <div className="mt-16 text-center space-y-4">
-          <div className="text-zinc-600 text-xs font-mono space-y-2">
-            <p>{t.pricing.costPerObservation}</p>
-            <p>{t.pricing.neverExpires}</p>
-          </div>
-
-          {/* 重要提示 - 根据货币显示不同内容 */}
           <div className="max-w-md mx-auto bg-acid/5 border border-acid/30 rounded-sm p-4">
-            <p className="text-acid text-xs font-mono font-medium mb-2">{t.pricing.importantNotice}</p>
+            <p className="text-acid text-xs font-mono font-medium mb-2">
+              {t.pricing.importantNotice}
+            </p>
             {currency === 'CNY' ? (
               <p className="text-zinc-400 text-sm">
-                {t.pricing.paymentHintCny}<span className="text-acid">{t.pricing.paymentRemark}</span>{t.pricing.paymentHintSuffixCny}
+                {t.pricing.paymentHintCny}
+                <span className="text-acid">{t.pricing.paymentRemark}</span>
+                {t.pricing.paymentHintSuffixCny}
                 {session?.user?.email && (
-                  <>：<br /><code className="text-acid font-mono">{session.user.email}</code></>
+                  <>
+                    ：<br />
+                    <code className="text-acid font-mono">{session.user.email}</code>
+                  </>
                 )}
               </p>
             ) : (
@@ -360,4 +388,3 @@ export default function PricingPage() {
     </main>
   );
 }
-

@@ -186,7 +186,6 @@ export default function PreviewPanel({
 }: PreviewPanelProps) {
   const { t } = useI18n();
   const [copied, setCopied] = useState(false);
-  const [isDownloading, setIsDownloading] = useState(false);
 
   // 复制 Prompt
   const handleCopyPrompt = async () => {
@@ -200,36 +199,18 @@ export default function PreviewPanel({
     }
   };
 
-  // 下载图片 - 使用代理 API 避免 CORS
-  const handleDownload = async () => {
-    if (!generatedImage || isDownloading) return;
+  // 下载图片 - 使用代理 API 避免 CORS，直接触发浏览器下载
+  const handleDownload = () => {
+    if (!generatedImage) return;
 
-    setIsDownloading(true);
-    try {
-      // 通过代理 API 下载
-      const response = await fetch('/api/download', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ imageUrl: generatedImage }),
-      });
-
-      const data = await response.json();
-
-      if (data.success && data.base64) {
-        const a = document.createElement('a');
-        a.href = data.base64;
-        a.download = `nthme-${Date.now()}.png`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      } else {
-        throw new Error(data.error || 'Download failed');
-      }
-    } catch (err) {
-      console.error('Download failed:', err);
-    } finally {
-      setIsDownloading(false);
-    }
+    // 直接使用 a 标签触发下载，浏览器会自动处理
+    const downloadUrl = `/api/download?url=${encodeURIComponent(generatedImage)}`;
+    const a = document.createElement('a');
+    a.href = downloadUrl;
+    a.download = `nthme-${Date.now()}.png`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   };
 
   return (
@@ -254,13 +235,11 @@ export default function PreviewPanel({
             </button>
             <button
               onClick={handleDownload}
-              disabled={isDownloading}
-              className={`flex items-center gap-1.5 px-2 py-1 rounded-sm border border-acid/50 bg-acid/10
-                       text-[10px] font-mono text-acid transition-all
-                       ${isDownloading ? 'opacity-50 cursor-wait' : 'hover:bg-acid hover:text-black'}`}
+              className="flex items-center gap-1.5 px-2 py-1 rounded-sm border border-acid/50 bg-acid/10
+                       text-[10px] font-mono text-acid transition-all hover:bg-acid hover:text-black"
             >
-              <Download className={`w-3 h-3 ${isDownloading ? 'animate-bounce' : ''}`} />
-              {isDownloading ? 'Downloading...' : t.laboratory.download}
+              <Download className="w-3 h-3" />
+              {t.laboratory.download}
             </button>
           </div>
         )}
@@ -332,20 +311,6 @@ export default function PreviewPanel({
                 >
                   {`> ${t.laboratory.generating}`}
                 </motion.p>
-
-                {/* 二进制滚动效果 */}
-                <div className="font-mono text-[10px] text-acid/60 tracking-wider overflow-hidden h-4">
-                  <motion.div
-                    animate={{ y: [0, -16, -32, -48, 0] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-                  >
-                    <div>{'// QUANTUM_COLLAPSE::INIT'}</div>
-                    <div>{'// REALITY_MATRIX::LOADING'}</div>
-                    <div>{'// DIMENSION_SHIFT::ACTIVE'}</div>
-                    <div>{'// NEURAL_SYNC::PROCESSING'}</div>
-                    <div>{'// QUANTUM_COLLAPSE::INIT'}</div>
-                  </motion.div>
-                </div>
 
                 {/* 进度条 */}
                 <div className="mt-6 w-48 mx-auto">

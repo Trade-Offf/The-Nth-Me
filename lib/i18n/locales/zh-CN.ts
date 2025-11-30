@@ -39,6 +39,18 @@ const zhCN = {
       name: '工业蓝图风',
       description: '机械设计图纸风格，工程师审美，硬核科技感',
     },
+    'post-apocalyptic': {
+      name: '末日幸存者',
+      description: '废土世界风格，电影级质感，荒凉与希望并存',
+    },
+    'hairstyle-matrix': {
+      name: '发型矩阵',
+      description: '多种亚文化发型变体，一图看遍百变造型',
+    },
+    'cartoon-diner': {
+      name: '漫画餐厅',
+      description: '真人与卡通混搭，复古美式餐厅大乱斗',
+    },
   },
   tags: {
     // 主分类 Tags（用于检索）
@@ -47,6 +59,7 @@ const zhCN = {
     '3d': '3D渲染',
     surreal: '超现实',
     concept: '概念设计',
+    cinematic: '电影风格',
     // 描述性 Tags（用户友好版本）
     'photon-capture': '专业打光',
     'monochrome-matrix': '黑白质感',
@@ -60,6 +73,12 @@ const zhCN = {
     'void-index': '艺术解构',
     'engineering-weight': '工业风格',
     'master-craftsman': '精密设计',
+    'survival-protocol': '生存法则',
+    'wasteland-era': '废土纪元',
+    'style-morph': '风格变换',
+    'multi-variant': '多变体',
+    'mixed-media': '混合媒介',
+    'retro-pop': '复古流行',
   },
   portal: {
     badge: '神经漫游接口',
@@ -186,8 +205,7 @@ const zhCN = {
         ],
       },
     },
-    costPerObservation: '⚡️ 每次时空观测消耗 4 单位能源',
-    neverExpires: '🔒 能源永久有效，无过期限制',
+
     importantNotice: '📧 重要提示',
     // CNY 支付提示（爱发电）
     paymentHintCny: '付款时请在爱发电',
