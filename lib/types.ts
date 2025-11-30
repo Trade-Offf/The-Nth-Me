@@ -18,13 +18,39 @@ export interface GenerationResult {
 
 // ========== API 相关类型 ==========
 
-// 图片尺寸比例
-export type ImageAspectRatio = '1:1' | '9:16' | '16:9';
+// 模型类型
+export type ModelType = 'standard' | 'pro';
+
+// 任务类型
+export type TaskType = 'text-to-image' | 'image-to-image';
+
+// 图片尺寸比例 (Standard)
+export type ImageAspectRatio = '1:1' | '9:16' | '16:9' | '3:4' | '4:3';
+
+// Pro 分辨率
+export type ProResolution = '1K' | '2K' | '4K';
+
+// 积分消耗
+export const CREDITS_STANDARD = 4;
+export const CREDITS_PRO = 24;
 
 export interface GenerateRequest {
-  image: string;      // base64 格式
-  worldlineId: string;
-  imageSize?: ImageAspectRatio; // 图片尺寸比例
+  /** 模型类型 */
+  model?: ModelType;
+  /** 任务类型 */
+  taskType?: TaskType;
+  /** base64 格式图片（Image-to-Image 时必填） */
+  image?: string;
+  /** 提示词（自由生成模式必填） */
+  prompt?: string;
+  /** 世界线 ID（模板模式使用） */
+  worldlineId?: string;
+  /** 图片尺寸比例 */
+  imageSize?: ImageAspectRatio;
+  /** 分辨率（Pro 模式） */
+  resolution?: ProResolution;
+  /** 水印（Standard 模式） */
+  watermark?: string;
 }
 
 export interface GenerateResponse {
@@ -32,6 +58,7 @@ export interface GenerateResponse {
   imageUrl?: string;
   error?: string;
   errorCode?: string;
+  creditsUsed?: number;
 }
 
 // 银河杂货铺 API 类型

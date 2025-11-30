@@ -1,21 +1,30 @@
 /**
  * 图片生成 API Route
  * POST /api/generate
+ *
+ * 支持两种模式：
+ * 1. 模板模式（worldlineId）- 使用预设提示词
+ * 2. 自由生成模式（prompt）- 用户自定义提示词
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { generateImageWithNanoBanana } from '@/lib/api/nanobananaApi';
+import { generateImage } from '@/lib/api/nanobananaApi';
 import { validateBase64Image } from '@/lib/utils/imageUtils';
 import { worldlines } from '@/lib/worldlines';
 import {
   hasEnoughCredits,
   deductCredits,
   addBonusCredits,
-  CREDITS_PER_GENERATION,
 } from '@/lib/services/creditService';
-import type { GenerateRequest, GenerateResponse } from '@/lib/types';
+import type { GenerateRequest, GenerateResponse, ModelType } from '@/lib/types';
+import { CREDITS_STANDARD, CREDITS_PRO } from '@/lib/types';
+
+// 计算积分消耗
+function getCreditsForModel(model: ModelType): number {
+  return model === 'pro' ? CREDITS_PRO : CREDITS_STANDARD;
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -36,60 +45,91 @@ export async function POST(request: NextRequest) {
 
     // 1. 解析请求体
     const body: GenerateRequest = await request.json();
-    const { image, worldlineId, imageSize = '1:1' } = body;
+    const {
+      model = 'standard',
+      taskType = 'image-to-image',
+      image,
+      prompt: userPrompt,
+      worldlineId,
+      imageSize = '1:1',
+      resolution = '1K',
+      watermark,
+    } = body;
 
-    console.log('[API] 收到生成请求，世界线:', worldlineId, '尺寸:', imageSize);
+    // 2. 确定提示词
+    let finalPrompt: string;
 
-    // 2. 验证参数
-    if (!image || !worldlineId) {
+    if (worldlineId) {
+      // 模板模式：使用世界线提示词
+      const worldline = worldlines.find((w) => w.id === worldlineId);
+      if (!worldline) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: '无效的世界线 ID',
+            errorCode: 'INVALID_WORLDLINE',
+          } as GenerateResponse,
+          { status: 400 }
+        );
+      }
+      finalPrompt = worldline.prompt;
+      console.log('[API] 模板模式，世界线:', worldline.name);
+    } else if (userPrompt) {
+      // 自由生成模式：使用用户提示词
+      finalPrompt = userPrompt;
+      console.log('[API] 自由生成模式');
+    } else {
       return NextResponse.json(
         {
           success: false,
-          error: '缺少必要参数',
-          errorCode: 'MISSING_PARAMS',
+          error: '缺少提示词参数',
+          errorCode: 'MISSING_PROMPT',
         } as GenerateResponse,
         { status: 400 }
       );
     }
 
-    // 3. 验证图片
-    const validation = validateBase64Image(image);
-    if (!validation.valid) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: validation.error || '图片验证失败',
-          errorCode: 'INVALID_IMAGE',
-        } as GenerateResponse,
-        { status: 400 }
-      );
+    console.log('[API] Model:', model, 'TaskType:', taskType);
+    console.log('[API] Prompt:', finalPrompt.substring(0, 100) + '...');
+
+    // 3. 验证图片（Image-to-Image 模式必须有图片）
+    let base64Images: string[] = [];
+    if (taskType === 'image-to-image') {
+      if (!image) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'Image-to-Image 模式需要上传图片',
+            errorCode: 'MISSING_IMAGE',
+          } as GenerateResponse,
+          { status: 400 }
+        );
+      }
+      const validation = validateBase64Image(image);
+      if (!validation.valid) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: validation.error || '图片验证失败',
+            errorCode: 'INVALID_IMAGE',
+          } as GenerateResponse,
+          { status: 400 }
+        );
+      }
+      base64Images = [image];
     }
 
-    // 4. 获取世界线配置
-    const worldline = worldlines.find((w) => w.id === worldlineId);
-    if (!worldline) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: '无效的世界线 ID',
-          errorCode: 'INVALID_WORLDLINE',
-        } as GenerateResponse,
-        { status: 400 }
-      );
-    }
-
-    console.log('[API] 使用世界线:', worldline.name);
-    console.log('[API] Prompt:', worldline.prompt);
-    console.log('[API] 图片尺寸:', imageSize);
+    // 4. 计算积分消耗
+    const creditsNeeded = getCreditsForModel(model);
+    const userId = session.user.id;
 
     // 5. 检查用户能量余额
-    const userId = session.user.id;
-    const hasCredits = await hasEnoughCredits(userId, CREDITS_PER_GENERATION);
+    const hasCredits = await hasEnoughCredits(userId, creditsNeeded);
     if (!hasCredits) {
       return NextResponse.json(
         {
           success: false,
-          error: `能量不足，生成一张图片需要 ${CREDITS_PER_GENERATION} 点能量`,
+          error: `能量不足，${model === 'pro' ? 'Pro 模型' : 'Standard 模型'}需要 ${creditsNeeded} 点能量`,
           errorCode: 'INSUFFICIENT_CREDITS',
         } as GenerateResponse,
         { status: 402 }
@@ -97,7 +137,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 6. 先扣除能量
-    const deducted = await deductCredits(userId, CREDITS_PER_GENERATION);
+    const deducted = await deductCredits(userId, creditsNeeded);
     if (!deducted) {
       return NextResponse.json(
         {
@@ -109,16 +149,23 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log(`[API] 已扣除 ${CREDITS_PER_GENERATION} 点能量，用户: ${userId}`);
+    console.log(`[API] 已扣除 ${creditsNeeded} 点能量，用户: ${userId}`);
 
     // 7. 调用 NanoBanana API 生成图像
     let imageUrl: string;
     try {
-      imageUrl = await generateImageWithNanoBanana(image, worldline.prompt, { imageSize });
+      imageUrl = await generateImage(finalPrompt, base64Images, {
+        model,
+        taskType,
+        imageSize,
+        aspectRatio: imageSize as '1:1' | '16:9' | '9:16' | '4:3' | '3:4',
+        resolution,
+        watermark,
+      });
     } catch (genError) {
       // 生成失败，退还能量
-      console.log(`[API] 生成失败，退还 ${CREDITS_PER_GENERATION} 点能量给用户: ${userId}`);
-      await addBonusCredits(userId, CREDITS_PER_GENERATION, '生成失败退还');
+      console.log(`[API] 生成失败，退还 ${creditsNeeded} 点能量给用户: ${userId}`);
+      await addBonusCredits(userId, creditsNeeded, '生成失败退还');
       throw genError;
     }
 
@@ -128,6 +175,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       imageUrl,
+      creditsUsed: creditsNeeded,
     } as GenerateResponse);
   } catch (error) {
     console.error('[API] 生成失败:', error);

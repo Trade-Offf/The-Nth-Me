@@ -4,12 +4,13 @@
  */
 
 import prisma from '@/lib/prisma';
+import { CREDITS_STANDARD } from '@/lib/types';
 
 // 新用户赠送能量数量
 const NEW_USER_CREDITS = 10;
 
-// 每次生成消耗能量
-export const CREDITS_PER_GENERATION = 4;
+// 每次生成消耗能量（兼容旧代码）
+export const CREDITS_PER_GENERATION = CREDITS_STANDARD;
 
 /**
  * 获取用户积分信息，如果不存在则创建

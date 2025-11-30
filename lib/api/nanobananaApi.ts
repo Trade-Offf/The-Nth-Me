@@ -1,6 +1,8 @@
 /**
  * NanoBanana API 封装
- * 文档：https://docs.nanobananaapi.ai/cn/quickstart
+ * 文档：
+ * - Standard: https://docs.nanobananaapi.ai/nanobanana-api/generate-or-edit-image
+ * - Pro: https://docs.nanobananaapi.ai/nanobanana-api/generate-image-pro
  *
  * 异步 API，需要先提交任务，然后轮询获取结果
  */
@@ -17,10 +19,25 @@ const POLL_INTERVAL_MS = 3000;
 // 最大等待时间（3分钟）
 const MAX_WAIT_TIME_MS = 180000;
 
+// 模型类型
+export type ModelType = 'standard' | 'pro';
+
+// 任务类型
+export type TaskType = 'text-to-image' | 'image-to-image';
+
+// Standard API 尺寸
+export type StandardImageSize = '1:1' | '9:16' | '16:9' | '3:4' | '4:3' | '3:2' | '2:3' | '5:4' | '4:5' | '21:9';
+
+// Pro API 尺寸
+export type ProAspectRatio = '1:1' | '16:9' | '9:16' | '4:3' | '3:4' | '3:2' | '2:3';
+
+// Pro API 分辨率
+export type ProResolution = '1K' | '2K' | '4K';
+
 /**
  * 生成任务响应
  */
-interface GenerateResponse {
+interface GenerateResponseData {
   code: number;
   msg: string;
   data?: {
@@ -81,44 +98,81 @@ function sleep(ms: number): Promise<void> {
 }
 
 /**
- * 生成选项
+ * Standard 生成选项
  */
-export interface GenerateOptions {
+export interface StandardGenerateOptions {
   /** 图片尺寸比例，默认 1:1 */
-  imageSize?: '1:1' | '9:16' | '16:9' | '3:4' | '4:3' | '3:2' | '2:3' | '5:4' | '4:5' | '21:9';
+  imageSize?: StandardImageSize;
   /** 生成图片数量，1-4，默认 1 */
   numImages?: 1 | 2 | 3 | 4;
+  /** 水印文字（可选） */
+  watermark?: string;
 }
 
 /**
- * 提交图像生成/编辑任务
- * @param imageUrls - 参考图片 URL 数组（支持多张）
- * @param prompt - 生成提示词
- * @param options - 生成选项
+ * Pro 生成选项
  */
-async function submitGenerateTask(
-  imageUrls: string[],
+export interface ProGenerateOptions {
+  /** 图片宽高比，默认 1:1 */
+  aspectRatio?: ProAspectRatio;
+  /** 分辨率，默认 1K */
+  resolution?: ProResolution;
+}
+
+/**
+ * 统一生成选项
+ */
+export interface GenerateOptions {
+  /** 模型类型 */
+  model?: ModelType;
+  /** 任务类型 */
+  taskType?: TaskType;
+  /** 图片尺寸比例（Standard 模式） */
+  imageSize?: StandardImageSize;
+  /** 图片宽高比（Pro 模式） */
+  aspectRatio?: ProAspectRatio;
+  /** 分辨率（Pro 模式） */
+  resolution?: ProResolution;
+  /** 生成图片数量，1-4，默认 1 */
+  numImages?: 1 | 2 | 3 | 4;
+  /** 水印文字（Standard 模式） */
+  watermark?: string;
+}
+
+/**
+ * 提交 Standard 图像生成/编辑任务
+ */
+async function submitStandardTask(
   prompt: string,
-  options: GenerateOptions = {}
+  imageUrls: string[] = [],
+  options: StandardGenerateOptions = {}
 ): Promise<string> {
   if (!API_KEY) {
     throw new Error('API Key 未配置，请在 .env.local 中设置 NANOBANANA_API_KEY');
   }
 
-  const { imageSize = '1:1', numImages = 1 } = options;
+  const { imageSize = '1:1', numImages = 1, watermark } = options;
+  const isTextToImage = imageUrls.length === 0;
 
-  console.log('[NanoBanana] 提交生成任务...');
-  console.log('[NanoBanana] Prompt:', prompt);
-  console.log('[NanoBanana] 参考图片数量:', imageUrls.length);
+  console.log('[NanoBanana Standard] 提交生成任务...');
+  console.log('[NanoBanana Standard] Type:', isTextToImage ? 'TEXTTOIAMGE' : 'IMAGETOIAMGE');
+  console.log('[NanoBanana Standard] Prompt:', prompt);
 
-  const requestBody = {
+  const requestBody: Record<string, unknown> = {
     prompt: prompt,
-    type: 'IMAGETOIAMGE', // 注意: API 就是这个拼写
-    imageUrls: imageUrls,
+    type: isTextToImage ? 'TEXTTOIAMGE' : 'IMAGETOIAMGE', // 注意: API 就是这个拼写
     numImages: numImages,
     image_size: imageSize,
     callBackUrl: 'https://example.com/callback', // 必填但不使用回调
   };
+
+  if (!isTextToImage) {
+    requestBody.imageUrls = imageUrls;
+  }
+
+  if (watermark) {
+    requestBody.watermark = watermark;
+  }
 
   const response = await fetchWithTimeout(`${API_BASE_URL}/generate`, {
     method: 'POST',
@@ -131,12 +185,68 @@ async function submitGenerateTask(
 
   if (!response.ok) {
     const errorText = await response.text();
-    console.error('[NanoBanana] API 错误:', response.status, errorText);
+    console.error('[NanoBanana Standard] API 错误:', response.status, errorText);
     throw new Error(`API 请求失败: ${response.status}`);
   }
 
-  const result: GenerateResponse = await response.json();
-  console.log('[NanoBanana] 任务提交响应:', result);
+  const result: GenerateResponseData = await response.json();
+  console.log('[NanoBanana Standard] 任务提交响应:', result);
+
+  if (result.code !== 200 || !result.data?.taskId) {
+    throw new Error(result.msg || '任务提交失败');
+  }
+
+  return result.data.taskId;
+}
+
+/**
+ * 提交 Pro 图像生成任务
+ */
+async function submitProTask(
+  prompt: string,
+  imageUrls: string[] = [],
+  options: ProGenerateOptions = {}
+): Promise<string> {
+  if (!API_KEY) {
+    throw new Error('API Key 未配置，请在 .env.local 中设置 NANOBANANA_API_KEY');
+  }
+
+  const { aspectRatio = '1:1', resolution = '1K' } = options;
+
+  console.log('[NanoBanana Pro] 提交生成任务...');
+  console.log('[NanoBanana Pro] Prompt:', prompt);
+  console.log('[NanoBanana Pro] AspectRatio:', aspectRatio);
+  console.log('[NanoBanana Pro] Resolution:', resolution);
+
+  const requestBody: Record<string, unknown> = {
+    prompt: prompt,
+    aspectRatio: aspectRatio,
+    resolution: resolution,
+    callBackUrl: 'https://example.com/callback',
+  };
+
+  // Pro API 支持最多 8 张参考图
+  if (imageUrls.length > 0) {
+    requestBody.imageUrls = imageUrls.slice(0, 8);
+  }
+
+  const response = await fetchWithTimeout(`${API_BASE_URL}/generate-pro`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${API_KEY}`,
+    },
+    body: JSON.stringify(requestBody),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error('[NanoBanana Pro] API 错误:', response.status, errorText);
+    throw new Error(`API 请求失败: ${response.status}`);
+  }
+
+  const result: GenerateResponseData = await response.json();
+  console.log('[NanoBanana Pro] 任务提交响应:', result);
 
   if (result.code !== 200 || !result.data?.taskId) {
     throw new Error(result.msg || '任务提交失败');
@@ -307,24 +417,47 @@ async function uploadBase64ToUrl(base64Image: string): Promise<string> {
 }
 
 /**
- * 使用 NanoBanana API 生成图像（单张参考图）
- * @param base64Image - base64 编码的原始图片
+ * 统一生成函数 - 支持 Standard 和 Pro 模型
  * @param prompt - 生成提示词
+ * @param base64Images - base64 编码的图片数组（可选，Text-to-Image 时为空）
  * @param options - 生成选项
  * @returns 生成的图片 URL
  */
-export async function generateImageWithNanoBanana(
-  base64Image: string,
+export async function generateImage(
   prompt: string,
-  options?: GenerateOptions
+  base64Images: string[] = [],
+  options: GenerateOptions = {}
 ): Promise<string> {
-  console.log('[NanoBanana] 开始图像生成（单张参考图）...');
+  const { model = 'standard' } = options;
 
-  // 1. 上传图片获取 URL
-  const imageUrl = await uploadBase64ToUrl(base64Image);
+  console.log(`[NanoBanana] 开始图像生成 (${model})...`);
+  console.log('[NanoBanana] 参考图片数量:', base64Images.length);
 
-  // 2. 提交生成任务
-  const taskId = await submitGenerateTask([imageUrl], prompt, options);
+  // 1. 上传图片（如果有）
+  let imageUrls: string[] = [];
+  if (base64Images.length > 0) {
+    const uploadPromises = base64Images.map((img, index) => {
+      console.log(`[NanoBanana] 上传图片 ${index + 1}/${base64Images.length}...`);
+      return uploadBase64ToUrl(img);
+    });
+    imageUrls = await Promise.all(uploadPromises);
+    console.log('[NanoBanana] 所有图片上传完成');
+  }
+
+  // 2. 根据模型类型提交任务
+  let taskId: string;
+  if (model === 'pro') {
+    taskId = await submitProTask(prompt, imageUrls, {
+      aspectRatio: options.aspectRatio,
+      resolution: options.resolution,
+    });
+  } else {
+    taskId = await submitStandardTask(prompt, imageUrls, {
+      imageSize: options.imageSize,
+      numImages: options.numImages,
+      watermark: options.watermark,
+    });
+  }
 
   // 3. 轮询等待结果
   const resultUrl = await waitForTaskCompletion(taskId);
@@ -333,36 +466,33 @@ export async function generateImageWithNanoBanana(
 }
 
 /**
- * 使用 NanoBanana API 生成图像（多张参考图）
- * @param base64Images - base64 编码的图片数组
- * @param prompt - 生成提示词
- * @param options - 生成选项
- * @returns 生成的图片 URL
+ * 兼容旧 API - 使用 NanoBanana API 生成图像（单张参考图）
+ * @deprecated 使用 generateImage 代替
+ */
+export async function generateImageWithNanoBanana(
+  base64Image: string,
+  prompt: string,
+  options?: { imageSize?: StandardImageSize }
+): Promise<string> {
+  return generateImage(prompt, [base64Image], {
+    model: 'standard',
+    imageSize: options?.imageSize,
+  });
+}
+
+/**
+ * 兼容旧 API - 使用 NanoBanana API 生成图像（多张参考图）
+ * @deprecated 使用 generateImage 代替
  */
 export async function generateImageWithMultipleReferences(
   base64Images: string[],
   prompt: string,
-  options?: GenerateOptions
+  options?: { imageSize?: StandardImageSize }
 ): Promise<string> {
-  console.log('[NanoBanana] 开始图像生成（多张参考图）...');
-  console.log('[NanoBanana] 参考图片数量:', base64Images.length);
-
-  // 1. 并行上传所有图片
-  const uploadPromises = base64Images.map((img, index) => {
-    console.log(`[NanoBanana] 上传图片 ${index + 1}/${base64Images.length}...`);
-    return uploadBase64ToUrl(img);
+  return generateImage(prompt, base64Images, {
+    model: 'standard',
+    imageSize: options?.imageSize,
   });
-
-  const imageUrls = await Promise.all(uploadPromises);
-  console.log('[NanoBanana] 所有图片上传完成');
-
-  // 2. 提交生成任务
-  const taskId = await submitGenerateTask(imageUrls, prompt, options);
-
-  // 3. 轮询等待结果
-  const resultUrl = await waitForTaskCompletion(taskId);
-
-  return resultUrl;
 }
 
 /**

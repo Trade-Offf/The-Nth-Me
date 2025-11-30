@@ -7,14 +7,11 @@ import {
   ChevronLeft,
   ChevronRight,
   Tag,
-  Sparkles,
   Copy,
   Check,
   ChevronDown,
   ChevronUp,
-  Wand2,
 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import TechCard from '@/components/TechCard';
 import Navbar from '@/components/Navbar';
 import BinaryRain from '@/components/BinaryRain';
@@ -44,8 +41,8 @@ function getPrimaryTags(): string[] {
 /**
  * 单个 Prompt 卡片组件
  * - 效果图默认显示
- * - 展开按钮只控制 Prompt 内容
- * - 去生成按钮跳转到上传页
+ * - 展开按钮控制 Prompt 内容显示
+ * - 复制按钮直接复制完整 Prompt
  */
 function PromptCard({ prompt, index, localizedName, tagTranslations, showcaseT }: {
   prompt: PromptConfig;
@@ -54,14 +51,12 @@ function PromptCard({ prompt, index, localizedName, tagTranslations, showcaseT }
   tagTranslations: Record<string, string>;
   showcaseT: {
     signalStrength: string;
-    script: string;
+    expand: string;
     collapse: string;
-    entangle: string;
-    copy: string;
+    copyPrompt: string;
     copySuccess: string;
   };
 }) {
-  const router = useRouter();
   const [copied, setCopied] = useState(false);
   const [showPrompt, setShowPrompt] = useState(false);
 
@@ -71,13 +66,6 @@ function PromptCard({ prompt, index, localizedName, tagTranslations, showcaseT }
     await navigator.clipboard.writeText(fullPrompt);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-  };
-
-  const handleGenerate = () => {
-    // 存储选中的风格ID到sessionStorage
-    sessionStorage.setItem('selectedWorldline', prompt.id);
-    // 跳转到上传页
-    router.push('/portal');
   };
 
   return (
@@ -119,33 +107,43 @@ function PromptCard({ prompt, index, localizedName, tagTranslations, showcaseT }
 
         {/* 按钮组 */}
         <div className="mt-4 flex gap-3">
-          {/* Prompt 展开/收起按钮 */}
+          {/* 展开/收起按钮 */}
           <button
             onClick={() => setShowPrompt(!showPrompt)}
             className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-sm
                        bg-transparent border border-tech-border
                        text-zinc-500 hover:text-acid hover:border-acid/50 transition-all duration-200"
           >
-            <Sparkles className="w-4 h-4" strokeWidth={1.5} />
-            <span className="text-xs font-mono uppercase">{showPrompt ? showcaseT.collapse : showcaseT.script}</span>
             {showPrompt ? (
               <ChevronUp className="w-4 h-4" strokeWidth={1.5} />
             ) : (
               <ChevronDown className="w-4 h-4" strokeWidth={1.5} />
             )}
+            <span className="text-xs font-mono uppercase">{showPrompt ? showcaseT.collapse : showcaseT.expand}</span>
           </button>
 
-          {/* 去生成按钮 */}
+          {/* 复制 Prompt 按钮 */}
           <button
-            onClick={handleGenerate}
-            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-sm
-                       bg-acid text-black font-mono text-xs uppercase tracking-wider font-medium
-                       border-2 border-acid
-                       hover:bg-transparent hover:text-acid
-                       transition-all duration-200"
+            onClick={handleCopy}
+            className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-sm
+                       font-mono text-xs uppercase tracking-wider font-medium
+                       border-2 transition-all duration-200
+                       ${copied
+                         ? 'bg-acid/20 text-acid border-acid/50'
+                         : 'bg-acid text-black border-acid hover:bg-transparent hover:text-acid'
+                       }`}
           >
-            <Wand2 className="w-4 h-4" strokeWidth={1.5} />
-            <span>{showcaseT.entangle}</span>
+            {copied ? (
+              <>
+                <Check className="w-4 h-4" strokeWidth={1.5} />
+                <span>{showcaseT.copySuccess}</span>
+              </>
+            ) : (
+              <>
+                <Copy className="w-4 h-4" strokeWidth={1.5} />
+                <span>{showcaseT.copyPrompt}</span>
+              </>
+            )}
           </button>
         </div>
 
@@ -168,27 +166,8 @@ function PromptCard({ prompt, index, localizedName, tagTranslations, showcaseT }
                 transition={{ delay: 0.1, duration: 0.2 }}
                 className="mt-3 p-4 rounded-sm bg-tech-bg border border-tech-border"
               >
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2 text-xs text-zinc-500 font-mono">
-                    <span>{showcaseT.signalStrength}: {prompt.sampleStrength}</span>
-                  </div>
-                  <button
-                    onClick={handleCopy}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm
-                             border border-tech-border hover:border-acid/50 transition-colors text-xs font-mono"
-                  >
-                    {copied ? (
-                      <>
-                        <Check className="w-3.5 h-3.5 text-acid" strokeWidth={1.5} />
-                        <span className="text-acid">{showcaseT.copySuccess}</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="w-3.5 h-3.5 text-zinc-500" strokeWidth={1.5} />
-                        <span className="text-zinc-500">{showcaseT.copy}</span>
-                      </>
-                    )}
-                  </button>
+                <div className="flex items-center gap-2 text-xs text-zinc-500 font-mono mb-3">
+                  <span>{showcaseT.signalStrength}: {prompt.sampleStrength}</span>
                 </div>
                 <p className="text-xs text-zinc-400 font-mono leading-relaxed break-all">
                   {fullPrompt}
