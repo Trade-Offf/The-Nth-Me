@@ -12,7 +12,7 @@ import { worldlines } from '@/lib/worldlines';
 import {
   hasEnoughCredits,
   deductCredits,
-  addCredits,
+  addBonusCredits,
   CREDITS_PER_GENERATION,
 } from '@/lib/services/creditService';
 import type { GenerateRequest, GenerateResponse } from '@/lib/types';
@@ -118,9 +118,7 @@ export async function POST(request: NextRequest) {
     } catch (genError) {
       // 生成失败，退还能量
       console.log(`[API] 生成失败，退还 ${CREDITS_PER_GENERATION} 点能量给用户: ${userId}`);
-      await addCredits(userId, CREDITS_PER_GENERATION, {
-        planName: '生成失败退还',
-      });
+      await addBonusCredits(userId, CREDITS_PER_GENERATION, '生成失败退还');
       throw genError;
     }
 
