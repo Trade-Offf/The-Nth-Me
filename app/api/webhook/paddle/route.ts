@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
     const transactionId = data.id;
 
     // 检查订单是否已处理（防止重复）
-    const existingTransaction = await prisma.transaction.findUnique({
+    const existingTransaction = await prisma.transaction.findFirst({
       where: { paddleOrderId: transactionId },
     });
 

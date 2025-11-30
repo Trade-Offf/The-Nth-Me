@@ -254,10 +254,11 @@ const enUS: Translations = {
   terms: {
     title: 'Terms of Service',
     lastUpdated: 'Last Updated',
+    operatedBy: 'This service is operated by',
     sections: {
       intro: {
         title: '1. Service Description',
-        content: '"The Nth Me" is an AI-powered image generation service. After you upload a photo, our AI system generates artistic portrait images based on preset style templates.',
+        content: '"The Nth Me" (operated by Jialin Li as sole proprietor) is an AI-powered image generation service. After you upload a photo, our AI system generates artistic portrait images based on preset style templates.',
       },
       usage: {
         title: '2. Usage Guidelines',

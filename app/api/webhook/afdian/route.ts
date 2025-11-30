@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 检查订单是否已处理（防止重复）
-    const existingTransaction = await prisma.transaction.findUnique({
+    const existingTransaction = await prisma.transaction.findFirst({
       where: { afdianOrderId: out_trade_no },
     });
 

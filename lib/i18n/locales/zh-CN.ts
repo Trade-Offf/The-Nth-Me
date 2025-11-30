@@ -252,10 +252,11 @@ const zhCN = {
   terms: {
     title: '服务条款',
     lastUpdated: '最后更新',
+    operatedBy: '本服务由以下主体运营',
     sections: {
       intro: {
         title: '1. 服务说明',
-        content: '「第N个我」是一款基于人工智能的图像生成服务。您上传照片后，我们的AI系统会根据预设的风格模板为您生成艺术化的头像图片。',
+        content: '「第N个我」（由个人开发者 Jialin Li 独立运营）是一款基于人工智能的图像生成服务。您上传照片后，我们的AI系统会根据预设的风格模板为您生成艺术化的头像图片。',
       },
       usage: {
         title: '2. 使用规范',
