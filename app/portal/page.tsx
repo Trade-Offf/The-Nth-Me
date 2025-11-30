@@ -40,8 +40,8 @@ export default function PortalPage() {
       fetch('/api/user/credits')
         .then(res => res.json())
         .then(data => {
-          if (data.balance !== undefined) {
-            setUserCredits(data.balance);
+          if (data.success && data.data?.balance !== undefined) {
+            setUserCredits(data.data.balance);
           }
         })
         .catch(console.error);
@@ -82,6 +82,8 @@ export default function PortalPage() {
         // 更新积分
         if (data.creditsUsed) {
           setUserCredits(prev => prev - data.creditsUsed!);
+          // 触发全局事件，通知 UserMenu 刷新积分
+          window.dispatchEvent(new CustomEvent('credits-updated'));
         }
       } else {
         setError(data.error || 'Generation failed');

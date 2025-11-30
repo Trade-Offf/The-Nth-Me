@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Upload, X, RefreshCw, AlertCircle,
   Square, Smartphone, Monitor,
-  Zap, Sparkles, ImageIcon, Type
+  Zap, ImageIcon, Type
 } from 'lucide-react';
 import TechCard from '@/components/TechCard';
 import { useI18n } from '@/lib/i18n';
@@ -166,7 +166,7 @@ export default function ControlPanel({
           {t.laboratory.controlPanel}
         </h2>
         <div className="flex items-center gap-1.5 px-2 py-1 rounded-sm bg-acid/10 border border-acid/30">
-          <Sparkles className="w-3 h-3 text-acid" />
+          <Zap className="w-3 h-3 text-acid" strokeWidth={2} />
           <span className="text-xs font-mono text-acid">{userCredits}</span>
         </div>
       </div>

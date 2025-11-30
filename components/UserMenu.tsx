@@ -29,8 +29,8 @@ export default function UserMenu() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // 获取用户积分
-  useEffect(() => {
+  // 获取用户积分的函数
+  const fetchCredits = () => {
     if (session?.user) {
       fetch('/api/user/credits')
         .then((res) => res.json())
@@ -41,6 +41,21 @@ export default function UserMenu() {
         })
         .catch(console.error);
     }
+  };
+
+  // 初始加载积分
+  useEffect(() => {
+    fetchCredits();
+  }, [session]);
+
+  // 监听积分更新事件
+  useEffect(() => {
+    const handleCreditsUpdate = () => {
+      fetchCredits();
+    };
+
+    window.addEventListener('credits-updated', handleCreditsUpdate);
+    return () => window.removeEventListener('credits-updated', handleCreditsUpdate);
   }, [session]);
 
   // 加载中
