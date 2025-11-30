@@ -118,6 +118,7 @@ const enUS: Translations = {
     download: 'Download',
     copyPrompt: 'Copy Prompt',
     copied: 'Copied!',
+    privacyNotice: 'We don\'t store your data. Please save your images promptly.',
   },
   showcase: {
     badge: 'SPACETIME COORDINATE LIBRARY',

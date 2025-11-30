@@ -3,8 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
-import Link from 'next/link';
-import { LogIn, Beaker } from 'lucide-react';
+import { Beaker } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import ControlPanel from '@/components/laboratory/ControlPanel';
 import PreviewPanel from '@/components/laboratory/PreviewPanel';
@@ -22,7 +21,6 @@ export default function PortalPage() {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [aspectRatio, setAspectRatio] = useState<ImageAspectRatio>('1:1');
   const [resolution, setResolution] = useState<ProResolution>('1K');
-  const [watermark, setWatermark] = useState('');
 
   // Preview Panel 状态
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
@@ -62,7 +60,6 @@ export default function PortalPage() {
         prompt,
         imageSize: aspectRatio,
         resolution: model === 'pro' ? resolution : undefined,
-        watermark: model === 'standard' && watermark ? watermark : undefined,
       };
 
       if (taskType === 'image-to-image' && uploadedImage) {
@@ -93,7 +90,7 @@ export default function PortalPage() {
     } finally {
       setIsGenerating(false);
     }
-  }, [isLoggedIn, model, taskType, prompt, aspectRatio, resolution, watermark, uploadedImage]);
+  }, [isLoggedIn, model, taskType, prompt, aspectRatio, resolution, uploadedImage]);
 
   return (
     <main className="min-h-screen bg-tech-bg relative">
@@ -121,27 +118,6 @@ export default function PortalPage() {
           </p>
         </motion.div>
 
-        {/* 未登录提示 */}
-        {!isLoggedIn && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="mb-4 p-3 rounded-sm bg-acid/5 border border-acid/30 max-w-md mx-auto text-center"
-          >
-            <p className="text-xs text-zinc-400 mb-2 font-mono">
-              <LogIn className="inline w-4 h-4 mr-2" strokeWidth={1.5} />
-              {t.portal.loginRequired}
-            </p>
-            <Link
-              href="/login?callbackUrl=/portal"
-              className="inline-block px-4 py-1.5 rounded-sm bg-acid text-black
-                       font-mono text-xs uppercase hover:bg-acid-dim transition-all"
-            >
-              {t.portal.loginBtn}
-            </Link>
-          </motion.div>
-        )}
-
         {/* 主内容区 - 左右分栏 */}
         <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4 min-h-0">
           {/* 左侧：控制面板 */}
@@ -158,9 +134,9 @@ export default function PortalPage() {
               uploadedImage={uploadedImage}
               aspectRatio={aspectRatio}
               resolution={resolution}
-              watermark={watermark}
               isGenerating={isGenerating}
               userCredits={userCredits}
+              isLoggedIn={isLoggedIn}
               onModelChange={setModel}
               onTaskTypeChange={setTaskType}
               onPromptChange={setPrompt}
@@ -168,7 +144,6 @@ export default function PortalPage() {
               onImageRemove={() => setUploadedImage(null)}
               onAspectRatioChange={setAspectRatio}
               onResolutionChange={setResolution}
-              onWatermarkChange={setWatermark}
               onGenerate={handleGenerate}
             />
           </motion.div>
@@ -185,9 +160,20 @@ export default function PortalPage() {
               isGenerating={isGenerating}
               error={error}
               prompt={prompt}
+              uploadedImage={taskType === 'image-to-image' ? uploadedImage : null}
             />
           </motion.div>
         </div>
+
+        {/* 底部隐私提示 */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="text-center text-[10px] text-zinc-600 font-mono mt-4 pb-2"
+        >
+          {t.laboratory.privacyNotice}
+        </motion.p>
       </div>
     </main>
   );

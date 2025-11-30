@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Upload, X, RefreshCw, AlertCircle,
   Square, Smartphone, Monitor,
-  Zap, ImageIcon, Type
+  Zap, ImageIcon, Type, LogIn
 } from 'lucide-react';
 import TechCard from '@/components/TechCard';
 import { useI18n } from '@/lib/i18n';
@@ -36,10 +37,10 @@ interface ControlPanelProps {
   uploadedImage: string | null;
   aspectRatio: ImageAspectRatio;
   resolution: ProResolution;
-  watermark: string;
   isGenerating: boolean;
   userCredits: number;
-  
+  isLoggedIn: boolean;
+
   // 回调
   onModelChange: (model: ModelType) => void;
   onTaskTypeChange: (taskType: TaskType) => void;
@@ -48,7 +49,6 @@ interface ControlPanelProps {
   onImageRemove: () => void;
   onAspectRatioChange: (ratio: ImageAspectRatio) => void;
   onResolutionChange: (resolution: ProResolution) => void;
-  onWatermarkChange: (watermark: string) => void;
   onGenerate: () => void;
 }
 
@@ -59,9 +59,9 @@ export default function ControlPanel({
   uploadedImage,
   aspectRatio,
   resolution,
-  watermark,
   isGenerating,
   userCredits,
+  isLoggedIn,
   onModelChange,
   onTaskTypeChange,
   onPromptChange,
@@ -69,7 +69,6 @@ export default function ControlPanel({
   onImageRemove,
   onAspectRatioChange,
   onResolutionChange,
-  onWatermarkChange,
   onGenerate,
 }: ControlPanelProps) {
   const { t } = useI18n();
@@ -77,8 +76,30 @@ export default function ControlPanel({
   const [isDragging, setIsDragging] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
 
+  // 主题色配置 - 根据模型切换
+  const isPro = model === 'pro';
+  const theme = {
+    // 主色调
+    text: isPro ? 'text-purple-400' : 'text-acid',
+    bg: isPro ? 'bg-purple-500/10' : 'bg-acid/10',
+    border: isPro ? 'border-purple-500' : 'border-acid',
+    borderLight: isPro ? 'border-purple-500/30' : 'border-acid/30',
+    // 按钮
+    btnBg: isPro ? 'bg-purple-500' : 'bg-acid',
+    btnBgHover: isPro ? 'hover:bg-purple-400' : 'hover:bg-acid-dim',
+    btnText: isPro ? 'text-white' : 'text-black',
+    // focus 状态
+    focusBorder: isPro ? 'focus:border-purple-500' : 'focus:border-acid',
+    // 拖拽
+    dragBorder: isPro ? 'border-purple-500' : 'border-acid',
+    dragBg: isPro ? 'bg-purple-500/10' : 'bg-acid/10',
+    hoverBorder: isPro ? 'hover:border-purple-500/50' : 'hover:border-acid/50',
+    // 悬停文字
+    hoverText: isPro ? 'hover:text-purple-400' : 'hover:text-acid',
+  };
+
   // 计算消耗积分
-  const creditsNeeded = model === 'pro' ? CREDITS_PRO : CREDITS_STANDARD;
+  const creditsNeeded = isPro ? CREDITS_PRO : CREDITS_STANDARD;
   const hasEnoughCredits = userCredits >= creditsNeeded;
   const canGenerate = prompt.trim().length > 0 && 
     (taskType === 'text-to-image' || uploadedImage) &&
@@ -162,12 +183,12 @@ export default function ControlPanel({
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-sm font-mono font-medium text-white uppercase tracking-wider flex items-center gap-2">
-          <Zap className="w-4 h-4 text-acid" />
+          <Zap className={`w-4 h-4 ${theme.text}`} />
           {t.laboratory.controlPanel}
         </h2>
-        <div className="flex items-center gap-1.5 px-2 py-1 rounded-sm bg-acid/10 border border-acid/30">
-          <Zap className="w-3 h-3 text-acid" strokeWidth={2} />
-          <span className="text-xs font-mono text-acid">{userCredits}</span>
+        <div className={`flex items-center gap-1.5 px-2 py-1 rounded-sm ${theme.bg} border ${theme.borderLight}`}>
+          <Zap className={`w-3 h-3 ${theme.text}`} strokeWidth={2} />
+          <span className={`text-xs font-mono ${theme.text}`}>{userCredits}</span>
         </div>
       </div>
 
@@ -209,7 +230,7 @@ export default function ControlPanel({
               className={`
                 flex items-center justify-center gap-1.5 px-3 py-2 rounded-sm border text-xs font-mono transition-all
                 ${taskType === 'text-to-image'
-                  ? 'border-acid bg-acid/10 text-acid'
+                  ? `${theme.border} ${theme.bg} ${theme.text}`
                   : 'border-tech-border bg-transparent text-zinc-500 hover:border-zinc-600'
                 }
               `}
@@ -222,7 +243,7 @@ export default function ControlPanel({
               className={`
                 flex items-center justify-center gap-1.5 px-3 py-2 rounded-sm border text-xs font-mono transition-all
                 ${taskType === 'image-to-image'
-                  ? 'border-acid bg-acid/10 text-acid'
+                  ? `${theme.border} ${theme.bg} ${theme.text}`
                   : 'border-tech-border bg-transparent text-zinc-500 hover:border-zinc-600'
                 }
               `}
@@ -242,9 +263,9 @@ export default function ControlPanel({
             value={prompt}
             onChange={(e) => onPromptChange(e.target.value)}
             placeholder={t.laboratory.promptPlaceholder}
-            className="w-full h-24 px-3 py-2 rounded-sm border border-tech-border bg-tech-bg
+            className={`w-full h-24 px-3 py-2 rounded-sm border border-tech-border bg-tech-bg
                      text-sm text-white placeholder:text-zinc-600 font-mono
-                     focus:border-acid focus:outline-none resize-none"
+                     ${theme.focusBorder} focus:outline-none resize-none`}
           />
         </div>
 
@@ -285,16 +306,20 @@ export default function ControlPanel({
                   onClick={() => fileInputRef.current?.click()}
                   className={`
                     border border-dashed rounded-sm p-4 text-center cursor-pointer transition-all
-                    ${isDragging ? 'border-acid bg-acid/10' : 'border-tech-border hover:border-acid/50'}
+                    ${isDragging ? `${theme.dragBorder} ${theme.dragBg}` : `border-tech-border ${theme.hoverBorder}`}
                   `}
                 >
                   <Upload className="w-5 h-5 mx-auto mb-2 text-zinc-500" />
                   <p className="text-[10px] text-zinc-500 font-mono">{t.laboratory.dropOrClick}</p>
                 </div>
               ) : (
-                <div className="relative aspect-video rounded-sm overflow-hidden border border-tech-border">
+                <div className="relative rounded-sm overflow-hidden border border-tech-border bg-black/50">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={uploadedImage} alt="Reference" className="w-full h-full object-cover" />
+                  <img
+                    src={uploadedImage}
+                    alt="Reference"
+                    className="w-full max-h-48 object-contain mx-auto"
+                  />
                   <button
                     onClick={onImageRemove}
                     className="absolute top-2 right-2 w-6 h-6 rounded-sm bg-black/70 border border-tech-border
@@ -304,8 +329,8 @@ export default function ControlPanel({
                   </button>
                   <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="absolute bottom-2 right-2 px-2 py-1 rounded-sm bg-black/70 border border-tech-border
-                             text-[10px] font-mono text-zinc-400 hover:text-acid hover:border-acid/50 flex items-center gap-1"
+                    className={`absolute bottom-2 right-2 px-2 py-1 rounded-sm bg-black/70 border border-tech-border
+                             text-[10px] font-mono text-zinc-400 ${theme.hoverText} ${theme.hoverBorder} flex items-center gap-1`}
                   >
                     <RefreshCw className="w-3 h-3" />
                     {t.laboratory.replace}
@@ -329,7 +354,7 @@ export default function ControlPanel({
                 className={`
                   flex items-center gap-1 px-2 py-1.5 rounded-sm border text-[10px] font-mono transition-all
                   ${aspectRatio === opt.value
-                    ? 'border-acid bg-acid/10 text-acid'
+                    ? `${theme.border} ${theme.bg} ${theme.text}`
                     : 'border-tech-border text-zinc-500 hover:border-zinc-600'
                   }
                 `}
@@ -343,14 +368,14 @@ export default function ControlPanel({
 
         {/* 6. Resolution (Pro only) */}
         <AnimatePresence>
-          {model === 'pro' && (
+          {isPro && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
             >
               <label className="text-[10px] text-zinc-500 font-mono uppercase tracking-wider mb-2 block">
-                {t.laboratory.resolution} <span className="text-purple-400">({t.laboratory.pro})</span>
+                {t.laboratory.resolution} <span className={theme.text}>({t.laboratory.pro})</span>
               </label>
               <div className="flex gap-1.5">
                 {RESOLUTION_OPTIONS.map((opt) => (
@@ -360,7 +385,7 @@ export default function ControlPanel({
                     className={`
                       px-3 py-1.5 rounded-sm border text-[10px] font-mono transition-all
                       ${resolution === opt.value
-                        ? 'border-purple-500 bg-purple-500/10 text-purple-400'
+                        ? `${theme.border} ${theme.bg} ${theme.text}`
                         : 'border-tech-border text-zinc-500 hover:border-zinc-600'
                       }
                     `}
@@ -373,63 +398,55 @@ export default function ControlPanel({
           )}
         </AnimatePresence>
 
-        {/* 7. Watermark (Standard only) */}
-        <AnimatePresence>
-          {model === 'standard' && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-            >
-              <label className="text-[10px] text-zinc-500 font-mono uppercase tracking-wider mb-2 block">
-                {t.laboratory.watermark} <span className="text-zinc-600">({t.laboratory.optional})</span>
-              </label>
-              <input
-                type="text"
-                value={watermark}
-                onChange={(e) => onWatermarkChange(e.target.value)}
-                placeholder={t.laboratory.watermarkPlaceholder}
-                className="w-full px-3 py-2 rounded-sm border border-tech-border bg-tech-bg
-                         text-xs text-white placeholder:text-zinc-600 font-mono
-                         focus:border-acid focus:outline-none"
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
+
       </div>
 
       {/* Run Button */}
       <div className="mt-4 pt-4 border-t border-tech-border">
-        <button
-          onClick={onGenerate}
-          disabled={!canGenerate}
-          className={`
-            w-full py-3 rounded-sm font-mono text-sm uppercase transition-all duration-300
-            flex items-center justify-center gap-2
-            ${canGenerate
-              ? model === 'pro'
-                ? 'bg-purple-500 text-white hover:bg-purple-400'
-                : 'bg-acid text-black hover:bg-acid-dim'
-              : 'bg-tech-card border border-tech-border text-zinc-600 cursor-not-allowed'
-            }
-          `}
-        >
-          {isGenerating ? (
-            <>
-              <RefreshCw className="w-4 h-4 animate-spin" />
-              {t.laboratory.generating}
-            </>
-          ) : (
-            <>
-              <Zap className="w-4 h-4" />
-              {t.laboratory.run} ({creditsNeeded}⚡️)
-            </>
-          )}
-        </button>
-        {!hasEnoughCredits && (
-          <p className="mt-2 text-center text-[10px] text-red-400 font-mono">
-            {t.laboratory.insufficientCredits.replace('{needed}', String(creditsNeeded)).replace('{have}', String(userCredits))}
-          </p>
+        {!isLoggedIn ? (
+          // 未登录 - 显示登录按钮
+          <Link
+            href="/login?callbackUrl=/portal"
+            className={`w-full py-3 rounded-sm font-mono text-sm uppercase transition-all duration-300
+                     flex items-center justify-center gap-2
+                     ${theme.btnBg} ${theme.btnText} ${theme.btnBgHover}`}
+          >
+            <LogIn className="w-4 h-4" />
+            {t.portal.loginBtn}
+          </Link>
+        ) : (
+          // 已登录 - 显示运行按钮
+          <>
+            <button
+              onClick={onGenerate}
+              disabled={!canGenerate}
+              className={`
+                w-full py-3 rounded-sm font-mono text-sm uppercase transition-all duration-300
+                flex items-center justify-center gap-2
+                ${canGenerate
+                  ? `${theme.btnBg} ${theme.btnText} ${theme.btnBgHover}`
+                  : 'bg-tech-card border border-tech-border text-zinc-600 cursor-not-allowed'
+                }
+              `}
+            >
+              {isGenerating ? (
+                <>
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  {t.laboratory.generating}
+                </>
+              ) : (
+                <>
+                  <Zap className="w-4 h-4" />
+                  {t.laboratory.run} ({creditsNeeded}⚡️)
+                </>
+              )}
+            </button>
+            {!hasEnoughCredits && (
+              <p className="mt-2 text-center text-[10px] text-red-400 font-mono">
+                {t.laboratory.insufficientCredits.replace('{needed}', String(creditsNeeded)).replace('{have}', String(userCredits))}
+              </p>
+            )}
+          </>
         )}
       </div>
     </TechCard>

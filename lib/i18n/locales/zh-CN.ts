@@ -116,6 +116,7 @@ const zhCN = {
     download: '下载',
     copyPrompt: '复制提示词',
     copied: '已复制！',
+    privacyNotice: '我们不存储您的任何数据，请及时保存生成的图片。',
   },
   showcase: {
     badge: '时空坐标库',
