@@ -54,6 +54,14 @@ const enUS: Translations = {
       name: 'Cartoon Diner',
       description: 'Roger Rabbit style mixed-media chaos in a retro diner',
     },
+    'mars-cctv': {
+      name: 'Mars CCTV',
+      description: 'Security camera footage from a Mars habitat airlock',
+    },
+    'wildlife-photographer': {
+      name: 'Wildlife Photographer',
+      description: 'National Geographic style, African savannah golden hour',
+    },
   },
   tags: {
     // Primary Tags (for filtering)
@@ -82,6 +90,10 @@ const enUS: Translations = {
     'multi-variant': 'Multi-Variant',
     'mixed-media': 'Mixed Media',
     'retro-pop': 'Retro Pop',
+    'found-footage': 'Found Footage',
+    'off-world': 'Off-World',
+    'golden-hour': 'Golden Hour',
+    'nat-geo': 'Nat Geo',
   },
   portal: {
     badge: 'NEURAL ROAMING INTERFACE',
@@ -136,6 +148,7 @@ const enUS: Translations = {
     configureAndRun: 'Configure and run to generate',
     generationFailed: 'Generation Failed',
     download: 'Download',
+    downloading: 'Downloading...',
     copyPrompt: 'Copy Prompt',
     copied: 'Copied!',
     privacyNotice: "We don't store your data. Please save your images promptly.",

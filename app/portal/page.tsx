@@ -160,7 +160,6 @@ export default function PortalPage() {
               isGenerating={isGenerating}
               error={error}
               prompt={prompt}
-              uploadedImage={taskType === 'image-to-image' ? uploadedImage : null}
             />
           </motion.div>
         </div>

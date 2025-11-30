@@ -1,11 +1,10 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Download, Copy, Check,
-  ImageIcon, AlertTriangle,
-  ChevronLeft, ChevronRight
+  ImageIcon, AlertTriangle, Loader2
 } from 'lucide-react';
 import TechCard from '@/components/TechCard';
 import { useI18n } from '@/lib/i18n';
@@ -69,112 +68,11 @@ function MatrixRain() {
   );
 }
 
-// 图片对比滑块组件
-interface DynamicImageCompareSliderProps {
-  beforeSrc: string;
-  afterSrc: string;
-}
-
-function DynamicImageCompareSlider({ beforeSrc, afterSrc }: DynamicImageCompareSliderProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [sliderPosition, setSliderPosition] = useState(50);
-  const [isDragging, setIsDragging] = useState(false);
-
-  const updatePosition = useCallback((clientX: number) => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const x = clientX - rect.left;
-    const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
-    setSliderPosition(percentage);
-  }, []);
-
-  const handleMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-    updatePosition(e.clientX);
-  };
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setIsDragging(true);
-    updatePosition(e.touches[0].clientX);
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (isDragging) {
-      updatePosition(e.touches[0].clientX);
-    }
-  };
-
-  // 全局事件监听（支持拖动时鼠标移出容器）
-  useEffect(() => {
-    if (!isDragging) return;
-
-    const handleMouseMove = (e: MouseEvent) => updatePosition(e.clientX);
-    const handleMouseUp = () => setIsDragging(false);
-
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isDragging, updatePosition]);
-
-  return (
-    <div
-      ref={containerRef}
-      className="relative w-full h-full rounded-sm overflow-hidden cursor-ew-resize select-none"
-      onMouseDown={handleMouseDown}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={() => setIsDragging(false)}
-    >
-      {/* After 图片（底层 - 生成图） */}
-      <div className="absolute inset-0">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={afterSrc} alt="After" className="w-full h-full object-contain" draggable={false} />
-        <div className="absolute bottom-2 right-2 px-2 py-1 rounded-sm bg-black/70 text-acid font-mono text-xs uppercase">
-          After
-        </div>
-      </div>
-
-      {/* Before 图片（裁剪层 - 原图） */}
-      <div
-        className="absolute inset-0 overflow-hidden"
-        style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={beforeSrc} alt="Before" className="w-full h-full object-contain" draggable={false} />
-        <div className="absolute bottom-2 left-2 px-2 py-1 rounded-sm bg-black/70 text-zinc-400 font-mono text-xs uppercase">
-          Before
-        </div>
-      </div>
-
-      {/* 滑动条 */}
-      <div
-        className="absolute top-0 bottom-0 w-0.5 bg-acid z-10 pointer-events-none"
-        style={{ left: `${sliderPosition}%`, transform: 'translateX(-50%)' }}
-      >
-        {/* 滑块手柄 */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-                        w-8 h-8 rounded-sm bg-tech-card border border-acid flex items-center justify-center">
-          <div className="flex gap-0">
-            <ChevronLeft className="w-4 h-4 text-acid" strokeWidth={1.5} />
-            <ChevronRight className="w-4 h-4 text-acid" strokeWidth={1.5} />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 interface PreviewPanelProps {
   generatedImage: string | null;
   isGenerating: boolean;
   error: string | null;
   prompt: string;
-  uploadedImage?: string | null; // 原图（用于对比）
 }
 
 export default function PreviewPanel({
@@ -182,10 +80,10 @@ export default function PreviewPanel({
   isGenerating,
   error,
   prompt,
-  uploadedImage,
 }: PreviewPanelProps) {
   const { t } = useI18n();
   const [copied, setCopied] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   // 复制 Prompt
   const handleCopyPrompt = async () => {
@@ -199,18 +97,28 @@ export default function PreviewPanel({
     }
   };
 
-  // 下载图片 - 使用代理 API 避免 CORS，直接触发浏览器下载
-  const handleDownload = () => {
-    if (!generatedImage) return;
+  // 下载图片 - 使用代理 API 避免 CORS
+  const handleDownload = async () => {
+    if (!generatedImage || isDownloading) return;
 
-    // 直接使用 a 标签触发下载，浏览器会自动处理
-    const downloadUrl = `/api/download?url=${encodeURIComponent(generatedImage)}`;
-    const a = document.createElement('a');
-    a.href = downloadUrl;
-    a.download = `nthme-${Date.now()}.png`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    setIsDownloading(true);
+    try {
+      const downloadUrl = `/api/download?url=${encodeURIComponent(generatedImage)}`;
+      const response = await fetch(downloadUrl);
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `nthme-${Date.now()}.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Download failed:', err);
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   return (
@@ -235,11 +143,19 @@ export default function PreviewPanel({
             </button>
             <button
               onClick={handleDownload}
-              className="flex items-center gap-1.5 px-2 py-1 rounded-sm border border-acid/50 bg-acid/10
-                       text-[10px] font-mono text-acid transition-all hover:bg-acid hover:text-black"
+              disabled={isDownloading}
+              className={`flex items-center gap-1.5 px-2 py-1 rounded-sm border text-[10px] font-mono transition-all
+                ${isDownloading
+                  ? 'border-zinc-600 bg-zinc-800 text-zinc-500 cursor-wait'
+                  : 'border-acid/50 bg-acid/10 text-acid hover:bg-acid hover:text-black'
+                }`}
             >
-              <Download className="w-3 h-3" />
-              {t.laboratory.download}
+              {isDownloading ? (
+                <Loader2 className="w-3 h-3 animate-spin" />
+              ) : (
+                <Download className="w-3 h-3" />
+              )}
+              {isDownloading ? t.laboratory.downloading : t.laboratory.download}
             </button>
           </div>
         )}
@@ -358,21 +274,12 @@ export default function PreviewPanel({
               exit={{ opacity: 0, scale: 0.95 }}
               className="w-full h-full flex items-center justify-center p-4"
             >
-              {uploadedImage ? (
-                // 有原图 - 显示对比滑块
-                <DynamicImageCompareSlider
-                  beforeSrc={uploadedImage}
-                  afterSrc={generatedImage}
-                />
-              ) : (
-                // 无原图 - 显示单张生成图
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={generatedImage}
-                  alt="Generated"
-                  className="max-w-full max-h-full object-contain rounded-sm shadow-lg shadow-black/50"
-                />
-              )}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={generatedImage}
+                alt="Generated"
+                className="max-w-full max-h-full object-contain rounded-sm shadow-lg shadow-black/50"
+              />
             </motion.div>
           )}
         </AnimatePresence>

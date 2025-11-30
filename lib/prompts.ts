@@ -126,6 +126,33 @@ Lighting: Warm, cinematic diner lighting. Maximum chaos, screen filled with dood
     tags: ['surreal', 'mixed-media', 'retro-pop'],
     showCompare: false,
   },
+  {
+    id: 'mars-cctv',
+    name: '火星监控',
+    prompt: `Generate a grainy security camera frame from inside a Mars habitat airlock.
+
+Subject: The person in the attached reference image is sitting on a crate, looking up at the camera with a tired, manic expression. They are wearing a dirty, futuristic flight suit.
+Visual Style: Low-quality CCTV footage. Heavy video noise, compression blocks, and horizontal tracking lines. Fish-eye lens distortion.
+Lighting: The room is bathed in red emergency lighting, but a faint cool light illuminates the subject's face so their identity is clear.
+Overlay: Green pixelated text on screen reading "REC ●" and a timecode.`,
+    sampleStrength: 1.0,
+    tags: ['cinematic', 'found-footage', 'off-world'],
+    showCompare: false,
+  },
+  {
+    id: 'wildlife-photographer',
+    name: '野生动物摄影师',
+    prompt: `Create a National Geographic style shot of [the person in the attached image] as a wildlife photographer.
+
+The Pose: He is lying on his stomach in the African savannah grass, propped up on his elbows, smiling warmly.
+The Face: Keep his face uncovered and 100% accurate to the reference photo.
+The Gear: A professional DSLR with a huge telephoto lens is resting on the grass in front of him (he is taking a break, not shooting).
+The Scene: A cute lion cub is playfully climbing onto his shoulder.
+Lighting: Stunning golden hour sunlight, cinematic depth of field, 8K ultra-realistic.`,
+    sampleStrength: 1.0,
+    tags: ['cinematic', 'golden-hour', 'nat-geo'],
+    showCompare: false,
+  },
 ];
 
 /**

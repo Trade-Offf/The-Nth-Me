@@ -51,6 +51,14 @@ const zhCN = {
       name: '漫画餐厅',
       description: '真人与卡通混搭，复古美式餐厅大乱斗',
     },
+    'mars-cctv': {
+      name: '火星监控',
+      description: '火星基地安全摄像头视角，复古科幻质感',
+    },
+    'wildlife-photographer': {
+      name: '野生动物摄影师',
+      description: '国家地理风格，非洲草原金色时刻',
+    },
   },
   tags: {
     // 主分类 Tags（用于检索）
@@ -79,6 +87,10 @@ const zhCN = {
     'multi-variant': '多变体',
     'mixed-media': '混合媒介',
     'retro-pop': '复古流行',
+    'found-footage': '伪纪录片',
+    'off-world': '地外殖民',
+    'golden-hour': '黄金时刻',
+    'nat-geo': '国家地理',
   },
   portal: {
     badge: '神经漫游接口',
@@ -133,6 +145,7 @@ const zhCN = {
     configureAndRun: '配置参数并点击运行',
     generationFailed: '生成失败',
     download: '下载',
+    downloading: '下载中...',
     copyPrompt: '复制提示词',
     copied: '已复制！',
     privacyNotice: '我们不存储您的任何数据，请及时保存生成的图片。',
