@@ -30,12 +30,15 @@ export async function getOrCreateUserCredits(userId: string) {
       },
     });
 
-    // 记录赠送交易
+    // 记录赠送交易（使用新的 schema）
     await prisma.transaction.create({
       data: {
         userId,
         creditsAdded: NEW_USER_CREDITS,
         planName: '新用户注册赠送',
+        amount: 0,
+        currency: 'CNY',
+        provider: 'afdian',
         status: 'completed',
       },
     });
@@ -86,15 +89,21 @@ export async function deductCredits(userId: string, amount: number = 1): Promise
 }
 
 /**
- * 增加用户积分
+ * 增加用户积分（支持多币种和多支付渠道）
  */
 export async function addCredits(
   userId: string,
   amount: number,
-  options?: {
+  options: {
     planName?: string;
+    planId?: string;
+    // 支付金额和货币
+    paymentAmount: number;
+    currency: 'CNY' | 'USD';
+    // 支付渠道
+    provider: 'afdian' | 'paddle';
     afdianOrderId?: string;
-    amountCny?: number;
+    paddleOrderId?: string;
     rawWebhook?: object;
   }
 ): Promise<void> {
@@ -110,20 +119,60 @@ export async function addCredits(
     },
   });
 
-  // 记录交易
+  // 记录交易（使用新的 schema 字段）
   await prisma.transaction.create({
     data: {
       userId,
       creditsAdded: amount,
-      planName: options?.planName,
-      afdianOrderId: options?.afdianOrderId,
-      amountCny: options?.amountCny,
-      rawWebhook: options?.rawWebhook as any,
+      planName: options.planName,
+      planId: options.planId,
+      amount: options.paymentAmount,
+      currency: options.currency,
+      provider: options.provider,
+      afdianOrderId: options.afdianOrderId,
+      paddleOrderId: options.paddleOrderId,
+      rawWebhook: options.rawWebhook as object,
       status: 'completed',
     },
   });
 
-  console.log(`[Credit] 用户 ${userId} 增加 ${amount} 积分`);
+  console.log(`[Credit] 用户 ${userId} 增加 ${amount} 积分 (${options.provider}/${options.currency})`);
+}
+
+/**
+ * 添加赠送积分（不涉及支付）
+ */
+export async function addBonusCredits(
+  userId: string,
+  amount: number,
+  reason: string
+): Promise<void> {
+  // 确保用户有积分记录
+  await getOrCreateUserCredits(userId);
+
+  // 更新积分
+  await prisma.credit.update({
+    where: { userId },
+    data: {
+      balance: { increment: amount },
+      totalEarned: { increment: amount },
+    },
+  });
+
+  // 记录赠送交易
+  await prisma.transaction.create({
+    data: {
+      userId,
+      creditsAdded: amount,
+      planName: reason,
+      amount: 0,
+      currency: 'CNY',
+      provider: 'afdian', // 默认
+      status: 'completed',
+    },
+  });
+
+  console.log(`[Credit] 用户 ${userId} 赠送 ${amount} 积分: ${reason}`);
 }
 
 /**

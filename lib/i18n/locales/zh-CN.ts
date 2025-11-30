@@ -109,33 +109,46 @@ const zhCN = {
     rechargeBtn: '立即充能',
     activateNow: '立即激活',
     recommended: '🔥 推荐',
-    laplaceCore: '👑 LAPLACE CORE',
+    laplaceCore: '👑 终极核心',
+    // 货币切换
+    currencySwitch: '切换货币',
+    currencyUsd: '🇺🇸 USD',
+    currencyCny: '🇨🇳 CNY',
+    // 积分单位
+    creditsUnit: '算力能源',
+    // 档位名称和特性（不含硬编码价格）
     tiers: {
-      basic: {
+      tier_mini: {
+        name: '普朗克瞬闪',
+        subName: 'Planck Spark',
+        features: [
+          '🎫 E 级实习员身份卡',
+          '🔓 基础时间线观测',
+          '🚫 Pro 模型：未授权',
+        ],
+      },
+      tier_basic: {
         name: '微型奇点',
         subName: 'Micro-Singularity',
         features: [
-          '⚡️ 200 算力能源',
           '🎫 D 级人员身份卡',
           '🔓 标准时间线观测',
           '🚫 Pro 模型：未授权',
         ],
       },
-      advanced: {
+      tier_pro: {
         name: '超弦引擎',
         subName: 'Superstring Engine',
         features: [
-          '⚡️ 550 算力能源 (+50 Bonus)',
           '🎫 B 级调查员身份卡',
           '🔥 解锁 [Pro: 深层潜入] 模式',
           '🚀 优先队列权限',
         ],
       },
-      ultimate: {
+      tier_ultra: {
         name: '拉普拉斯妖',
         subName: 'Laplace Core',
         features: [
-          '⚡️ 1500 算力能源 (立省 ¥50+)',
           '👑 [核心观测员] 永久头衔',
           '🔥 Pro 模式极速通道',
           '🗝️ 隐藏协议访问权',
@@ -145,9 +158,13 @@ const zhCN = {
     costPerObservation: '⚡️ 每次时空观测消耗 4 单位能源',
     neverExpires: '🔒 能源永久有效，无过期限制',
     importantNotice: '📧 重要提示',
-    paymentHint: '付款时请在爱发电',
+    // CNY 支付提示（爱发电）
+    paymentHintCny: '付款时请在爱发电',
     paymentRemark: '「留言」',
-    paymentHintSuffix: '中填写您的注册邮箱',
+    paymentHintSuffixCny: '中填写您的注册邮箱',
+    // USD 支付提示（Paddle）
+    paymentHintUsd: '点击按钮后将打开安全支付窗口',
+    paymentHintSuffixUsd: '支持信用卡、PayPal 等国际支付方式',
   },
   user: {
     badge: '观测员档案',
@@ -229,6 +246,7 @@ const zhCN = {
     copyright: '第N个我 - 遇见你的第N种人生',
     terms: '服务条款',
     privacy: '隐私政策',
+    refund: '退款政策',
     contact: '联系我们',
   },
   terms: {
@@ -245,7 +263,7 @@ const zhCN = {
       },
       payment: {
         title: '3. 付费与退款',
-        content: '本服务采用积分制。购买的积分不支持退款，但永久有效。由于AI生成的不确定性，我们无法保证每次生成结果都符合预期，已消耗的积分不予退还。',
+        content: '本服务采用积分制，购买的积分永久有效。如需退款，请在购买后 3 天内提出申请，且已使用积分不超过 20 个。超出此条件的订单不支持退款。详情请参阅我们的退款政策页面。',
       },
       privacy: {
         title: '4. 隐私保护',
@@ -268,7 +286,60 @@ const zhCN = {
   privacy: {
     title: '隐私政策',
     lastUpdated: '最后更新',
-    content: '我们非常重视您的隐私保护。本政策说明我们如何收集、使用和保护您的个人信息。',
+    sections: {
+      collection: {
+        title: '1. 信息收集',
+        content: '我们收集的信息包括：您的邮箱地址（用于账户注册和登录）、您上传的照片（仅用于AI生成，处理后立即删除）、支付记录（用于积分充值）。',
+      },
+      usage: {
+        title: '2. 信息使用',
+        content: '您的信息仅用于提供本服务，包括：账户管理、AI图像生成、积分管理。我们不会将您的信息出售或共享给第三方，除非法律要求。',
+      },
+      photos: {
+        title: '3. 照片处理',
+        content: '本服务不存储您上传的照片。图片直接传输至 Google Gemini API 进行 AI 处理，处理完成后结果即时返回给您。我们的服务器不保留任何图片数据，不会被存储、分析或用于任何其他用途。',
+      },
+      security: {
+        title: '4. 数据安全',
+        content: '我们采用行业标准的安全措施保护您的数据，包括HTTPS加密传输、安全的数据库存储。但请注意，没有任何互联网传输是100%安全的。',
+      },
+      cookies: {
+        title: '5. Cookie使用',
+        content: '我们使用Cookie来维持您的登录状态和语言偏好。您可以在浏览器中禁用Cookie，但这可能影响部分功能的正常使用。',
+      },
+      contact: {
+        title: '6. 联系我们',
+        content: '如果您对隐私政策有任何疑问，请联系：',
+      },
+    },
+  },
+  refund: {
+    title: '退款政策',
+    lastUpdated: '最后更新',
+    intro: '在「第N个我」，我们致力于为用户提供卓越的体验。我们理解情况可能会发生变化，您可能需要申请退款。请在购买前仔细阅读我们的退款政策。',
+    sections: {
+      eligibility: {
+        title: '退款资格',
+        timeLimit: '时间限制：退款请求必须在购买后 3 天内提出。超过此期限，我们将无法处理任何退款请求。',
+        creditUsage: '积分使用：如果您已使用超过 20 积分，无论购买日期如何，您将不再有资格获得退款。',
+      },
+      howTo: {
+        title: '如何申请退款',
+        intro: '如果您符合上述资格条件并希望申请退款，请按照以下步骤操作：',
+        contact: '联系我们：通过电子邮件联系我们的支持团队。',
+        details: '提供详细信息：在邮件中包含您的账户信息、订单号、购买日期以及退款原因。',
+        submit: '及时提交：确保您的退款请求在购买后 3 天内提交。',
+      },
+      processing: {
+        title: '退款处理',
+        content: '一旦我们收到您的退款请求，我们将进行审核并尽快通知您结果。如果获批，退款将通过您的原始支付方式处理。',
+      },
+      changes: {
+        title: '政策变更',
+        content: '我们保留随时更新退款政策的权利。任何更改都将发布在此页面上，我们建议您定期查看以获取最新信息。',
+      },
+    },
+    contactNote: '如有疑问，请联系：',
   },
 } as const;
 

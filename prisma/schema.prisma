@@ -6,8 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // ==================== NextAuth.js 必需模型 ====================
@@ -95,12 +96,23 @@ model Credit {
 model Transaction {
   id            String   @id @default(cuid())
   userId        String
-  afdianOrderId String?  @unique  // 爱发电订单号
-  amountCny     Decimal? @db.Decimal(10, 2)  // 充值金额
-  creditsAdded  Int      // 增加的次数
-  planName      String?  // 方案名称
+
+  // 支付金额（双币种支持）
+  amount        Decimal  @db.Decimal(10, 2)  // 实际支付金额
+  currency      String   @default("CNY")     // CNY / USD
+
+  // 支付渠道
+  provider      String   @default("afdian")  // afdian / paddle
+  afdianOrderId String?  @unique             // 爱发电订单号
+  paddleOrderId String?  @unique             // Paddle 订单号
+
+  // 积分信息
+  creditsAdded  Int                          // 增加的积分
+  planId        String?                      // 档位 ID (tier_mini/tier_basic/tier_pro/tier_ultra)
+  planName      String?                      // 方案名称（冗余，便于展示）
+
   status        String   @default("completed")  // pending/completed/failed
-  rawWebhook    Json?    // 原始 Webhook 数据
+  rawWebhook    Json?                        // 原始 Webhook 数据
   createdAt     DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)

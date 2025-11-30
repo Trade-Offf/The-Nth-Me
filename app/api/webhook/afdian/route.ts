@@ -1,19 +1,28 @@
 /**
  * 爱发电 Webhook 回调接口
  * POST /api/webhook/afdian
- * 
+ *
  * 接收爱发电订单通知，为用户增加能量
+ *
+ * 新定价体系 (2024):
+ * - 普朗克瞬闪: ¥9.90 / 120 积分 (仅中国区)
+ * - 微型奇点:   ¥79.00 / 1000 积分
+ * - 超弦引擎:   ¥159.00 / 2400 积分
+ * - 拉普拉斯妖: ¥399.00 / 6500 积分
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { addCredits } from '@/lib/services/creditService';
+import { getTierByAmount, type TierId } from '@/lib/config/pricingTiers';
 
 // 充值档位配置（金额需与爱发电后台一致）
-const PRICING_PLANS: Record<string, { name: string; credits: number }> = {
-  '19.90': { name: '微型奇点 (Basic)', credits: 200 },
-  '39.90': { name: '超弦引擎 (Pro)', credits: 550 },
-  '99.90': { name: '拉普拉斯妖 (Ultra)', credits: 1500 },
+// 使用新的定价体系
+const PRICING_PLANS: Record<string, { id: TierId; name: string; credits: number }> = {
+  '9.90':  { id: 'tier_mini',  name: '普朗克瞬闪 (Mini)',  credits: 120 },
+  '79.00': { id: 'tier_basic', name: '微型奇点 (Basic)',   credits: 1000 },
+  '159.00': { id: 'tier_pro',  name: '超弦引擎 (Pro)',     credits: 2400 },
+  '399.00': { id: 'tier_ultra', name: '拉普拉斯妖 (Ultra)', credits: 6500 },
 };
 
 // 爱发电 Webhook 数据结构
@@ -103,11 +112,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ ec: 200, em: 'Unknown amount, order logged' });
     }
 
-    // 增加用户能量
+    // 增加用户能量（使用新的多币种接口）
     await addCredits(user.id, plan.credits, {
+      planId: plan.id,
       planName: plan.name,
+      paymentAmount: parseFloat(total_amount),
+      currency: 'CNY',
+      provider: 'afdian',
       afdianOrderId: out_trade_no,
-      amountCny: parseFloat(total_amount),
       rawWebhook: body as unknown as object,
     });
 

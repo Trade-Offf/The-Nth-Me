@@ -21,7 +21,7 @@ export default function Footer() {
             © {currentYear} {t.footer.copyright}
           </div>
 
-          {/* 链接 */}
+          {/* 链接 - Paddle 要求的法律三件套 + 联系方式 */}
           <div className="flex items-center gap-6">
             <Link
               href="/terms"
@@ -35,8 +35,14 @@ export default function Footer() {
             >
               {t.footer.privacy}
             </Link>
+            <Link
+              href="/refund"
+              className="text-zinc-500 text-xs font-mono hover:text-acid transition-colors"
+            >
+              {t.footer.refund}
+            </Link>
             <a
-              href="mailto:surgethisworld@gmail.com"
+              href="mailto:help@ainanobanana.io"
               className="text-zinc-500 text-xs font-mono hover:text-acid transition-colors"
             >
               {t.footer.contact}

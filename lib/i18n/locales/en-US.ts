@@ -112,32 +112,45 @@ const enUS: Translations = {
     activateNow: 'Activate Now',
     recommended: '🔥 Recommended',
     laplaceCore: '👑 LAPLACE CORE',
+    // Currency switch
+    currencySwitch: 'Switch Currency',
+    currencyUsd: '🇺🇸 USD',
+    currencyCny: '🇨🇳 CNY',
+    // Credits unit
+    creditsUnit: 'Compute Energy',
+    // Tier names and features (no hardcoded prices)
     tiers: {
-      basic: {
+      tier_mini: {
+        name: 'Planck Spark',
+        subName: 'Planck Spark',
+        features: [
+          '🎫 E-Class Intern Card',
+          '🔓 Basic Timeline Access',
+          '🚫 Pro Models: Unauthorized',
+        ],
+      },
+      tier_basic: {
         name: 'Micro-Singularity',
         subName: 'Micro-Singularity',
         features: [
-          '⚡️ 200 Compute Energy',
           '🎫 D-Class Personnel Card',
           '🔓 Standard Timeline Access',
           '🚫 Pro Models: Unauthorized',
         ],
       },
-      advanced: {
+      tier_pro: {
         name: 'Superstring Engine',
         subName: 'Superstring Engine',
         features: [
-          '⚡️ 550 Compute Energy (+50 Bonus)',
           '🎫 B-Class Investigator Card',
           '🔥 Unlock [Pro: Deep Dive] Mode',
           '🚀 Priority Queue Access',
         ],
       },
-      ultimate: {
+      tier_ultra: {
         name: 'Laplace Daemon',
         subName: 'Laplace Core',
         features: [
-          '⚡️ 1500 Compute Energy (Save ¥50+)',
           '👑 [Core Observer] Permanent Title',
           '🔥 Pro Mode Fast Track',
           '🗝️ Hidden Protocol Access',
@@ -147,9 +160,13 @@ const enUS: Translations = {
     costPerObservation: '⚡️ Each observation costs 4 energy units',
     neverExpires: '🔒 Energy never expires',
     importantNotice: '📧 Important Notice',
-    paymentHint: 'Please fill in your registered email in Afdian',
+    // CNY payment hint (Afdian)
+    paymentHintCny: 'Please fill in your registered email in Afdian',
     paymentRemark: '"Remarks"',
-    paymentHintSuffix: 'when paying',
+    paymentHintSuffixCny: 'when paying',
+    // USD payment hint (Paddle)
+    paymentHintUsd: 'Click button to open secure checkout',
+    paymentHintSuffixUsd: 'Credit card, PayPal and more accepted',
   },
   user: {
     badge: 'OBSERVER PROFILE',
@@ -231,6 +248,7 @@ const enUS: Translations = {
     copyright: 'The Nth Me - Meet the Nth version of yourself',
     terms: 'Terms of Service',
     privacy: 'Privacy Policy',
+    refund: 'Refund Policy',
     contact: 'Contact Us',
   },
   terms: {
@@ -247,7 +265,7 @@ const enUS: Translations = {
       },
       payment: {
         title: '3. Payment & Refunds',
-        content: 'This service uses a credit system. Purchased credits are non-refundable but never expire. Due to the nature of AI generation, we cannot guarantee every result will meet expectations. Consumed credits are non-refundable.',
+        content: 'This service uses a credit system. Purchased credits never expire. Refund requests must be submitted within 3 days of purchase and with no more than 20 credits used. Orders exceeding these conditions are non-refundable. Please refer to our Refund Policy page for details.',
       },
       privacy: {
         title: '4. Privacy Protection',
@@ -270,7 +288,60 @@ const enUS: Translations = {
   privacy: {
     title: 'Privacy Policy',
     lastUpdated: 'Last Updated',
-    content: 'We take your privacy very seriously. This policy explains how we collect, use, and protect your personal information.',
+    sections: {
+      collection: {
+        title: '1. Information Collection',
+        content: 'We collect the following information: your email address (for account registration and login), photos you upload (used only for AI generation and deleted immediately after processing), and payment records (for credit purchases).',
+      },
+      usage: {
+        title: '2. Information Usage',
+        content: 'Your information is used solely to provide this service, including: account management, AI image generation, and credit management. We do not sell or share your information with third parties unless required by law.',
+      },
+      photos: {
+        title: '3. Photo Processing',
+        content: 'This service does not store your uploaded photos. Images are transmitted directly to Google Gemini API for AI processing, and results are returned to you immediately after processing. Our servers do not retain any image data, and images are not stored, analyzed, or used for any other purpose.',
+      },
+      security: {
+        title: '4. Data Security',
+        content: 'We employ industry-standard security measures to protect your data, including HTTPS encrypted transmission and secure database storage. However, please note that no internet transmission is 100% secure.',
+      },
+      cookies: {
+        title: '5. Cookie Usage',
+        content: 'We use cookies to maintain your login status and language preferences. You can disable cookies in your browser, but this may affect the normal use of some features.',
+      },
+      contact: {
+        title: '6. Contact Us',
+        content: 'If you have any questions about this privacy policy, please contact:',
+      },
+    },
+  },
+  refund: {
+    title: 'Refund Policy',
+    lastUpdated: 'Last Updated',
+    intro: 'At The Nth Me, we are committed to providing an exceptional experience for our users. We understand that circumstances may change, and you may need to request a refund. Please read our refund policy carefully before making a purchase.',
+    sections: {
+      eligibility: {
+        title: 'Refund Eligibility',
+        timeLimit: 'Time Limit: Refund requests must be made within 3 days of your purchase. After this period, we will be unable to process any refund requests.',
+        creditUsage: 'Credit Usage: If you have used more than 20 credits, regardless of the purchase date, you will no longer be eligible for a refund.',
+      },
+      howTo: {
+        title: 'How to Request a Refund',
+        intro: 'If you meet the above eligibility criteria and wish to request a refund, please follow these steps:',
+        contact: 'Contact Us: Reach out to our support team via email.',
+        details: 'Provide Details: Include your account information, order number, purchase date, and the reason for your refund request in the email.',
+        submit: 'Submit on Time: Ensure your refund request is submitted within 3 days of purchase.',
+      },
+      processing: {
+        title: 'Refund Processing',
+        content: 'Once we receive your refund request, we will review it and notify you of the result as soon as possible. If approved, the refund will be processed through your original payment method.',
+      },
+      changes: {
+        title: 'Policy Changes',
+        content: 'We reserve the right to update the refund policy at any time. Any changes will be posted on this page, and we recommend checking regularly for the latest information.',
+      },
+    },
+    contactNote: 'If you have any questions, please contact:',
   },
 } as const;
 
