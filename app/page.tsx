@@ -5,6 +5,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import BinaryRain from '@/components/BinaryRain';
 import { useI18n } from '@/lib/i18n';
 
@@ -57,7 +58,7 @@ export default function HomePage() {
   const hero = heroContent[lang];
 
   return (
-    <main className="h-screen bg-tech-bg text-white overflow-hidden relative">
+    <main className="min-h-screen bg-tech-bg text-white relative flex flex-col">
       {/* 二进制雨背景 */}
       <BinaryRain />
 
@@ -68,8 +69,8 @@ export default function HomePage() {
       <Navbar />
 
       {/* Hero 区域 */}
-      <section className="relative w-full pt-16" style={{ height: 'calc(100vh - 4rem)' }}>
-        <div className="relative z-10 max-w-7xl mx-auto px-6 h-full flex items-center">
+      <section className="relative w-full flex-1 flex items-center justify-center" style={{ minHeight: 'calc(100vh - 8rem)' }}>
+        <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center w-full">
             {/* 左侧文案 */}
             <motion.div
@@ -194,6 +195,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Footer */}
+      <Footer />
     </main>
   );
 }

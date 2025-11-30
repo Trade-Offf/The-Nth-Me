@@ -2,143 +2,122 @@
 
 import { useRef, useMemo, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { Environment, Trail, Instances, Instance } from '@react-three/drei';
+import { Environment, Trail } from '@react-three/drei';
 import * as THREE from 'three';
 
 // 核心配色
 const ACID_GREEN = '#CCFF00';
 
-// --- 1. 子组件：科技刻度环 (HUD Ticks) ---
-// 使用 InstancedMesh 渲染大量刻度，性能极高
-function TechTicks({ radius, count = 48 }) {
-  const tickData = useMemo(() => {
-    return new Array(count).fill(0).map((_, i) => {
-      const angle = (i / count) * Math.PI * 2;
-      return {
-        position: [Math.cos(angle) * radius, Math.sin(angle) * radius, 0],
-        rotation: [0, 0, angle],
-      };
-    });
-  }, [count, radius]);
+// --- 1. 创建 0/1 文字纹理 ---
+function createBitTexture(bit, color) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 64;
+  canvas.height = 64;
+  const ctx = canvas.getContext('2d');
 
-  return (
-    <Instances range={count}>
-      <boxGeometry args={[0.04, 0.1, 0.01]} />
-      <meshBasicMaterial color={ACID_GREEN} transparent opacity={0.4} />
-      {tickData.map((data, i) => (
-        <Instance key={i} position={data.position} rotation={data.rotation} />
-      ))}
-    </Instances>
-  );
+  ctx.fillStyle = 'transparent';
+  ctx.fillRect(0, 0, 64, 64);
+
+  ctx.font = 'bold 48px monospace';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = color;
+  ctx.fillText(bit, 32, 32);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.needsUpdate = true;
+  return texture;
 }
 
-// --- 2. 子组件：单个数据光梭 (Data Packet) ---
-const DataPacket = ({ radius, speed, offset, zOffset }) => {
-  const meshRef = useRef();
+// --- 2. 数据流字符 (0/1 带拖尾) ---
+const DataBit = ({ index, total, radius, speed, direction, color, bit }) => {
+  const spriteRef = useRef();
+  const initialAngle = (index / total) * Math.PI * 2;
+
+  // 根据传入的 bit 创建纹理
+  const texture = useMemo(() => {
+    return createBitTexture(bit, '#FFFFFF');
+  }, [bit]);
 
   useFrame((state) => {
-    if (!meshRef.current) return;
+    if (!spriteRef.current) return;
     const t = state.clock.getElapsedTime();
-    const currentAngle = offset + t * speed;
 
-    // 运动轨迹计算
-    const x = Math.cos(currentAngle) * radius;
-    const y = Math.sin(currentAngle) * radius;
-    // Z轴微动，产生悬浮感
-    const z = zOffset + Math.sin(t * 3 + offset) * 0.05;
+    // 垂直圆周运动 (XY 平面)
+    const angle = initialAngle + t * speed * direction;
+    const x = Math.cos(angle) * radius;
+    const y = Math.sin(angle) * radius;
 
-    meshRef.current.position.set(x, y, z);
-    // 旋转物体使其始终切向面对前方
-    meshRef.current.rotation.z = currentAngle + Math.PI / 2;
+    // Z 轴微小波动
+    const z = Math.sin(t * 2 + index) * 0.1;
 
-    // 呼吸频闪
-    const pulse = 1 + Math.sin(t * 12 + offset) * 0.2;
-    meshRef.current.scale.setScalar(pulse);
+    spriteRef.current.position.set(x, y, z);
+
+    // 呼吸脉动效果
+    const pulse = 0.3 + Math.sin(t * 4 + index * 0.6) * 0.1;
+    spriteRef.current.scale.set(pulse, pulse, pulse);
   });
 
   return (
     <Trail
-      width={1.2} // 拖尾宽度
-      length={4} // 拖尾长度
-      color={ACID_GREEN}
-      attenuation={(t) => t * t} // 尾部渐隐
+      width={0.6}
+      length={8}
+      color={color}
+      attenuation={(t) => t * t}
     >
-      <mesh ref={meshRef}>
-        {/* 扁平晶体造型 */}
-        <boxGeometry args={[0.05, 0.25, 0.02]} />
-        {/* 核心纯白，外发光靠拖尾，对比度更高 */}
-        <meshBasicMaterial color="#FFFFFF" toneMapped={false} />
-      </mesh>
+      <sprite ref={spriteRef} scale={[0.3, 0.3, 0.3]}>
+        <spriteMaterial map={texture} transparent opacity={1} />
+      </sprite>
     </Trail>
   );
 };
 
-// --- 3. 核心组件：重构后的数据流环 ---
-function DataFlowRing() {
+// --- 3. 双轨道数据流系统 ---
+function DualOrbit() {
   const groupRef = useRef(null);
-  const ticksRef = useRef(null);
 
-  const radius = 2.1;
-  const nodeCount = 8; // 减少数量，提升单个质感
-
-  // 生成随机数据包配置
-  const packets = useMemo(() => {
-    return new Array(nodeCount).fill(0).map((_, i) => ({
-      offset: (i / nodeCount) * Math.PI * 2,
-      speed: 0.4 + Math.random() * 0.3,
-      zOffset: (Math.random() - 0.5) * 0.15,
-    }));
-  }, []);
+  const config = {
+    innerRadius: 2.0,   // 内圈 0
+    outerRadius: 2.5,   // 外圈 1
+    speed: 0.5,
+    bitsPerOrbit: 8,
+  };
 
   useFrame((state) => {
     const t = state.clock.getElapsedTime();
-
-    // 主环顺时针慢转
     if (groupRef.current) {
-      groupRef.current.rotation.z = t * 0.05;
-      // 增加一点点原本不存在的X轴倾角摆动，增加体积感
-      groupRef.current.rotation.x = Math.sin(t * 0.5) * 0.05;
-    }
-
-    // 刻度环逆时针旋转 (对冲运动增加机械感)
-    if (ticksRef.current) {
-      ticksRef.current.rotation.z = -t * 0.1;
+      // 整体轻微摆动
+      groupRef.current.rotation.z = Math.sin(t * 0.2) * 0.08;
     }
   });
 
   return (
     <group ref={groupRef}>
-      {/* A. 物理导轨 (深色金属实体) - 解决"单薄"问题 */}
-      <mesh>
-        <torusGeometry args={[radius, 0.04, 16, 100]} />
-        <meshPhysicalMaterial color="#111" metalness={0.9} roughness={0.2} clearcoat={1} />
-      </mesh>
+      {/* 内圈 - 0 - 顺时针 */}
+      {Array.from({ length: config.bitsPerOrbit }).map((_, i) => (
+        <DataBit
+          key={`inner-${i}`}
+          index={i}
+          total={config.bitsPerOrbit}
+          radius={config.innerRadius}
+          speed={config.speed}
+          direction={1}
+          color={ACID_GREEN}
+          bit="0"
+        />
+      ))}
 
-      {/* B. 能量内环 (发光细线) */}
-      <mesh position={[0, 0, 0]}>
-        <torusGeometry args={[radius - 0.1, 0.005, 16, 100]} />
-        <meshBasicMaterial color={ACID_GREEN} transparent opacity={0.6} />
-      </mesh>
-
-      {/* C. 科技刻度环 (外部动态UI) */}
-      <group ref={ticksRef}>
-        <TechTicks radius={radius + 0.2} count={48} />
-      </group>
-
-      {/* D. 静态装饰外圈 (极细虚线) */}
-      <mesh>
-        <ringGeometry args={[radius + 0.35, radius + 0.355, 64]} />
-        <meshBasicMaterial color={ACID_GREEN} transparent opacity={0.15} side={THREE.DoubleSide} />
-      </mesh>
-
-      {/* E. 动态数据光梭 */}
-      {packets.map((data, i) => (
-        <DataPacket
-          key={i}
-          radius={radius}
-          speed={data.speed}
-          offset={data.offset}
-          zOffset={data.zOffset}
+      {/* 外圈 - 1 - 逆时针 */}
+      {Array.from({ length: config.bitsPerOrbit }).map((_, i) => (
+        <DataBit
+          key={`outer-${i}`}
+          index={i}
+          total={config.bitsPerOrbit}
+          radius={config.outerRadius}
+          speed={config.speed}
+          direction={-1}
+          color="#00FFAA"
+          bit="1"
         />
       ))}
     </group>
@@ -273,10 +252,8 @@ export default function HeroRobot() {
         />
       </mesh>
 
-      {/* 数据流环 - 倾斜放置 */}
-      <group rotation={[Math.PI / 2, Math.PI / 6, 0]}>
-        <DataFlowRing />
-      </group>
+      {/* 双轨道粒子 - 一顺一逆 */}
+      <DualOrbit />
 
       {/* 左耳部件 */}
       <group position={[-1.75, 0.3, 0]}>
