@@ -246,6 +246,12 @@ const zhCN = {
     transactionHistory: '能源传输记录',
     noRecords: '暂无记录',
     energyChange: '能源变动',
+    // 兑换码
+    redeemTitle: '能源兑换码',
+    redeemPlaceholder: '输入兑换码',
+    redeemButton: '兑换',
+    redeemSuccess: '恭喜您获得 {credits} 能量！',
+    redeeming: '兑换中...',
   },
   login: {
     badge: '观测员认证',

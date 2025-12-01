@@ -248,6 +248,12 @@ const enUS: Translations = {
     transactionHistory: 'Energy Transfer Records',
     noRecords: 'No records',
     energyChange: 'Energy Change',
+    // Redeem code
+    redeemTitle: 'Redeem Code',
+    redeemPlaceholder: 'Enter code',
+    redeemButton: 'Redeem',
+    redeemSuccess: 'Congratulations! You received {credits} energy!',
+    redeeming: 'Redeeming...',
   },
   login: {
     badge: 'OBSERVER AUTHENTICATION',

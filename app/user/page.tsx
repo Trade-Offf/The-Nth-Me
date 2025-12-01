@@ -17,6 +17,7 @@ import {
   History,
   User,
   Loader2,
+  Ticket,
 } from 'lucide-react';
 import TechCard from '@/components/TechCard';
 import Navbar from '@/components/Navbar';
@@ -48,6 +49,11 @@ export default function UserPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  // 兑换码状态
+  const [redeemCode, setRedeemCode] = useState('');
+  const [isRedeeming, setIsRedeeming] = useState(false);
+  const [redeemMessage, setRedeemMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
   // 未登录跳转
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -70,6 +76,41 @@ export default function UserPage() {
         .finally(() => setIsLoading(false));
     }
   }, [session]);
+
+  // 兑换码处理
+  const handleRedeem = async () => {
+    if (!redeemCode.trim() || isRedeeming) return;
+
+    setIsRedeeming(true);
+    setRedeemMessage(null);
+
+    try {
+      const res = await fetch('/api/user/redeem', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: redeemCode }),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        setRedeemMessage({ type: 'success', text: t.user.redeemSuccess.replace('{credits}', data.credits) });
+        setRedeemCode('');
+        // 刷新积分
+        const creditsRes = await fetch('/api/user/credits').then(r => r.json());
+        if (creditsRes.success) setCredits(creditsRes.data);
+        // 刷新交易记录
+        const txRes = await fetch('/api/user/transactions').then(r => r.json());
+        if (txRes.success) setTransactions(txRes.data);
+      } else {
+        setRedeemMessage({ type: 'error', text: data.error || '兑换失败' });
+      }
+    } catch {
+      setRedeemMessage({ type: 'error', text: '网络错误，请稍后再试' });
+    } finally {
+      setIsRedeeming(false);
+    }
+  };
 
   if (status === 'loading' || isLoading) {
     return (
@@ -153,6 +194,37 @@ export default function UserPage() {
             >
               ⚡ {t.user.rechargeButton}
             </Link>
+
+            {/* 兑换码 */}
+            <div className="mt-4 pt-4 border-t border-tech-border">
+              <div className="flex items-center gap-2 mb-3">
+                <Ticket className="w-4 h-4 text-acid" strokeWidth={1.5} />
+                <span className="text-xs font-mono text-zinc-400 uppercase">{t.user.redeemTitle}</span>
+              </div>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={redeemCode}
+                  onChange={(e) => setRedeemCode(e.target.value.toUpperCase())}
+                  placeholder={t.user.redeemPlaceholder}
+                  className="flex-1 px-3 py-2 bg-tech-bg border border-tech-border rounded-sm font-mono text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-acid/50"
+                  disabled={isRedeeming}
+                  onKeyDown={(e) => e.key === 'Enter' && handleRedeem()}
+                />
+                <button
+                  onClick={handleRedeem}
+                  disabled={isRedeeming || !redeemCode.trim()}
+                  className="px-4 py-2 bg-tech-bg border border-acid/50 rounded-sm font-mono text-xs text-acid uppercase hover:bg-acid/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isRedeeming ? <Loader2 className="w-4 h-4 animate-spin" /> : t.user.redeemButton}
+                </button>
+              </div>
+              {redeemMessage && (
+                <p className={`mt-2 text-xs font-mono ${redeemMessage.type === 'success' ? 'text-green-500' : 'text-red-500'}`}>
+                  {redeemMessage.text}
+                </p>
+              )}
+            </div>
           </TechCard>
         </motion.div>
 
