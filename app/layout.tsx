@@ -56,22 +56,29 @@ export const metadata: Metadata = {
     siteName: "The Nth Me",
     title: "The Nth Me - AI Portrait Generator | 第 N 个我",
     description:
-      "Transform your photos into stunning AI-generated portraits. Explore infinite versions of yourself.",
+      "上传一张照片，AI 带你穿越平行宇宙，解锁无限分身。Transform your photos into stunning AI-generated portraits.",
     images: [
       {
-        url: "/og-image.png",
+        url: `${BASE_URL}/og-image.png`,
+        secureUrl: `${BASE_URL}/og-image.png`,
         width: 1200,
         height: 630,
-        alt: "The Nth Me - AI Portrait Generator",
+        alt: "The Nth Me - AI Portrait Generator | 第 N 个我",
+        type: "image/png",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "The Nth Me - AI Portrait Generator",
+    site: "@TradeOfff_2025",
+    creator: "@TradeOfff_2025",
+    title: "The Nth Me - AI Portrait Generator | 第 N 个我",
     description:
-      "Transform your photos into stunning AI-generated portraits. Explore infinite versions of yourself.",
-    images: ["/og-image.png"],
+      "上传一张照片，AI 带你穿越平行宇宙，解锁无限分身。",
+    images: {
+      url: `${BASE_URL}/og-image.png`,
+      alt: "The Nth Me - AI Portrait Generator",
+    },
   },
   robots: {
     index: true,
@@ -112,6 +119,9 @@ export default function RootLayout({
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap"
         />
+        {/* 微信分享优化 - 确保完整 URL */}
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
         {/* JSON-LD 结构化数据 */}
         <OrganizationSchema />
         <SoftwareAppSchema />
