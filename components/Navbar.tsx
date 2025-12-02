@@ -3,7 +3,8 @@
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Globe, ChevronDown, Check } from 'lucide-react';
+import { Globe, ChevronDown, Check, Menu, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useI18n } from '@/lib/i18n';
 import UserMenu from './UserMenu';
 
@@ -19,6 +20,7 @@ type NavbarKey = (typeof navbarItems)[number];
 export default function Navbar() {
   const { lang, setLang, t, supportedLangs } = useI18n();
   const [isLangOpen, setIsLangOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const langMenuRef = useRef<HTMLDivElement>(null);
 
   // 点击外部关闭下拉菜单
@@ -32,9 +34,22 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // 移动端菜单打开时禁止滚动
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMobileMenuOpen]);
+
   const currentLang = supportedLangs.find((l) => l.code === lang);
 
   return (
+    <>
     <header className="fixed top-0 left-0 right-0 z-50 bg-tech-bg/95 border-b border-tech-border backdrop-blur-sm">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* 品牌 Logo */}
@@ -108,14 +123,70 @@ export default function Navbar() {
               )}
             </div>
 
-            {/* 分隔线 */}
-            <div className="w-px h-6 bg-tech-border mx-2" />
+            {/* 分隔线 - 仅桌面端显示 */}
+            <div className="w-px h-6 bg-tech-border mx-2 hidden md:block" />
 
-            {/* 用户菜单 */}
-            <UserMenu />
+            {/* 用户菜单 - 仅桌面端显示 */}
+            <div className="hidden md:block">
+              <UserMenu />
+            </div>
+
+            {/* 移动端汉堡菜单按钮 */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden flex items-center justify-center w-10 h-10 text-zinc-400 hover:text-acid transition-colors"
+              aria-label="Toggle menu"
+            >
+              {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
           </div>
         </div>
       </div>
+
     </header>
+
+      {/* 移动端全屏菜单 - 放在 header 外面确保层级正确 */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="md:hidden fixed inset-0 top-16 z-[100] bg-[#0a0a0a] border-t border-tech-border"
+          >
+            <div className="flex flex-col h-full overflow-y-auto">
+              {/* 导航链接 */}
+              <nav className="flex-1 px-6 py-8 space-y-2">
+                {navbarItems.map((key, index) => {
+                  const route = navbarRoutes[key];
+                  return (
+                    <motion.div
+                      key={key}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                    >
+                      <Link
+                        href={route}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="block px-4 py-4 font-mono text-lg uppercase tracking-wider text-zinc-300 hover:text-acid hover:bg-acid/5 rounded-sm transition-colors border-b border-tech-border/50"
+                      >
+                        {t.navbar[key as NavbarKey]}
+                      </Link>
+                    </motion.div>
+                  );
+                })}
+              </nav>
+
+              {/* 底部用户区域 */}
+              <div className="px-6 py-6 border-t border-tech-border bg-tech-card/50">
+                <UserMenu />
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }

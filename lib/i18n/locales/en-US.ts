@@ -207,8 +207,9 @@ const enUS: Translations = {
         subName: 'Superstring Engine',
         features: [
           '🎫 B-Class Investigator Card',
-          '🔥 Unlock [Pro: Deep Dive] Mode',
+          '🔥 Pro Models: Authorized',
           '🚀 Priority Queue Access',
+          '👥 Join Observer Group',
         ],
       },
       tier_ultra: {
@@ -216,8 +217,9 @@ const enUS: Translations = {
         subName: 'Laplace Core',
         features: [
           '👑 [Core Observer] Permanent Title',
-          '🔥 Pro Mode Fast Track',
+          '🔥 Pro Models: Authorized',
           '🗝️ Hidden Protocol Access',
+          '👥 Join Observer Group',
         ],
       },
     },

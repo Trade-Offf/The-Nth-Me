@@ -28,6 +28,7 @@ const heroContent = {
     subtitle_gradient: '检索第 N 个维度的你',
     description:
       '基于 Nano Banana 神经核心驱动的时空观测系统。无需手动编写代码，系统已预载全套时空剧本。只需注入生物特征数据，即可让波函数坍缩，捕捉你在无数平行宇宙中的影像信号。',
+    btn_generate: '[ 立即生成 ]',
     btn_primary: '[ 浏览时空坐标 ]',
     btn_secondary: '[ 补充算力能源 ⚡ ]',
     stats: {
@@ -43,6 +44,7 @@ const heroContent = {
     subtitle_gradient: 'RETRIEVE THE NTH DIMENSION OF YOU',
     description:
       'A spacetime observation system powered by the Nano Banana neural core. No manual coding required. Timeline scripts pre-loaded. Simply inject biometric data to collapse the wave function and capture your image signal across infinite parallel universes.',
+    btn_generate: '[ GENERATE NOW ]',
     btn_primary: '[ BROWSE COORDINATES ]',
     btn_secondary: '[ RECHARGE POWER ⚡ ]',
     stats: {
@@ -69,9 +71,9 @@ export default function HomePage() {
       <Navbar />
 
       {/* Hero 区域 */}
-      <section className="relative w-full flex-1 flex items-center justify-center" style={{ minHeight: 'calc(100vh - 8rem)' }}>
-        <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center w-full">
+      <section className="relative w-full flex-1 flex items-center justify-center pt-20 lg:pt-0" style={{ minHeight: 'calc(100vh - 8rem)' }}>
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 w-full">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center w-full">
             {/* 左侧文案 */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -120,50 +122,58 @@ export default function HomePage() {
               </p>
 
               {/* 按钮组 */}
-              <div className="flex flex-wrap items-center gap-4 pt-2">
-                {/* Primary 按钮 - 实心 */}
+              <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 pt-2">
+                {/* Generate 按钮 - 主要 CTA */}
                 <Link
-                  href="/showcase"
-                  className="group inline-flex items-center px-6 py-3 rounded-sm bg-acid text-black font-mono text-xs uppercase tracking-[0.15em] font-medium hover:bg-transparent hover:text-acid border border-acid transition-all duration-200"
+                  href="/portal"
+                  className="group inline-flex items-center justify-center px-6 py-3 rounded-sm bg-acid text-black font-mono text-xs uppercase tracking-[0.15em] font-medium hover:bg-transparent hover:text-acid border border-acid transition-all duration-200"
                 >
-                  {hero.btn_primary}
+                  {hero.btn_generate}
                   <span className="ml-2 group-hover:translate-x-1 transition-transform">→</span>
                 </Link>
 
-                {/* Secondary 按钮 - 描边 */}
+                {/* Browse 按钮 - 描边 */}
+                <Link
+                  href="/showcase"
+                  className="inline-flex items-center justify-center px-6 py-3 rounded-sm border border-zinc-700 text-zinc-400 font-mono text-xs uppercase tracking-[0.15em] hover:border-acid hover:text-acid transition-colors duration-200"
+                >
+                  {hero.btn_primary}
+                </Link>
+
+                {/* Pricing 按钮 - 描边 */}
                 <Link
                   href="/pricing"
-                  className="inline-flex items-center px-6 py-3 rounded-sm border border-zinc-700 text-zinc-400 font-mono text-xs uppercase tracking-[0.15em] hover:border-acid hover:text-acid transition-colors duration-200"
+                  className="inline-flex items-center justify-center px-6 py-3 rounded-sm border border-zinc-700 text-zinc-400 font-mono text-xs uppercase tracking-[0.15em] hover:border-acid hover:text-acid transition-colors duration-200"
                 >
                   {hero.btn_secondary}
                 </Link>
               </div>
 
               {/* 技术指标 */}
-              <div className="flex items-center gap-6 pt-4 border-t border-tech-border">
+              <div className="grid grid-cols-3 gap-4 sm:flex sm:items-center sm:gap-6 pt-4 border-t border-tech-border">
                 <div>
                   <p className="font-mono text-[10px] text-zinc-600 uppercase tracking-[0.15em]">{hero.stats.latency}</p>
-                  <p className="font-mono text-lg text-acid">~2.5s</p>
+                  <p className="font-mono text-base sm:text-lg text-acid">~2.5s</p>
                 </div>
-                <div className="w-px h-8 bg-tech-border" />
+                <div className="hidden sm:block w-px h-8 bg-tech-border" />
                 <div>
                   <p className="font-mono text-[10px] text-zinc-600 uppercase tracking-[0.15em]">{hero.stats.styles}</p>
-                  <p className="font-mono text-lg text-acid">20+</p>
+                  <p className="font-mono text-base sm:text-lg text-acid">20+</p>
                 </div>
-                <div className="w-px h-8 bg-tech-border" />
+                <div className="hidden sm:block w-px h-8 bg-tech-border" />
                 <div>
                   <p className="font-mono text-[10px] text-zinc-600 uppercase tracking-[0.15em]">{hero.stats.resolution}</p>
-                  <p className="font-mono text-lg text-acid">1024px</p>
+                  <p className="font-mono text-base sm:text-lg text-acid">1024px</p>
                 </div>
               </div>
             </motion.div>
 
-            {/* 右侧 3D 机器人 */}
+            {/* 右侧 3D 机器人 - 移动端隐藏或缩小 */}
             <motion.div
               initial={{ opacity: 0, x: 40 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="relative h-[450px] sm:h-[500px] md:h-[550px] lg:h-[600px]"
+              className="relative h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] hidden sm:block"
             >
               {/* 边框容器 */}
               <div className="relative h-full border border-tech-border rounded-sm overflow-hidden bg-tech-card/50">

@@ -143,10 +143,10 @@ export default function PricingPage() {
       {/* 导航栏 */}
       <Navbar />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-6 pt-24 pb-20">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pt-20 sm:pt-24 pb-16 sm:pb-20">
         {/* 标题 */}
-        <div className="text-center mb-12">
-          <h1 className="text-3xl md:text-4xl font-bold mb-3 uppercase tracking-wide">
+        <div className="text-center mb-8 sm:mb-12">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 uppercase tracking-wide">
             {t.pricing.title} <span className="text-acid">{t.pricing.titleHighlight}</span> ⚡️
           </h1>
           <p className="text-zinc-500 font-mono text-sm tracking-wider mb-4">
@@ -194,8 +194,10 @@ export default function PricingPage() {
         {/* 价格卡片 - Cyberpunk Style */}
         {/* CNY 4档用 2x2 布局更宽松，USD 3档用 1x3 */}
         <div
-          className={`grid gap-6 ${
-            visibleTiers.length === 4 ? 'md:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-3'
+          className={`grid gap-4 sm:gap-6 ${
+            visibleTiers.length === 4
+              ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'
+              : 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3'
           }`}
         >
           {visibleTiers.map((tier, index) => {
@@ -235,7 +237,7 @@ export default function PricingPage() {
                 {/* 推荐/终极标签 */}
                 {(tier.isRecommended || isUltimate) && (
                   <div
-                    className={`absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-sm text-[10px] font-mono uppercase tracking-wider
+                    className={`absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-sm text-[10px] font-mono uppercase tracking-wider whitespace-nowrap
                       ${
                         isUltimate
                           ? 'bg-yellow-500 text-black font-bold shadow-[0_0_10px_rgba(234,179,8,0.5)]'
@@ -355,8 +357,8 @@ export default function PricingPage() {
         </div>
 
         {/* 重要提示 - 根据货币显示不同内容 */}
-        <div className="mt-16 text-center space-y-4">
-          <div className="max-w-md mx-auto bg-acid/5 border border-acid/30 rounded-sm p-4">
+        <div className="mt-10 sm:mt-16 text-center space-y-4">
+          <div className="max-w-md mx-auto bg-acid/5 border border-acid/30 rounded-sm p-3 sm:p-4">
             <p className="text-acid text-xs font-mono font-medium mb-2">
               {t.pricing.importantNotice}
             </p>

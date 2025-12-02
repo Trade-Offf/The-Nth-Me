@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
-import { Beaker } from 'lucide-react';
+import { Beaker, Settings, Image as ImageIcon } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import ControlPanel from '@/components/laboratory/ControlPanel';
 import PreviewPanel from '@/components/laboratory/PreviewPanel';
@@ -29,6 +29,9 @@ export default function PortalPage() {
 
   // 用户积分
   const [userCredits, setUserCredits] = useState(0);
+
+  // 移动端 Tab 切换
+  const [mobileActiveTab, setMobileActiveTab] = useState<'control' | 'preview'>('control');
 
   const isLoggedIn = status === 'authenticated' && !!session;
 
@@ -118,14 +121,42 @@ export default function PortalPage() {
           </p>
         </motion.div>
 
-        {/* 主内容区 - 左右分栏 */}
+        {/* 移动端 Tab 切换 */}
+        <div className="lg:hidden flex mb-4 border border-tech-border rounded-sm overflow-hidden">
+          <button
+            onClick={() => setMobileActiveTab('control')}
+            className={`flex-1 flex items-center justify-center gap-2 py-3 font-mono text-xs uppercase tracking-wider transition-colors ${
+              mobileActiveTab === 'control'
+                ? 'bg-acid/10 text-acid border-b-2 border-acid'
+                : 'text-zinc-500 hover:text-zinc-300'
+            }`}
+          >
+            <Settings className="w-4 h-4" />
+            {t.laboratory.controlPanel}
+          </button>
+          <button
+            onClick={() => setMobileActiveTab('preview')}
+            className={`flex-1 flex items-center justify-center gap-2 py-3 font-mono text-xs uppercase tracking-wider transition-colors ${
+              mobileActiveTab === 'preview'
+                ? 'bg-acid/10 text-acid border-b-2 border-acid'
+                : 'text-zinc-500 hover:text-zinc-300'
+            }`}
+          >
+            <ImageIcon className="w-4 h-4" />
+            {t.laboratory.output}
+          </button>
+        </div>
+
+        {/* 主内容区 - 桌面端左右分栏 / 移动端 Tab 切换 */}
         <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4 min-h-0">
           {/* 左侧：控制面板 */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
-            className="lg:col-span-4 min-h-0 overflow-hidden"
+            className={`lg:col-span-4 min-h-0 overflow-hidden ${
+              mobileActiveTab === 'control' ? 'block' : 'hidden lg:block'
+            }`}
           >
             <ControlPanel
               model={model}
@@ -153,7 +184,9 @@ export default function PortalPage() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
-            className="lg:col-span-8 min-h-0"
+            className={`lg:col-span-8 min-h-0 ${
+              mobileActiveTab === 'preview' ? 'block' : 'hidden lg:block'
+            }`}
           >
             <PreviewPanel
               generatedImage={generatedImage}
