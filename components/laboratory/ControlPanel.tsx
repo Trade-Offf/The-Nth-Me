@@ -213,7 +213,7 @@ export default function ControlPanel({
                   }
                 `}
               >
-                {m} <span className="text-[10px] opacity-70">({m === 'pro' ? CREDITS_PRO : CREDITS_STANDARD}⚡️)</span>
+                {m === 'pro' ? t.laboratory.pro : t.laboratory.standard} <span className="text-[10px] opacity-70">({m === 'pro' ? CREDITS_PRO : CREDITS_STANDARD}⚡️)</span>
               </button>
             ))}
           </div>
@@ -267,6 +267,10 @@ export default function ControlPanel({
                      text-sm text-white placeholder:text-zinc-600 font-mono
                      ${theme.focusBorder} focus:outline-none resize-none`}
           />
+          {/* Safety Protocol Warning */}
+          <p className="mt-2 text-[10px] text-amber-500/80 font-mono leading-relaxed">
+            {t.laboratory.safetyWarning}
+          </p>
         </div>
 
         {/* 4. Image Upload (仅 Image-to-Image) */}

@@ -113,11 +113,11 @@ export default function PortalPage() {
           <div className="flex items-center justify-center gap-3 mb-2">
             <Beaker className="w-6 h-6 text-acid" strokeWidth={1.5} />
             <h1 className="text-xl md:text-2xl font-bold text-white uppercase tracking-wide">
-              THE <span className="text-acid">LABORATORY</span>
+              <span className="text-acid">{t.laboratory.title}</span>
             </h1>
           </div>
           <p className="text-zinc-500 font-mono text-xs tracking-wider">
-            {`// FREE GENERATION MODE · STANDARD & PRO MODELS`}
+            {t.laboratory.subtitle}
           </p>
         </motion.div>
 

@@ -119,12 +119,12 @@ const zhCN = {
   },
   laboratory: {
     title: '实验室',
-    subtitle: '// 自由生成模式 · STANDARD & PRO 模型',
+    subtitle: '// 自由生成模式 · 标准 & 专业 模型',
     controlPanel: '控制面板',
     output: '输出',
     model: '模型',
-    standard: 'STANDARD',
-    pro: 'PRO',
+    standard: '标准',
+    pro: '专业',
     taskType: '任务类型',
     textToImage: '文字生图',
     imageToImage: '图生图',
@@ -149,6 +149,7 @@ const zhCN = {
     copyPrompt: '复制提示词',
     copied: '已复制！',
     privacyNotice: '我们不存储您的任何数据，请及时保存生成的图片。',
+    safetyWarning: '⚠️ 安全协议：严禁生成 NSFW、色情、暴力或违法内容。违规将导致账号封禁。',
   },
   showcase: {
     badge: '时空坐标库',

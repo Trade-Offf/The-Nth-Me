@@ -152,6 +152,7 @@ const enUS: Translations = {
     copyPrompt: 'Copy Prompt',
     copied: 'Copied!',
     privacyNotice: "We don't store your data. Please save your images promptly.",
+    safetyWarning: '⚠️ Safety Protocol: NSFW, explicit, violent, or illegal content is strictly prohibited. Violations will result in account suspension.',
   },
   showcase: {
     badge: 'SPACETIME COORDINATE LIBRARY',
