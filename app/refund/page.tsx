@@ -33,7 +33,7 @@ export default function RefundPage() {
             {t.refund.title}
           </h1>
           <p className="text-zinc-500 text-sm font-mono">
-            {t.refund.lastUpdated}: 2025-11-30
+            {t.refund.lastUpdated}: 2025-12-06
           </p>
         </motion.div>
 
@@ -49,15 +49,14 @@ export default function RefundPage() {
             {t.refund.intro}
           </p>
 
-          {/* 退款资格 */}
+          {/* 14天退款保证 */}
           <section className="border-l-2 border-acid/30 pl-6">
             <h2 className="text-lg font-bold text-white mb-3">
-              {t.refund.sections.eligibility.title}
+              {t.refund.sections.guarantee.title}
             </h2>
-            <ul className="text-zinc-400 leading-relaxed space-y-2 list-disc list-inside">
-              <li>{t.refund.sections.eligibility.timeLimit}</li>
-              <li>{t.refund.sections.eligibility.creditUsage}</li>
-            </ul>
+            <p className="text-zinc-400 leading-relaxed">
+              {t.refund.sections.guarantee.content}
+            </p>
           </section>
 
           {/* 如何申请退款 */}
@@ -65,38 +64,18 @@ export default function RefundPage() {
             <h2 className="text-lg font-bold text-white mb-3">
               {t.refund.sections.howTo.title}
             </h2>
-            <p className="text-zinc-400 leading-relaxed mb-3">
-              {t.refund.sections.howTo.intro}
-            </p>
-            <ol className="text-zinc-400 leading-relaxed space-y-2 list-decimal list-inside">
-              <li>
-                {t.refund.sections.howTo.contact}{' '}
-                <a href="mailto:surgethisworld@gmail.com" className="text-acid hover:underline">
-                  surgethisworld@gmail.com
-                </a>
-              </li>
-              <li>{t.refund.sections.howTo.details}</li>
-              <li>{t.refund.sections.howTo.submit}</li>
-            </ol>
-          </section>
-
-          {/* 退款处理 */}
-          <section className="border-l-2 border-acid/30 pl-6">
-            <h2 className="text-lg font-bold text-white mb-3">
-              {t.refund.sections.processing.title}
-            </h2>
             <p className="text-zinc-400 leading-relaxed">
-              {t.refund.sections.processing.content}
+              {t.refund.sections.howTo.content}
             </p>
           </section>
 
-          {/* 政策变更 */}
+          {/* 例外情况 */}
           <section className="border-l-2 border-acid/30 pl-6">
             <h2 className="text-lg font-bold text-white mb-3">
-              {t.refund.sections.changes.title}
+              {t.refund.sections.exceptions.title}
             </h2>
             <p className="text-zinc-400 leading-relaxed">
-              {t.refund.sections.changes.content}
+              {t.refund.sections.exceptions.content}
             </p>
           </section>
         </motion.div>
@@ -111,10 +90,10 @@ export default function RefundPage() {
           <p className="text-zinc-400 text-sm">
             {t.refund.contactNote}
             <a
-              href="mailto:surgethisworld@gmail.com"
+              href={`mailto:${t.refund.contactEmail}`}
               className="text-acid hover:underline ml-1"
             >
-              surgethisworld@gmail.com
+              {t.refund.contactEmail}
             </a>
           </p>
         </motion.div>

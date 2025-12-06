@@ -376,37 +376,26 @@ const enUS: Translations = {
     title: 'Refund Policy',
     lastUpdated: 'Last Updated',
     intro:
-      'At The Nth Me, we are committed to providing an exceptional experience for our users. We understand that circumstances may change, and you may need to request a refund. Please read our refund policy carefully before making a purchase.',
+      'At The Nth Me, we are committed to providing a transparent and fair refund experience. Please review this policy carefully before making a purchase.',
     sections: {
-      eligibility: {
-        title: 'Refund Eligibility',
-        timeLimit:
-          'Time Limit: Refund requests must be made within 3 days of your purchase. After this period, we will be unable to process any refund requests.',
-        creditUsage:
-          'Credit Usage: If you have used more than 20 credits, regardless of the purchase date, you will no longer be eligible for a refund.',
+      guarantee: {
+        title: '14-Day Money-Back Guarantee',
+        content:
+          'We offer a full refund within 14 days of your purchase, provided that the credits have not been used.',
       },
       howTo: {
         title: 'How to Request a Refund',
-        intro:
-          'If you meet the above eligibility criteria and wish to request a refund, please follow these steps:',
-        contact: 'Contact Us: Reach out to our support team via email.',
-        details:
-          'Provide Details: Include your account information, order number, purchase date, and the reason for your refund request in the email.',
-        submit:
-          'Submit on Time: Ensure your refund request is submitted within 3 days of purchase.',
-      },
-      processing: {
-        title: 'Refund Processing',
         content:
-          'Once we receive your refund request, we will review it and notify you of the result as soon as possible. If approved, the refund will be processed through your original payment method.',
+          'If you are within the 14-day window and have not used your purchased credits, please contact our support team at surgethisworld@gmail.com with your order ID. We will process your refund to the original payment method.',
       },
-      changes: {
-        title: 'Policy Changes',
+      exceptions: {
+        title: 'Exceptions',
         content:
-          'We reserve the right to update the refund policy at any time. Any changes will be posted on this page, and we recommend checking regularly for the latest information.',
+          'If you have used any portion of the credits included in your purchase, we reserve the right to decline the refund request or offer a partial refund at our sole discretion. After 14 days, all sales are final.',
       },
     },
     contactNote: 'If you have any questions, please contact:',
+    contactEmail: 'surgethisworld@gmail.com',
   },
 } as const;
 
