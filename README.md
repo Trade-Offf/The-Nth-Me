@@ -35,12 +35,14 @@
 
 ## ✨ Features
 
-- 🎭 **6 Parallel Worldlines** — Transform your portrait into different universe styles
-- 🔐 **NextAuth Authentication** — Email/Password + Google OAuth
-- ⚡ **Credit System** — Pay-per-use with Afdian integration
-- 🌍 **i18n Support** — English & 简体中文
-- 🎨 **Cyberpunk UI** — Steins;Gate inspired design with binary rain effects
-- 📱 **Responsive Design** — Mobile-first approach
+- 🎭 **Dual Generation Modes** — Template mode (one-click presets) + Free mode (custom prompts)
+- 🔮 **Standard & Pro Models** — Standard for speed, Pro for HD details + multiple aspect ratios
+- 📚 **Prompt Library** — Growing collection of style templates with filtering & one-click copy
+- 💳 **Global Payment** — Afdian (China) + Paddle (International), auto currency detection
+- 🔐 **NextAuth Login** — GitHub / Google OAuth authentication
+- 🌍 **Bilingual** — Full i18n support (English & 简体中文), auto language detection
+- 🎨 **Cyberpunk UI** — Steins;Gate inspired design with binary rain & 3D tech effects
+- 📱 **Responsive** — Desktop & mobile adaptive layout
 
 ## 🛠 Tech Stack
 
