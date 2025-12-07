@@ -237,16 +237,63 @@ sequenceDiagram
     F-->>U: 显示结果
 ```
 
-## 🌐 世界线
+## ➕ 如何新增 Prompt
 
-| ID | 英文名 | 中文名 |
-|----|--------|--------|
-| studio-portrait | Photon Lab | 光影实验室 |
-| tech-startup | Silicon Prototype | 硅谷原型体 |
-| collectible-figure | Quantum Figurine | 量子人偶 |
-| federal-diplomat | Federal Envoy | 联邦特使 |
-| puzzle-deconstruction | Deconstruction Protocol | 解构协议 |
-| reverse-engineering | Reverse Engineering | 逆向工程 |
+### 第一步：添加 Prompt 配置
+
+编辑 `lib/prompts.ts`，在 `prompts` 数组中添加新条目：
+
+```typescript
+{
+  id: 'your-prompt-id',           // 唯一 ID，也用于展示图片路径
+  name: '提示词名称',               // 显示名称
+  prompt: 'Your AI prompt here',  // 实际的提示词内容
+  negativePrompt: 'optional',     // 可选的负面提示词
+  sampleStrength: 0.8,            // 风格强度 (0-2)
+  tags: ['portrait', 'your-tag'], // 第一个 tag = 主分类
+  showCompare: true,              // true: 前后对比滑块, false: 仅显示单张图
+}
+```
+
+### 第二步：添加展示图片
+
+将图片放入 `/public/showcase/{id}/` 目录：
+
+| 模式 | 所需文件 | 展示效果 |
+|------|----------|----------|
+| **对比模式** (`showCompare: true`) | `before.webp` + `after.webp` | 前后对比滑块 |
+| **单图模式** (`showCompare: false`) | 仅需 `after.webp` | 单张图片展示 |
+
+### 第三步：添加 i18n 翻译
+
+在 `lib/i18n/locales/en-US.ts` 和 `zh-CN.ts` 中添加翻译：
+
+```typescript
+worldlines: {
+  'your-prompt-id': {
+    name: '显示名称',
+    description: '风格的简短描述',
+  },
+  // ...
+}
+```
+
+### 第四步：（可选）添加为世界线模板
+
+如果希望该 Prompt 出现在 Portal 模板选择器中，需编辑 `lib/worldlines.ts`：
+
+```typescript
+{
+  id: 'your-prompt-id',
+  name: '模板名称',
+  code: 'TL-XX',
+  description: '模板描述',
+  imageUrl: '/prompt_cover/xx_name.png',
+  prompt: buildFullPrompt(prompts.find((p) => p.id === 'your-prompt-id')!),
+  sampleStrength: prompts.find((p) => p.id === 'your-prompt-id')?.sampleStrength || 0.8,
+  isPro: false,  // true = 仅 Pro 用户可用
+}
+```
 
 ## 📝 提交规范
 

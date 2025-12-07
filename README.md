@@ -237,16 +237,63 @@ sequenceDiagram
     F-->>U: Display result
 ```
 
-## 🌐 Worldlines
+## ➕ Adding a New Prompt
 
-| ID | Name (EN) | Name (ZH) |
-|----|-----------|-----------|
-| studio-portrait | Photon Lab | 光影实验室 |
-| tech-startup | Silicon Prototype | 硅谷原型体 |
-| collectible-figure | Quantum Figurine | 量子人偶 |
-| federal-diplomat | Federal Envoy | 联邦特使 |
-| puzzle-deconstruction | Deconstruction Protocol | 解构协议 |
-| reverse-engineering | Reverse Engineering | 逆向工程 |
+### Step 1: Add Prompt Config
+
+Edit `lib/prompts.ts` and add a new entry to the `prompts` array:
+
+```typescript
+{
+  id: 'your-prompt-id',           // Unique ID, used for showcase image path
+  name: '提示词名称',               // Display name (Chinese)
+  prompt: 'Your AI prompt here',  // The actual prompt text
+  negativePrompt: 'optional',     // Optional negative prompt
+  sampleStrength: 0.8,            // Style strength (0-2)
+  tags: ['portrait', 'your-tag'], // First tag = primary category
+  showCompare: true,              // true: before/after slider, false: single image
+}
+```
+
+### Step 2: Add Showcase Images
+
+Place images in `/public/showcase/{id}/`:
+
+| Mode | Files Required | Display |
+|------|----------------|---------|
+| **Compare mode** (`showCompare: true`) | `before.webp` + `after.webp` | Before/After slider |
+| **Single mode** (`showCompare: false`) | `after.webp` only | Single image display |
+
+### Step 3: Add i18n Translations
+
+Add translations to both `lib/i18n/locales/en-US.ts` and `zh-CN.ts`:
+
+```typescript
+worldlines: {
+  'your-prompt-id': {
+    name: 'Display Name',
+    description: 'Short description for this style',
+  },
+  // ...
+}
+```
+
+### Step 4: (Optional) Add as Worldline Template
+
+If you want this prompt to appear in the Portal template selector, add it to `lib/worldlines.ts`:
+
+```typescript
+{
+  id: 'your-prompt-id',
+  name: '模板名称',
+  code: 'TL-XX',
+  description: '模板描述',
+  imageUrl: '/prompt_cover/xx_name.png',
+  prompt: buildFullPrompt(prompts.find((p) => p.id === 'your-prompt-id')!),
+  sampleStrength: prompts.find((p) => p.id === 'your-prompt-id')?.sampleStrength || 0.8,
+  isPro: false,  // true = Pro users only
+}
+```
 
 ## 📝 Commit Convention
 
