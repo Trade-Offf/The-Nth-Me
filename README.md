@@ -131,6 +131,106 @@ npm start
 └── public/               # Static assets
 ```
 
+## 🏗 Architecture
+
+```mermaid
+flowchart TB
+    subgraph Frontend["🖥️ Frontend"]
+        Home["🏠 Home<br/>app/page.tsx"]
+        Portal["🧪 Laboratory<br/>app/portal/page.tsx"]
+        Showcase["🌌 Showcase<br/>app/showcase/page.tsx"]
+        Pricing["⚡ Pricing<br/>app/pricing/page.tsx"]
+        User["👤 User Center<br/>app/user/page.tsx"]
+        Login["🔐 Login<br/>app/login/page.tsx"]
+    end
+
+    subgraph Components["🧩 Components"]
+        Navbar["Navbar"]
+        ControlPanel["ControlPanel"]
+        PreviewPanel["PreviewPanel"]
+        TechCard["TechCard"]
+    end
+
+    subgraph API["⚙️ API Layer"]
+        AuthAPI["🔑 Auth<br/>/api/auth"]
+        GenerateAPI["🎨 Generate<br/>/api/generate"]
+        UserAPI["👤 User<br/>/api/user/*"]
+        WebhookAPI["💰 Webhook<br/>/api/webhook/*"]
+    end
+
+    subgraph Services["🔧 Services"]
+        CreditService["Credit Service"]
+        RedeemService["Redeem Service"]
+        NanobananaAPI["AI Image API"]
+    end
+
+    subgraph Database["💾 Database"]
+        Prisma["Prisma ORM"]
+        PostgreSQL[("PostgreSQL")]
+    end
+
+    subgraph External["☁️ External Services"]
+        NextAuth["NextAuth.js"]
+        Afdian["Afdian"]
+        Paddle["Paddle"]
+        AIService["AI Service"]
+    end
+
+    Home --> Portal
+    Home --> Showcase
+    Home --> Pricing
+    Portal --> ControlPanel
+    Portal --> PreviewPanel
+
+    ControlPanel -->|"Request"| GenerateAPI
+    GenerateAPI --> CreditService
+    GenerateAPI --> NanobananaAPI
+    NanobananaAPI --> AIService
+
+    Login --> AuthAPI
+    AuthAPI --> NextAuth
+
+    Pricing --> Afdian
+    Pricing --> Paddle
+    Afdian --> WebhookAPI
+    Paddle --> WebhookAPI
+    WebhookAPI --> CreditService
+
+    CreditService --> Prisma
+    Prisma --> PostgreSQL
+```
+
+### Core Flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant U as 👤 User
+    participant F as 🖥️ Frontend
+    participant A as ⚙️ API
+    participant C as 💰 Credit Service
+    participant AI as 🤖 AI Service
+    participant DB as 💾 Database
+
+    U->>F: Visit /portal
+    U->>F: Configure & Submit
+    F->>A: POST /api/generate
+    A->>C: Check credits
+    C->>DB: Query balance
+
+    alt Insufficient credits
+        A-->>F: Error response
+        F-->>U: Show recharge prompt
+    end
+
+    A->>C: Deduct credits
+    A->>AI: Call image generation
+    AI-->>A: Return image URL
+    A->>DB: Save generation record
+    A-->>F: Success + image
+    F-->>U: Display result
+```
+
 ## 🌐 Worldlines
 
 | ID | Name (EN) | Name (ZH) |
@@ -141,6 +241,60 @@ npm start
 | federal-diplomat | Federal Envoy | 联邦特使 |
 | puzzle-deconstruction | Deconstruction Protocol | 解构协议 |
 | reverse-engineering | Reverse Engineering | 逆向工程 |
+
+## 📝 Commit Convention
+
+We follow the [Conventional Commits](https://www.conventionalcommits.org/) specification.
+
+### Format
+
+```
+<type>(<scope>): <subject>
+
+[optional body]
+
+[optional footer]
+```
+
+### Types
+
+| Type | Description |
+|------|-------------|
+| `feat` | New feature |
+| `fix` | Bug fix |
+| `docs` | Documentation only |
+| `style` | Code style (formatting, semicolons, etc.) |
+| `refactor` | Code refactoring (no feature/fix) |
+| `perf` | Performance improvement |
+| `test` | Adding or updating tests |
+| `chore` | Build process, dependencies, etc. |
+| `ci` | CI/CD configuration |
+| `revert` | Revert a previous commit |
+
+### Scopes (Optional)
+
+| Scope | Description |
+|-------|-------------|
+| `portal` | Laboratory/generation page |
+| `showcase` | Showcase gallery |
+| `pricing` | Pricing page |
+| `auth` | Authentication |
+| `api` | API routes |
+| `i18n` | Internationalization |
+| `db` | Database/Prisma |
+| `ui` | UI components |
+
+### Examples
+
+```bash
+feat(portal): add random prompt button
+fix(api): handle empty image response
+docs: update README with commit convention
+style(ui): format TechCard component
+refactor(auth): extract session validation logic
+perf(showcase): lazy load gallery images
+chore: upgrade Next.js to 14.2
+```
 
 ## 📄 License
 
