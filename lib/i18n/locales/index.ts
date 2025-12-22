@@ -30,5 +30,5 @@ export const translations: Record<LangCode, Translations> = {
 /**
  * 默认语言
  */
-export const DEFAULT_LANG: LangCode = 'en-US';
+export const DEFAULT_LANG: LangCode = 'zh-CN';
 

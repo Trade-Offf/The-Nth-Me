@@ -36,6 +36,16 @@ export interface PromptConfig {
  */
 export const prompts: PromptConfig[] = [
   {
+    id: 'christmas-special',
+    name: '圣诞特辑',
+    prompt:
+      '(santa hat:1.3), (red scarf:1.2), outdoors, winter, heavy snow, snowflakes, falling snow, night, street lights, blurry background, depth of field, masterpiece, best quality, highres, soft lighting',
+    negativePrompt: 'lowres, bad quality, blurry, artifacts',
+    sampleStrength: 1.0,
+    tags: ['christmas', 'winter'],
+    showCompare: false,
+  },
+  {
     id: 'studio-portrait',
     name: '光影实验室',
     prompt:

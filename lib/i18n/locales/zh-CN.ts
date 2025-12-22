@@ -47,6 +47,10 @@ const zhCN = {
       name: '发型矩阵',
       description: '多种亚文化发型变体，一图看遍百变造型',
     },
+    'christmas-special': {
+      name: '圣诞特辑',
+      description: '冬季雪景圣诞装扮，温暖节日氛围，适合节日分享',
+    },
     'cartoon-diner': {
       name: '漫画餐厅',
       description: '真人与卡通混搭，复古美式餐厅大乱斗',
@@ -68,6 +72,7 @@ const zhCN = {
     surreal: '超现实',
     concept: '概念设计',
     cinematic: '电影风格',
+    seasonal: '季节特辑',
     // 描述性 Tags（用户友好版本）
     'photon-capture': '专业打光',
     'monochrome-matrix': '黑白质感',
@@ -91,6 +96,8 @@ const zhCN = {
     'off-world': '地外殖民',
     'golden-hour': '黄金时刻',
     'nat-geo': '国家地理',
+    christmas: '圣诞节日',
+    winter: '冬季雪景',
   },
   portal: {
     badge: '神经漫游接口',

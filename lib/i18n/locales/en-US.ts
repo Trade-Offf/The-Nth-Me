@@ -50,6 +50,10 @@ const enUS: Translations = {
       name: 'Hairstyle Matrix',
       description: 'Multiple subculture hairstyle variants in one grid',
     },
+    'christmas-special': {
+      name: 'Christmas Special',
+      description: 'Winter snowscape with festive Christmas attire, warm holiday vibes',
+    },
     'cartoon-diner': {
       name: 'Cartoon Diner',
       description: 'Roger Rabbit style mixed-media chaos in a retro diner',
@@ -71,6 +75,7 @@ const enUS: Translations = {
     surreal: 'Surreal',
     concept: 'Concept Art',
     cinematic: 'Cinematic',
+    seasonal: 'Seasonal',
     // Descriptive Tags (user-friendly version)
     'photon-capture': 'Pro Lighting',
     'monochrome-matrix': 'B&W Texture',
@@ -94,6 +99,8 @@ const enUS: Translations = {
     'off-world': 'Off-World',
     'golden-hour': 'Golden Hour',
     'nat-geo': 'Nat Geo',
+    christmas: 'Christmas',
+    winter: 'Winter',
   },
   portal: {
     badge: 'NEURAL ROAMING INTERFACE',

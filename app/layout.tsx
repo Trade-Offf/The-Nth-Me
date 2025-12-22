@@ -5,6 +5,7 @@ import "./globals.css";
 import AuthProvider from "@/components/AuthProvider";
 import { I18nProvider } from "@/lib/i18n";
 import { OrganizationSchema, SoftwareAppSchema } from "@/components/StructuredData";
+import ChristmasDecorator from "@/components/seasonal/ChristmasDecorator";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -127,6 +128,7 @@ export default function RootLayout({
         <SoftwareAppSchema />
       </head>
       <body className={`${inter.className} antialiased`}>
+        <ChristmasDecorator showLights={false} showIcons={false} />
         <AuthProvider>
           <I18nProvider>
             {children}

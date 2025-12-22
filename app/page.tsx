@@ -71,7 +71,10 @@ export default function HomePage() {
       <Navbar />
 
       {/* Hero 区域 */}
-      <section className="relative w-full flex-1 flex items-center justify-center pt-20 lg:pt-0" style={{ minHeight: 'calc(100vh - 8rem)' }}>
+      <section
+        className="relative w-full flex-1 flex items-center justify-center pt-20 lg:pt-0"
+        style={{ minHeight: 'calc(100vh - 8rem)' }}
+      >
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 w-full">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center w-full">
             {/* 左侧文案 */}
@@ -95,19 +98,30 @@ export default function HomePage() {
               </div>
 
               <div className="space-y-3">
-                {/* 系统注释 */}
                 <p className="font-mono text-xs text-zinc-600 uppercase tracking-[0.2em]">
                   {`// INITIALIZING QUANTUM BRIDGE`}
                 </p>
 
-                {/* 主标题 */}
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white uppercase tracking-wide">
+                {/* 主标题 - 英文时缩小 */}
+                <h1
+                  className={`font-bold text-white uppercase tracking-wide ${
+                    lang === 'en-US'
+                      ? 'text-2xl sm:text-3xl lg:text-4xl'
+                      : 'text-3xl sm:text-4xl lg:text-5xl'
+                  }`}
+                >
                   {hero.title}
                 </h1>
 
-                {/* 副标题 - 酸性绿下划线效果 */}
+                {/* 副标题 - 酸性绿下划线效果 - 英文时缩小 */}
                 <div className="relative inline-block">
-                  <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-acid uppercase tracking-wide">
+                  <p
+                    className={`font-bold text-acid uppercase tracking-wide ${
+                      lang === 'en-US'
+                        ? 'text-lg sm:text-xl lg:text-2xl'
+                        : 'text-xl sm:text-2xl lg:text-3xl'
+                    }`}
+                  >
                     {hero.subtitle_gradient}
                   </p>
                   <div className="absolute -bottom-2 left-0 w-full h-px bg-gradient-to-r from-acid via-acid/50 to-transparent" />
@@ -152,17 +166,23 @@ export default function HomePage() {
               {/* 技术指标 */}
               <div className="grid grid-cols-3 gap-4 sm:flex sm:items-center sm:gap-6 pt-4 border-t border-tech-border">
                 <div>
-                  <p className="font-mono text-[10px] text-zinc-600 uppercase tracking-[0.15em]">{hero.stats.latency}</p>
+                  <p className="font-mono text-[10px] text-zinc-600 uppercase tracking-[0.15em]">
+                    {hero.stats.latency}
+                  </p>
                   <p className="font-mono text-base sm:text-lg text-acid">~2.5s</p>
                 </div>
                 <div className="hidden sm:block w-px h-8 bg-tech-border" />
                 <div>
-                  <p className="font-mono text-[10px] text-zinc-600 uppercase tracking-[0.15em]">{hero.stats.styles}</p>
+                  <p className="font-mono text-[10px] text-zinc-600 uppercase tracking-[0.15em]">
+                    {hero.stats.styles}
+                  </p>
                   <p className="font-mono text-base sm:text-lg text-acid">20+</p>
                 </div>
                 <div className="hidden sm:block w-px h-8 bg-tech-border" />
                 <div>
-                  <p className="font-mono text-[10px] text-zinc-600 uppercase tracking-[0.15em]">{hero.stats.resolution}</p>
+                  <p className="font-mono text-[10px] text-zinc-600 uppercase tracking-[0.15em]">
+                    {hero.stats.resolution}
+                  </p>
                   <p className="font-mono text-base sm:text-lg text-acid">1024px</p>
                 </div>
               </div>
@@ -197,8 +217,12 @@ export default function HomePage() {
                 </Suspense>
                 {/* 底部状态栏 */}
                 <div className="absolute bottom-0 left-0 right-0 h-8 bg-tech-bg/80 border-t border-tech-border flex items-center px-3 justify-between z-10">
-                  <span className="font-mono text-[10px] text-zinc-600 tracking-wider">RENDER_ENGINE: ACTIVE</span>
-                  <span className="font-mono text-[10px] text-acid animate-pulse">● SIGNAL_STABLE</span>
+                  <span className="font-mono text-[10px] text-zinc-600 tracking-wider">
+                    RENDER_ENGINE: ACTIVE
+                  </span>
+                  <span className="font-mono text-[10px] text-acid animate-pulse">
+                    ● SIGNAL_STABLE
+                  </span>
                 </div>
               </div>
             </motion.div>
