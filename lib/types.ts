@@ -60,23 +60,3 @@ export interface GenerateResponse {
   errorCode?: string;
   creditsUsed?: number;
 }
-
-// 银河杂货铺 API 类型
-export interface GalaxyImageEditRequest {
-  model: 'nanobanana' | 'gemini-2.5-flash-image' | 'gemini-2.5-flash-image-preview' | 'gemini-3-pro-image-preview';
-  prompt: string;
-  images: string[];  // base64 数组（只支持单张）
-  response_format?: 'url' | 'b64_json';
-  sample_strength?: number;
-}
-
-export interface GalaxyImageEditResponse {
-  created: number;
-  data: Array<{
-    url?: string;
-    b64_json?: string;
-  }>;
-  input_images?: number;
-  composition_type?: string;
-}
-

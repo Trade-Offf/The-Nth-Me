@@ -54,7 +54,7 @@
 | 数据库 | PostgreSQL + Prisma ORM |
 | 认证 | NextAuth.js |
 | 动画 | Framer Motion |
-| AI 后端 | 银河杂货铺 API |
+| AI 后端 | Nano Banana API |
 | 支付 | 爱发电 + Paddle |
 
 ## 🚀 快速开始
