@@ -3,10 +3,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
-import { Beaker, Settings, Image as ImageIcon } from 'lucide-react';
+import { Settings, Image as ImageIcon } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import ControlPanel from '@/components/laboratory/ControlPanel';
 import PreviewPanel from '@/components/laboratory/PreviewPanel';
+import PromptCarousel from '@/components/laboratory/PromptCarousel';
 import { useI18n } from '@/lib/i18n';
 import type { ModelType, TaskType, ImageAspectRatio, ProResolution, GenerateRequest, GenerateResponse } from '@/lib/types';
 
@@ -103,58 +104,41 @@ export default function PortalPage() {
       {/* 导航栏 */}
       <Navbar />
 
-      <div className="max-w-7xl mx-auto relative z-10 px-4 pt-20 pb-8 h-screen flex flex-col">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-4"
-        >
-          <div className="flex items-center justify-center gap-3 mb-2">
-            <Beaker className="w-6 h-6 text-acid" strokeWidth={1.5} />
-            <h1 className="text-xl md:text-2xl font-bold text-white uppercase tracking-wide">
-              <span className="text-acid">{t.laboratory.title}</span>
-            </h1>
-          </div>
-          <p className="text-zinc-500 font-mono text-xs tracking-wider">
-            {t.laboratory.subtitle}
-          </p>
-        </motion.div>
-
+      <div className="max-w-7xl mx-auto relative z-10 px-4 pt-20 pb-8">
         {/* 移动端 Tab 切换 */}
         <div className="lg:hidden flex mb-4 border border-tech-border rounded-sm overflow-hidden">
           <button
             onClick={() => setMobileActiveTab('control')}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 font-mono text-xs uppercase tracking-wider transition-colors ${
+            className={`flex-1 flex items-center justify-center gap-2 py-3 font-mono text-sm uppercase tracking-wider transition-colors ${
               mobileActiveTab === 'control'
                 ? 'bg-acid/10 text-acid border-b-2 border-acid'
                 : 'text-zinc-500 hover:text-zinc-300'
             }`}
           >
-            <Settings className="w-4 h-4" />
+            <Settings className="w-5 h-5" />
             {t.laboratory.controlPanel}
           </button>
           <button
             onClick={() => setMobileActiveTab('preview')}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 font-mono text-xs uppercase tracking-wider transition-colors ${
+            className={`flex-1 flex items-center justify-center gap-2 py-3 font-mono text-sm uppercase tracking-wider transition-colors ${
               mobileActiveTab === 'preview'
                 ? 'bg-acid/10 text-acid border-b-2 border-acid'
                 : 'text-zinc-500 hover:text-zinc-300'
             }`}
           >
-            <ImageIcon className="w-4 h-4" />
+            <ImageIcon className="w-5 h-5" />
             {t.laboratory.output}
           </button>
         </div>
 
         {/* 主内容区 - 桌面端左右分栏 / 移动端 Tab 切换 */}
-        <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4 min-h-0">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[calc(100vh-8rem)]">
           {/* 左侧：控制面板 */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
-            className={`lg:col-span-4 min-h-0 overflow-hidden ${
+            className={`lg:col-span-4 ${
               mobileActiveTab === 'control' ? 'block' : 'hidden lg:block'
             }`}
           >
@@ -184,11 +168,12 @@ export default function PortalPage() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
-            className={`lg:col-span-8 min-h-0 ${
+            className={`lg:col-span-8 ${
               mobileActiveTab === 'preview' ? 'block' : 'hidden lg:block'
             }`}
           >
             <PreviewPanel
+              model={model}
               generatedImage={generatedImage}
               isGenerating={isGenerating}
               error={error}
@@ -197,12 +182,30 @@ export default function PortalPage() {
           </motion.div>
         </div>
 
+        {/* 提示词轮播选择器 - 只在图生图模式时显示 */}
+        {taskType === 'image-to-image' && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ delay: 0.3 }}
+            className="mt-8"
+          >
+            <div className="mb-3">
+              <h3 className="font-mono text-sm text-zinc-400 uppercase tracking-wider">
+                快速选择风格
+              </h3>
+            </div>
+            <PromptCarousel onSelectPrompt={setPrompt} />
+          </motion.div>
+        )}
+
         {/* 底部隐私提示 */}
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="text-center text-[10px] text-zinc-600 font-mono mt-4 pb-2"
+          transition={{ delay: 0.4 }}
+          className="text-center text-xs text-zinc-600 font-mono mt-6 pb-2"
         >
           {t.laboratory.privacyNotice}
         </motion.p>

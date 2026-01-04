@@ -15,11 +15,11 @@ import { CREDITS_STANDARD, CREDITS_PRO } from '@/lib/types';
 
 // 尺寸选项配置
 const ASPECT_RATIO_OPTIONS: { value: ImageAspectRatio; label: string; icon: React.ReactNode }[] = [
-  { value: '1:1', label: '1:1', icon: <Square className="w-4 h-4" strokeWidth={1.5} /> },
-  { value: '9:16', label: '9:16', icon: <Smartphone className="w-4 h-4" strokeWidth={1.5} /> },
-  { value: '16:9', label: '16:9', icon: <Monitor className="w-4 h-4" strokeWidth={1.5} /> },
-  { value: '4:3', label: '4:3', icon: <Monitor className="w-4 h-4" strokeWidth={1.5} /> },
-  { value: '3:4', label: '3:4', icon: <Smartphone className="w-4 h-4" strokeWidth={1.5} /> },
+  { value: '1:1', label: '1:1', icon: <Square className="w-5 h-5" strokeWidth={1.5} /> },
+  { value: '9:16', label: '9:16', icon: <Smartphone className="w-5 h-5" strokeWidth={1.5} /> },
+  { value: '16:9', label: '16:9', icon: <Monitor className="w-5 h-5" strokeWidth={1.5} /> },
+  { value: '4:3', label: '4:3', icon: <Monitor className="w-5 h-5" strokeWidth={1.5} /> },
+  { value: '3:4', label: '3:4', icon: <Smartphone className="w-5 h-5" strokeWidth={1.5} /> },
 ];
 
 // 分辨率选项 (Pro 模式)
@@ -182,20 +182,20 @@ export default function ControlPanel({
     <TechCard className="p-5 h-full flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-sm font-mono font-medium text-white uppercase tracking-wider flex items-center gap-2">
-          <Zap className={`w-4 h-4 ${theme.text}`} />
+        <h2 className="text-base font-mono font-medium text-white uppercase tracking-wider flex items-center gap-2">
+          <Zap className={`w-5 h-5 ${theme.text}`} />
           {t.laboratory.controlPanel}
         </h2>
-        <div className={`flex items-center gap-1.5 px-2 py-1 rounded-sm ${theme.bg} border ${theme.borderLight}`}>
-          <Zap className={`w-3 h-3 ${theme.text}`} strokeWidth={2} />
-          <span className={`text-xs font-mono ${theme.text}`}>{userCredits}</span>
+        <div className={`flex items-center gap-2 px-3 py-1.5 rounded-sm ${theme.bg} border ${theme.borderLight}`}>
+          <Zap className={`w-4 h-4 ${theme.text}`} strokeWidth={2} />
+          <span className={`text-sm font-mono ${theme.text}`}>{userCredits}</span>
         </div>
       </div>
 
       <div className="flex-1 overflow-y-auto space-y-4 pr-1">
         {/* 1. Model 切换 */}
         <div>
-          <label className="text-[10px] text-zinc-500 font-mono uppercase tracking-wider mb-2 block">
+          <label className="text-xs text-zinc-400 font-mono uppercase tracking-wider mb-2 block">
             {t.laboratory.model}
           </label>
           <div className="grid grid-cols-2 gap-2">
@@ -204,7 +204,7 @@ export default function ControlPanel({
                 key={m}
                 onClick={() => onModelChange(m)}
                 className={`
-                  px-3 py-2 rounded-sm border text-xs font-mono uppercase transition-all
+                  px-4 py-2.5 rounded-sm border text-sm font-mono uppercase transition-all
                   ${model === m
                     ? m === 'pro'
                       ? 'border-purple-500 bg-purple-500/10 text-purple-400'
@@ -221,14 +221,14 @@ export default function ControlPanel({
 
         {/* 2. Task Type */}
         <div>
-          <label className="text-[10px] text-zinc-500 font-mono uppercase tracking-wider mb-2 block">
+          <label className="text-xs text-zinc-400 font-mono uppercase tracking-wider mb-2 block">
             {t.laboratory.taskType}
           </label>
           <div className="grid grid-cols-2 gap-2">
             <button
               onClick={() => onTaskTypeChange('text-to-image')}
               className={`
-                flex items-center justify-center gap-1.5 px-3 py-2 rounded-sm border text-xs font-mono transition-all
+                flex items-center justify-center gap-2 px-4 py-2.5 rounded-sm border text-sm font-mono transition-all
                 ${taskType === 'text-to-image'
                   ? `${theme.border} ${theme.bg} ${theme.text}`
                   : 'border-tech-border bg-transparent text-zinc-500 hover:border-zinc-600'
@@ -241,7 +241,7 @@ export default function ControlPanel({
             <button
               onClick={() => onTaskTypeChange('image-to-image')}
               className={`
-                flex items-center justify-center gap-1.5 px-3 py-2 rounded-sm border text-xs font-mono transition-all
+                flex items-center justify-center gap-2 px-4 py-2.5 rounded-sm border text-sm font-mono transition-all
                 ${taskType === 'image-to-image'
                   ? `${theme.border} ${theme.bg} ${theme.text}`
                   : 'border-tech-border bg-transparent text-zinc-500 hover:border-zinc-600'
@@ -256,19 +256,19 @@ export default function ControlPanel({
 
         {/* 3. Prompt */}
         <div>
-          <label className="text-[10px] text-zinc-500 font-mono uppercase tracking-wider mb-2 block">
+          <label className="text-xs text-zinc-400 font-mono uppercase tracking-wider mb-2 block">
             {t.laboratory.prompt}
           </label>
           <textarea
             value={prompt}
             onChange={(e) => onPromptChange(e.target.value)}
             placeholder={t.laboratory.promptPlaceholder}
-            className={`w-full h-24 px-3 py-2 rounded-sm border border-tech-border bg-tech-bg
-                     text-sm text-white placeholder:text-zinc-600 font-mono
+            className={`w-full h-28 px-4 py-3 rounded-sm border border-tech-border bg-tech-bg
+                     text-base text-white placeholder:text-zinc-600 font-mono leading-relaxed
                      ${theme.focusBorder} focus:outline-none resize-none`}
           />
           {/* Safety Protocol Warning */}
-          <p className="mt-2 text-[10px] text-amber-500/80 font-mono leading-relaxed">
+          <p className="mt-2 text-xs text-amber-500/80 font-mono leading-relaxed">
             {t.laboratory.safetyWarning}
           </p>
         </div>
@@ -281,7 +281,7 @@ export default function ControlPanel({
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
             >
-              <label className="text-[10px] text-zinc-500 font-mono uppercase tracking-wider mb-2 block">
+              <label className="text-xs text-zinc-400 font-mono uppercase tracking-wider mb-2 block">
                 {t.laboratory.referenceImage}
               </label>
               <input
@@ -347,7 +347,7 @@ export default function ControlPanel({
 
         {/* 5. Aspect Ratio */}
         <div>
-          <label className="text-[10px] text-zinc-500 font-mono uppercase tracking-wider mb-2 block">
+          <label className="text-xs text-zinc-400 font-mono uppercase tracking-wider mb-2 block">
             {t.laboratory.aspectRatio}
           </label>
           <div className="flex gap-1.5 flex-wrap">
@@ -356,7 +356,7 @@ export default function ControlPanel({
                 key={opt.value}
                 onClick={() => onAspectRatioChange(opt.value)}
                 className={`
-                  flex items-center gap-1 px-2 py-1.5 rounded-sm border text-[10px] font-mono transition-all
+                  flex items-center gap-2 px-3 py-2 rounded-sm border text-sm font-mono transition-all
                   ${aspectRatio === opt.value
                     ? `${theme.border} ${theme.bg} ${theme.text}`
                     : 'border-tech-border text-zinc-500 hover:border-zinc-600'
@@ -378,7 +378,7 @@ export default function ControlPanel({
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
             >
-              <label className="text-[10px] text-zinc-500 font-mono uppercase tracking-wider mb-2 block">
+              <label className="text-xs text-zinc-400 font-mono uppercase tracking-wider mb-2 block">
                 {t.laboratory.resolution} <span className={theme.text}>({t.laboratory.pro})</span>
               </label>
               <div className="flex gap-1.5">
@@ -387,7 +387,7 @@ export default function ControlPanel({
                     key={opt.value}
                     onClick={() => onResolutionChange(opt.value)}
                     className={`
-                      px-3 py-1.5 rounded-sm border text-[10px] font-mono transition-all
+                      px-4 py-2 rounded-sm border text-sm font-mono transition-all
                       ${resolution === opt.value
                         ? `${theme.border} ${theme.bg} ${theme.text}`
                         : 'border-tech-border text-zinc-500 hover:border-zinc-600'
@@ -411,11 +411,11 @@ export default function ControlPanel({
           // 未登录 - 显示登录按钮
           <Link
             href="/login?callbackUrl=/portal"
-            className={`w-full py-3 rounded-sm font-mono text-sm uppercase transition-all duration-300
+            className={`w-full py-4 rounded-sm font-mono text-base uppercase tracking-wider transition-all duration-300
                      flex items-center justify-center gap-2
                      ${theme.btnBg} ${theme.btnText} ${theme.btnBgHover}`}
           >
-            <LogIn className="w-4 h-4" />
+            <LogIn className="w-5 h-5" />
             {t.portal.loginBtn}
           </Link>
         ) : (
@@ -425,7 +425,7 @@ export default function ControlPanel({
               onClick={onGenerate}
               disabled={!canGenerate}
               className={`
-                w-full py-3 rounded-sm font-mono text-sm uppercase transition-all duration-300
+                w-full py-4 rounded-sm font-mono text-base uppercase tracking-wider transition-all duration-300
                 flex items-center justify-center gap-2
                 ${canGenerate
                   ? `${theme.btnBg} ${theme.btnText} ${theme.btnBgHover}`
@@ -435,18 +435,18 @@ export default function ControlPanel({
             >
               {isGenerating ? (
                 <>
-                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  <RefreshCw className="w-5 h-5 animate-spin" />
                   {t.laboratory.generating}
                 </>
               ) : (
                 <>
-                  <Zap className="w-4 h-4" />
+                  <Zap className="w-5 h-5" />
                   {t.laboratory.run} ({creditsNeeded}⚡️)
                 </>
               )}
             </button>
             {!hasEnoughCredits && (
-              <p className="mt-2 text-center text-[10px] text-red-400 font-mono">
+              <p className="mt-2 text-center text-xs text-red-400 font-mono">
                 {t.laboratory.insufficientCredits.replace('{needed}', String(creditsNeeded)).replace('{have}', String(userCredits))}
               </p>
             )}

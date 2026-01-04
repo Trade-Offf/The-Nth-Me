@@ -1,5 +1,4 @@
 import { MetadataRoute } from 'next';
-import { prompts } from '@/lib/prompts';
 
 const BASE_URL = 'https://www.nthme.org';
 
@@ -21,14 +20,26 @@ export default function sitemap(): MetadataRoute.Sitemap {
       },
     },
     {
-      url: `${BASE_URL}/showcase`,
+      url: `${BASE_URL}/portal`,
       lastModified: now,
       changeFrequency: 'weekly',
       priority: 0.9,
       alternates: {
         languages: {
-          'zh-CN': `${BASE_URL}/showcase?lang=zh-CN`,
-          'en-US': `${BASE_URL}/showcase?lang=en-US`,
+          'zh-CN': `${BASE_URL}/portal?lang=zh-CN`,
+          'en-US': `${BASE_URL}/portal?lang=en-US`,
+        },
+      },
+    },
+    {
+      url: `${BASE_URL}/formats`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+      alternates: {
+        languages: {
+          'zh-CN': `${BASE_URL}/formats?lang=zh-CN`,
+          'en-US': `${BASE_URL}/formats?lang=en-US`,
         },
       },
     },
@@ -41,18 +52,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
         languages: {
           'zh-CN': `${BASE_URL}/pricing?lang=zh-CN`,
           'en-US': `${BASE_URL}/pricing?lang=en-US`,
-        },
-      },
-    },
-    {
-      url: `${BASE_URL}/portal`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.7,
-      alternates: {
-        languages: {
-          'zh-CN': `${BASE_URL}/portal?lang=zh-CN`,
-          'en-US': `${BASE_URL}/portal?lang=en-US`,
         },
       },
     },
@@ -118,22 +117,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
-  // 动态页面 - Showcase 中有展示的 prompts
-  // 注意：使用参数而非锚点，更有利于SEO
-  const showcasePrompts = prompts.filter((p) => p.hasShowcase);
-  const dynamicPages: MetadataRoute.Sitemap = showcasePrompts.map((prompt) => ({
-    url: `${BASE_URL}/showcase?style=${prompt.id}`,
-    lastModified: now,
-    changeFrequency: 'monthly' as const,
-    priority: 0.6,
-    alternates: {
-      languages: {
-        'zh-CN': `${BASE_URL}/showcase?style=${prompt.id}&lang=zh-CN`,
-        'en-US': `${BASE_URL}/showcase?style=${prompt.id}&lang=en-US`,
-      },
-    },
-  }));
-
-  return [...staticPages, ...dynamicPages];
+  return staticPages;
 }
 

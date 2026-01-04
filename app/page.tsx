@@ -35,6 +35,40 @@ const heroContent = {
       latency: '响应速度',
       styles: '工具数量',
     },
+    featuresTitle: '核心功能',
+    featuresSubtitle: '三大工具矩阵，覆盖图片全生命周期',
+    features: [
+      {
+        id: 'ai-lab',
+        icon: '🧪',
+        title: 'AI 工坊',
+        subtitle: 'AI-POWERED CREATION',
+        description: '双模型 AI 图片生成引擎。Standard 快速出图，Pro 高清细节。12种预设风格，支持文生图与图生图，多种尺寸自由选择。',
+        highlights: ['双模型引擎', '12种风格', '多尺寸输出'],
+        link: '/portal',
+        linkText: '进入工坊',
+      },
+      {
+        id: 'format-factory',
+        icon: '🔧',
+        title: '格式工厂',
+        subtitle: 'FORMAT CONVERSION',
+        description: '纯前端图片格式处理工具集。WebP/HEIC/JPEG转换，PDF与图片互转，视频转GIF，ICO生成。无需上传，即时处理，保护隐私。',
+        highlights: ['7大转换工具', '纯前端处理', '隐私安全'],
+        link: '/formats',
+        linkText: '打开工厂',
+      },
+      {
+        id: 'credit-shop',
+        icon: '⚡',
+        title: '算力商城',
+        subtitle: 'FLEXIBLE PRICING',
+        description: '灵活的积分充值系统。国内爱发电（CNY）+ 海外Paddle（USD）双通道支付。多档位选择，充值即用，按需购买。',
+        highlights: ['双币种支付', '多档位选择', '即买即用'],
+        link: '/pricing',
+        linkText: '查看价格',
+      },
+    ],
   },
   'en-US': {
     sysStatus: 'TOOLBOX ONLINE',
@@ -50,6 +84,40 @@ const heroContent = {
       latency: 'RESPONSE TIME',
       styles: 'TOOLS AVAILABLE',
     },
+    featuresTitle: 'CORE FEATURES',
+    featuresSubtitle: 'Three toolsets covering the complete image lifecycle',
+    features: [
+      {
+        id: 'ai-lab',
+        icon: '🧪',
+        title: 'AI Lab',
+        subtitle: 'AI-POWERED CREATION',
+        description: 'Dual-model AI image generation. Standard for speed, Pro for HD quality. 12 preset styles, text-to-image & image-to-image, multiple aspect ratios.',
+        highlights: ['Dual Models', '12 Styles', 'Multi-Size'],
+        link: '/portal',
+        linkText: 'Enter Lab',
+      },
+      {
+        id: 'format-factory',
+        icon: '🔧',
+        title: 'Format Factory',
+        subtitle: 'FORMAT CONVERSION',
+        description: 'Client-side image processing toolkit. WebP/HEIC/JPEG conversion, PDF↔Image, Video to GIF, ICO generation. No upload, instant processing, privacy-first.',
+        highlights: ['7 Converters', 'Client-side', 'Privacy Safe'],
+        link: '/formats',
+        linkText: 'Open Factory',
+      },
+      {
+        id: 'credit-shop',
+        icon: '⚡',
+        title: 'Credit Shop',
+        subtitle: 'FLEXIBLE PRICING',
+        description: 'Flexible credit system. Afdian (CNY) + Paddle (USD) dual payment channels. Multiple tiers, instant activation, pay-as-you-go.',
+        highlights: ['Dual Currency', 'Multi-tier', 'Instant Use'],
+        link: '/pricing',
+        linkText: 'View Pricing',
+      },
+    ],
   },
 } as const;
 
@@ -69,10 +137,7 @@ export default function HomePage() {
       <Navbar />
 
       {/* Hero 区域 */}
-      <section
-        className="relative w-full flex-1 flex items-center justify-center pt-20 lg:pt-0"
-        style={{ minHeight: 'calc(100vh - 8rem)' }}
-      >
+      <section className="relative w-full h-screen flex items-center justify-center">
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 w-full">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center w-full">
             {/* 左侧文案 */}
@@ -134,30 +199,30 @@ export default function HomePage() {
               </p>
 
               {/* 按钮组 */}
-              <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 pt-2">
-                {/* Generate 按钮 - 主要 CTA */}
+              <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 pt-2">
+                {/* AI工坊按钮 - 主要 CTA */}
                 <Link
                   href="/portal"
                   className="group inline-flex items-center justify-center px-6 py-3 rounded-sm bg-acid text-black font-mono text-xs uppercase tracking-[0.15em] font-medium hover:bg-transparent hover:text-acid border border-acid transition-all duration-200"
                 >
-                  {hero.btn_generate}
+                  {hero.features[0].icon} {hero.features[0].title}
                   <span className="ml-2 group-hover:translate-x-1 transition-transform">→</span>
                 </Link>
 
-                {/* Browse 按钮 - 描边 */}
+                {/* 格式工厂按钮 - 描边 */}
                 <Link
-                  href="/showcase"
+                  href="/formats"
                   className="inline-flex items-center justify-center px-6 py-3 rounded-sm border border-zinc-700 text-zinc-400 font-mono text-xs uppercase tracking-[0.15em] hover:border-acid hover:text-acid transition-colors duration-200"
                 >
-                  {hero.btn_primary}
+                  {hero.features[1].icon} {hero.features[1].title}
                 </Link>
 
-                {/* Pricing 按钮 - 描边 */}
+                {/* 算力商城按钮 - 描边 */}
                 <Link
                   href="/pricing"
                   className="inline-flex items-center justify-center px-6 py-3 rounded-sm border border-zinc-700 text-zinc-400 font-mono text-xs uppercase tracking-[0.15em] hover:border-acid hover:text-acid transition-colors duration-200"
                 >
-                  {hero.btn_secondary}
+                  {hero.features[2].icon} {hero.features[2].title}
                 </Link>
               </div>
 
@@ -218,6 +283,110 @@ export default function HomePage() {
               </div>
             </motion.div>
           </div>
+        </div>
+      </section>
+
+      {/* 功能介绍区域 */}
+      <section className="relative w-full py-20 lg:py-32 border-t border-tech-border">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
+          {/* 区域标题 */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-center mb-12 lg:mb-16"
+          >
+            <p className="font-mono text-xs text-zinc-600 uppercase tracking-[0.2em] mb-3">
+              {`// FUNCTIONAL_MODULES`}
+            </p>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white uppercase mb-3">
+              {hero.featuresTitle}
+            </h2>
+            <div className="w-24 h-px bg-gradient-to-r from-transparent via-acid to-transparent mx-auto mb-4" />
+            <p className="text-sm text-zinc-400 max-w-2xl mx-auto">
+              {hero.featuresSubtitle}
+            </p>
+          </motion.div>
+
+          {/* 功能卡片网格 */}
+          <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+            {hero.features.map((feature, index) => (
+              <motion.div
+                key={feature.id}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <Link
+                  href={feature.link}
+                  className="group block h-full"
+                >
+                  <div className="h-full p-6 lg:p-8 border border-tech-border rounded-sm bg-tech-card hover:border-acid/50 hover:bg-tech-card/80 transition-all duration-300">
+                    {/* 图标和标签 */}
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="w-12 h-12 flex items-center justify-center text-3xl bg-tech-bg border border-tech-border rounded-sm group-hover:border-acid/50 transition-colors">
+                        {feature.icon}
+                      </div>
+                      <span className="px-2 py-1 border border-tech-border rounded-sm text-[10px] font-mono text-zinc-500 uppercase tracking-wider">
+                        {String(index + 1).padStart(2, '0')}
+                      </span>
+                    </div>
+
+                    {/* 标题 */}
+                    <div className="mb-4">
+                      <h3 className="text-xl font-bold text-white mb-1 group-hover:text-acid transition-colors">
+                        {feature.title}
+                      </h3>
+                      <p className="font-mono text-[10px] text-zinc-600 uppercase tracking-wider">
+                        {feature.subtitle}
+                      </p>
+                    </div>
+
+                    {/* 分隔线 */}
+                    <div className="w-full h-px bg-gradient-to-r from-tech-border to-transparent mb-4" />
+
+                    {/* 描述 */}
+                    <p className="text-sm text-zinc-400 leading-relaxed mb-6">
+                      {feature.description}
+                    </p>
+
+                    {/* 亮点标签 */}
+                    <div className="flex flex-wrap gap-2 mb-6">
+                      {feature.highlights.map((highlight) => (
+                        <span
+                          key={highlight}
+                          className="px-2 py-1 bg-acid/5 border border-acid/20 rounded-sm text-[10px] font-mono text-acid uppercase tracking-wider"
+                        >
+                          {highlight}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* 按钮 */}
+                    <div className="flex items-center justify-between pt-4 border-t border-tech-border">
+                      <span className="font-mono text-xs text-zinc-400 uppercase tracking-wider group-hover:text-acid transition-colors">
+                        {feature.linkText}
+                      </span>
+                      <span className="text-acid group-hover:translate-x-1 transition-transform">
+                        →
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* 底部分隔线 */}
+          <motion.div
+            initial={{ opacity: 0, scaleX: 0 }}
+            whileInView={{ opacity: 1, scaleX: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="w-full h-px bg-gradient-to-r from-transparent via-tech-border to-transparent mt-16 lg:mt-20"
+          />
         </div>
       </section>
 

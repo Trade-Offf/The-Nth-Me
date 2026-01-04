@@ -38,9 +38,9 @@
 
 **无限图界 (Nthme)** 是一个集成了 AI 算力与传统算法的超级图片工具箱，20+ 专业工具随时待命。
 
-- 🎭 **双模式创作** — 模板模式（预设风格一键生成）+ 自由模式（自定义 Prompt）
+- 🎭 **双模式创作** — 模板模式（预设风格轮播选择）+ 自由模式（自定义 Prompt）
 - 🔮 **标准/Pro 双模型** — 标准模型快速出图，Pro 模型高清细节 + 多尺寸输出
-- 📚 **Prompt 提示词库** — 持续更新的风格模板，支持分类筛选与一键复制
+- 🎨 **12种风格模板** — AI工坊内置风格轮播器，图生图模式下一键应用
 - 💳 **全球支付** — 国内爱发电 (CNY) + 海外 Paddle (USD)，自动识别地区与货币
 - 🔐 **快速登录** — GitHub / Google OAuth 认证
 - 🌍 **中英双语** — 完整 i18n 支持，自动识别浏览器语言
@@ -130,8 +130,8 @@ npm start
 ```
 ├── app/                  # Next.js App Router 页面
 │   ├── api/              # API 路由
-│   ├── portal/           # AI图片生成
-│   ├── showcase/         # Prompt提示词库
+│   ├── portal/           # AI工坊（图片生成+风格选择器）
+│   ├── formats/          # 格式工厂（图片格式转换工具）
 │   └── ...
 ├── components/           # React 组件
 ├── lib/
@@ -148,9 +148,9 @@ npm start
 flowchart TB
     subgraph 前端["🖥️ 前端"]
         Home["🏠 首页<br/>app/page.tsx"]
-        Portal["🧪 AI图片生成<br/>app/portal/page.tsx"]
-        Showcase["🌌 Prompt提示词库<br/>app/showcase/page.tsx"]
-        Pricing["⚡ 购买算力<br/>app/pricing/page.tsx"]
+        Portal["🧪 AI工坊<br/>app/portal/page.tsx"]
+        Formats["🔧 格式工厂<br/>app/formats/page.tsx"]
+        Pricing["⚡ 算力商城<br/>app/pricing/page.tsx"]
         User["👤 个人中心<br/>app/user/page.tsx"]
         Login["🔐 登录<br/>app/login/page.tsx"]
     end
@@ -260,14 +260,9 @@ sequenceDiagram
 }
 ```
 
-### 第二步：添加展示图片
+### 第二步：添加风格预览图
 
-将图片放入 `/public/showcase/{id}/` 目录：
-
-| 模式 | 所需文件 | 展示效果 |
-|------|----------|----------|
-| **对比模式** (`showCompare: true`) | `before.webp` + `after.webp` | 前后对比滑块 |
-| **单图模式** (`showCompare: false`) | 仅需 `after.webp` | 单张图片展示 |
+将预览图片放入 `/public/showcase/{id}/after.webp`。该图片将在 AI工坊 的风格轮播器中展示。
 
 ### 第三步：添加 i18n 翻译
 
@@ -333,9 +328,9 @@ worldlines: {
 
 | 作用域 | 说明 |
 |--------|------|
-| `portal` | AI图片生成 |
-| `showcase` | Prompt提示词库 |
-| `pricing` | 购买算力 |
+| `portal` | AI工坊（图片生成+风格选择器）|
+| `formats` | 格式工厂（图片格式转换工具）|
+| `pricing` | 算力商城 |
 | `auth` | 认证 |
 | `api` | API 路由 |
 | `i18n` | 国际化 |
@@ -350,7 +345,7 @@ fix(api): 处理空图片响应
 docs: 更新 README 提交规范
 style(ui): 格式化 TechCard 组件
 refactor(auth): 提取会话验证逻辑
-perf(showcase): 延迟加载画廊图片
+perf(portal): 优化风格轮播器性能
 chore: 升级 Next.js 到 14.2
 ```
 

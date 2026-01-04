@@ -1,21 +1,52 @@
 {
-  "name": "The Nth Me",
-  "short_name": "NthMe",
-  "description": "AI Portrait Generator - Transform your photos into stunning AI-generated portraits",
+  "name": "无限图界 Nthme - 超级图片工具箱",
+  "short_name": "无限图界",
+  "description": "集成AI算力与传统算法的超级图片工具箱。AI创作+格式转换+视频处理，20+专业工具随时待命。",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#0a0a0a",
   "theme_color": "#CCFF00",
+  "lang": "zh-CN",
+  "dir": "ltr",
+  "categories": ["productivity", "photo", "utilities"],
   "icons": [
     {
       "src": "/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "/apple-touch-icon.png",
       "sizes": "180x180",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "AI工坊",
+      "short_name": "AI工坊",
+      "description": "双模型AI图片生成",
+      "url": "/portal",
+      "icons": []
+    },
+    {
+      "name": "格式工厂",
+      "short_name": "格式工厂",
+      "description": "免费图片格式转换",
+      "url": "/formats",
+      "icons": []
+    },
+    {
+      "name": "算力商城",
+      "short_name": "算力商城",
+      "description": "AI积分充值",
+      "url": "/pricing",
+      "icons": []
     }
   ]
 }

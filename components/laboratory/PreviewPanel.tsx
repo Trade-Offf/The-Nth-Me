@@ -8,9 +8,10 @@ import {
 } from 'lucide-react';
 import TechCard from '@/components/TechCard';
 import { useI18n } from '@/lib/i18n';
+import type { ModelType } from '@/lib/types';
 
 // Matrix 数字雨组件
-function MatrixRain() {
+function MatrixRain({ color = '#CCFF00' }: { color?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -38,7 +39,7 @@ function MatrixRain() {
       ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      ctx.fillStyle = '#CCFF00';
+      ctx.fillStyle = color;
       ctx.font = `${fontSize}px monospace`;
 
       for (let i = 0; i < drops.length; i++) {
@@ -58,7 +59,7 @@ function MatrixRain() {
       clearInterval(interval);
       window.removeEventListener('resize', resizeCanvas);
     };
-  }, []);
+  }, [color]);
 
   return (
     <canvas
@@ -69,6 +70,7 @@ function MatrixRain() {
 }
 
 interface PreviewPanelProps {
+  model: ModelType;
   generatedImage: string | null;
   isGenerating: boolean;
   error: string | null;
@@ -76,6 +78,7 @@ interface PreviewPanelProps {
 }
 
 export default function PreviewPanel({
+  model,
   generatedImage,
   isGenerating,
   error,
@@ -84,6 +87,22 @@ export default function PreviewPanel({
   const { t } = useI18n();
   const [copied, setCopied] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+
+  // 主题色配置 - 根据模型切换
+  const isPro = model === 'pro';
+  const theme = {
+    text: isPro ? 'text-purple-400' : 'text-acid',
+    border: isPro ? 'border-purple-500' : 'border-acid',
+    borderLight: isPro ? 'border-purple-500/30' : 'border-acid/30',
+    bg: isPro ? 'bg-purple-500/10' : 'bg-acid/10',
+    hoverBorder: isPro ? 'hover:border-purple-500/50' : 'hover:border-acid/50',
+    hoverText: isPro ? 'hover:text-purple-400' : 'hover:text-acid',
+    btnBg: isPro ? 'bg-purple-500' : 'bg-acid',
+    btnBgHover: isPro ? 'hover:bg-purple-400' : 'hover:bg-acid',
+    btnText: isPro ? 'text-white' : 'text-black',
+    shadow: isPro ? 'shadow-[0_0_30px_rgba(168,85,247,0.3)]' : 'shadow-[0_0_30px_rgba(204,255,0,0.3)]',
+    glow: isPro ? 'rgba(168,85,247,0.3)' : 'rgba(204,255,0,0.3)',
+  };
 
   // 复制 Prompt
   const handleCopyPrompt = async () => {
@@ -125,8 +144,8 @@ export default function PreviewPanel({
     <TechCard className="p-5 h-full flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-sm font-mono font-medium text-white uppercase tracking-wider flex items-center gap-2">
-          <ImageIcon className="w-4 h-4 text-acid" />
+        <h2 className="text-base font-mono font-medium text-white uppercase tracking-wider flex items-center gap-2">
+          <ImageIcon className={`w-5 h-5 ${theme.text}`} />
           {t.laboratory.output}
         </h2>
 
@@ -135,8 +154,8 @@ export default function PreviewPanel({
           <div className="flex items-center gap-2">
             <button
               onClick={handleCopyPrompt}
-              className="flex items-center gap-1.5 px-2 py-1 rounded-sm border border-tech-border
-                       text-[10px] font-mono text-zinc-400 hover:text-acid hover:border-acid/50 transition-all"
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-sm border border-tech-border
+                       text-xs font-mono text-zinc-400 ${theme.hoverText} ${theme.hoverBorder} transition-all`}
             >
               {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
               {copied ? t.laboratory.copied : t.laboratory.copyPrompt}
@@ -144,10 +163,10 @@ export default function PreviewPanel({
             <button
               onClick={handleDownload}
               disabled={isDownloading}
-              className={`flex items-center gap-1.5 px-2 py-1 rounded-sm border text-[10px] font-mono transition-all
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-sm border text-xs font-mono transition-all
                 ${isDownloading
                   ? 'border-zinc-600 bg-zinc-800 text-zinc-500 cursor-wait'
-                  : 'border-acid/50 bg-acid/10 text-acid hover:bg-acid hover:text-black'
+                  : `${theme.borderLight} ${theme.bg} ${theme.text} ${theme.btnBgHover} ${theme.btnText}`
                 }`}
             >
               {isDownloading ? (
@@ -191,15 +210,15 @@ export default function PreviewPanel({
               className="absolute inset-0 flex items-center justify-center bg-black"
             >
               {/* Matrix 数字雨背景 */}
-              <MatrixRain />
+              <MatrixRain color={isPro ? '#A855F7' : '#CCFF00'} />
 
               {/* 中心内容 */}
               <div className="relative z-10 text-center">
                 {/* 闪烁的终端光标效果 */}
                 <div className="mb-6">
                   <motion.div
-                    className="w-20 h-20 rounded-sm border-2 border-acid bg-black/80 mx-auto
-                               flex items-center justify-center shadow-[0_0_30px_rgba(204,255,0,0.3)]"
+                    className={`w-20 h-20 rounded-sm border-2 ${theme.border} bg-black/80 mx-auto
+                               flex items-center justify-center ${theme.shadow}`}
                     animate={{
                       boxShadow: [
                         '0 0 20px rgba(204,255,0,0.2)',
@@ -210,7 +229,7 @@ export default function PreviewPanel({
                     transition={{ duration: 1.5, repeat: Infinity }}
                   >
                     <motion.span
-                      className="text-acid font-mono text-3xl font-bold"
+                      className={`${theme.text} font-mono text-3xl font-bold`}
                       animate={{ opacity: [1, 0.3, 1] }}
                       transition={{ duration: 0.8, repeat: Infinity }}
                     >
@@ -221,7 +240,7 @@ export default function PreviewPanel({
 
                 {/* 生成中文字 */}
                 <motion.p
-                  className="text-acid font-mono text-sm tracking-widest mb-2"
+                  className={`${theme.text} font-mono text-sm tracking-widest mb-2`}
                   animate={{ opacity: [0.5, 1, 0.5] }}
                   transition={{ duration: 1.5, repeat: Infinity }}
                 >
@@ -238,7 +257,7 @@ export default function PreviewPanel({
                       transition={{ duration: 30, ease: 'linear' }}
                     />
                   </div>
-                  <div className="flex justify-between mt-1 text-[8px] font-mono text-acid/50">
+                  <div className={`flex justify-between mt-1 text-[8px] font-mono ${isPro ? 'text-purple-400/50' : 'text-acid/50'}`}>
                     <span>0x00</span>
                     <span>PROCESSING</span>
                     <span>0xFF</span>

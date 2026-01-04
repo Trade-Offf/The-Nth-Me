@@ -38,9 +38,9 @@
 
 **Nthme** is the ultimate image meta-toolbox that integrates AI computing power with traditional algorithms. 20+ professional tools at your fingertips.
 
-- 🎭 **Dual Creation Modes** — Template mode (one-click presets) + Free mode (custom prompts)
+- 🎭 **Dual Creation Modes** — Template mode (carousel style selector) + Free mode (custom prompts)
 - 🔮 **Standard & Pro Models** — Standard for speed, Pro for HD details + multiple aspect ratios
-- 📚 **Prompt Library** — Growing collection of style templates with filtering & one-click copy
+- 🎨 **12 Style Templates** — Built-in style carousel in AI Lab, one-click apply for image-to-image mode
 - 💳 **Global Payment** — Afdian (CNY) + Paddle (USD), auto region & currency detection
 - 🔐 **Quick Login** — GitHub / Google OAuth authentication
 - 🌍 **Bilingual** — Full i18n support (English & 简体中文), auto language detection
@@ -130,8 +130,8 @@ npm start
 ```
 ├── app/                  # Next.js App Router pages
 │   ├── api/              # API routes
-│   ├── portal/           # AI image generation
-│   ├── showcase/         # Prompt library
+│   ├── portal/           # AI Lab (image generation + style selector)
+│   ├── formats/          # Format Factory (image format conversion tools)
 │   └── ...
 ├── components/           # React components
 ├── lib/
@@ -148,9 +148,9 @@ npm start
 flowchart TB
     subgraph Frontend["🖥️ Frontend"]
         Home["🏠 Home<br/>app/page.tsx"]
-        Portal["🧪 AI Image Gen<br/>app/portal/page.tsx"]
-        Showcase["🌌 Prompt Library<br/>app/showcase/page.tsx"]
-        Pricing["⚡ Buy Credits<br/>app/pricing/page.tsx"]
+        Portal["🧪 AI Lab<br/>app/portal/page.tsx"]
+        Formats["🔧 Format Factory<br/>app/formats/page.tsx"]
+        Pricing["⚡ Credit Shop<br/>app/pricing/page.tsx"]
         User["👤 User Center<br/>app/user/page.tsx"]
         Login["🔐 Login<br/>app/login/page.tsx"]
     end
@@ -188,7 +188,7 @@ flowchart TB
     end
 
     Home --> Portal
-    Home --> Showcase
+    Home --> Formats
     Home --> Pricing
     Portal --> ControlPanel
     Portal --> PreviewPanel
@@ -260,14 +260,9 @@ Edit `lib/prompts.ts` and add a new entry to the `prompts` array:
 }
 ```
 
-### Step 2: Add Showcase Images
+### Step 2: Add Style Preview Image
 
-Place images in `/public/showcase/{id}/`:
-
-| Mode | Files Required | Display |
-|------|----------------|---------|
-| **Compare mode** (`showCompare: true`) | `before.webp` + `after.webp` | Before/After slider |
-| **Single mode** (`showCompare: false`) | `after.webp` only | Single image display |
+Place the preview image in `/public/showcase/{id}/after.webp`. This image will be displayed in the AI Lab's style carousel.
 
 ### Step 3: Add i18n Translations
 
@@ -333,9 +328,9 @@ We follow the [Conventional Commits](https://www.conventionalcommits.org/) speci
 
 | Scope | Description |
 |-------|-------------|
-| `portal` | AI image generation |
-| `showcase` | Prompt library |
-| `pricing` | Buy credits |
+| `portal` | AI Lab (image generation + style selector) |
+| `formats` | Format Factory (image format conversion tools) |
+| `pricing` | Credit Shop |
 | `auth` | Authentication |
 | `api` | API routes |
 | `i18n` | Internationalization |
@@ -350,7 +345,7 @@ fix(api): handle empty image response
 docs: update README with commit convention
 style(ui): format TechCard component
 refactor(auth): extract session validation logic
-perf(showcase): lazy load gallery images
+perf(portal): optimize style carousel performance
 chore: upgrade Next.js to 14.2
 ```
 

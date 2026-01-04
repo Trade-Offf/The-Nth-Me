@@ -1,26 +1,52 @@
 import type { Metadata } from 'next';
 
+const BASE_URL = 'https://www.nthme.org';
+
 export const metadata: Metadata = {
-  title: 'AI Portrait Generator | AI 肖像生成器',
+  title: 'AI工坊 - 双模型AI图片生成器',
   description:
-    'Create stunning AI-generated portraits from your photos. Upload an image and let AI transform it into unique artistic styles. 上传照片，让 AI 将其转化为独特的艺术风格。',
+    'AI工坊提供Standard和Pro双模型AI图片生成服务。支持文生图、图生图，12种预设风格一键应用。多种尺寸比例自由选择，2.5秒快速出图。AI创作从未如此简单。',
   keywords: [
-    'AI portrait generator',
-    'photo to AI art',
-    'AI image creator',
-    'portrait transformation',
-    'AI照片生成',
-    'AI肖像生成器',
-    '照片转AI艺术',
+    'AI图片生成',
+    'AI工坊',
+    '文生图',
+    '图生图',
+    'AI创作',
+    'AI写真',
+    'AI肖像生成',
+    'Stable Diffusion',
+    'AI图像生成器',
+    '双模型AI',
+    'Standard模型',
+    'Pro模型',
+    '预设风格',
+    '图片生成器',
+    'AI art generator',
   ],
   openGraph: {
-    title: 'AI Portrait Generator | AI 肖像生成器',
+    title: 'AI工坊 - 双模型AI图片生成器',
     description:
-      'Create stunning AI-generated portraits from your photos.',
-    url: 'https://www.nthme.org/portal',
+      'Standard快速出图，Pro高清细节。12种预设风格，支持文生图与图生图，多种尺寸自由选择。',
+    url: `${BASE_URL}/portal`,
+    siteName: '无限图界 Nthme',
+    images: [
+      {
+        url: `${BASE_URL}/og-image.png`,
+        width: 1200,
+        height: 630,
+        alt: 'AI工坊 - 双模型AI图片生成',
+      },
+    ],
+    type: 'website',
+    locale: 'zh_CN',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'AI工坊 - 双模型AI图片生成器',
+    description: 'Standard快速出图，Pro高清细节。12种预设风格，2.5秒快速生成。',
   },
   alternates: {
-    canonical: 'https://www.nthme.org/portal',
+    canonical: `${BASE_URL}/portal`,
   },
 };
 
