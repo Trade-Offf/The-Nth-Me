@@ -11,23 +11,31 @@ import UserMenu from './UserMenu';
 const navbarRoutes: Record<string, string> = {
   prompts: '/showcase',
   pricing: '/pricing',
-  portal: '/portal',
 };
 
-const navbarItems = ['portal', 'prompts', 'pricing'] as const;
+const toolboxItems = [
+  { key: 'ai-image', route: '/portal' },
+] as const;
+
+const navbarItems = ['toolbox', 'prompts', 'pricing'] as const;
 type NavbarKey = (typeof navbarItems)[number];
 
 export default function Navbar() {
   const { lang, setLang, t, supportedLangs } = useI18n();
   const [isLangOpen, setIsLangOpen] = useState(false);
+  const [isToolboxOpen, setIsToolboxOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const langMenuRef = useRef<HTMLDivElement>(null);
+  const toolboxMenuRef = useRef<HTMLDivElement>(null);
 
   // 点击外部关闭下拉菜单
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (langMenuRef.current && !langMenuRef.current.contains(e.target as Node)) {
         setIsLangOpen(false);
+      }
+      if (toolboxMenuRef.current && !toolboxMenuRef.current.contains(e.target as Node)) {
+        setIsToolboxOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -68,6 +76,38 @@ export default function Navbar() {
         <div className="flex items-center space-x-8">
           <nav className="hidden md:flex items-center space-x-1">
             {navbarItems.map((key) => {
+              // 工具箱下拉菜单
+              if (key === 'toolbox') {
+                return (
+                  <div key={key} className="relative" ref={toolboxMenuRef}>
+                    <button
+                      onClick={() => setIsToolboxOpen(!isToolboxOpen)}
+                      className="flex items-center gap-1 px-4 py-2 font-mono text-xs uppercase tracking-wider text-zinc-400 hover:text-acid transition-colors"
+                    >
+                      {t.navbar.toolbox}
+                      <ChevronDown className={`w-3 h-3 transition-transform ${isToolboxOpen ? 'rotate-180' : ''}`} strokeWidth={2} />
+                    </button>
+                    
+                    {/* 工具箱下拉菜单 */}
+                    {isToolboxOpen && (
+                      <div className="absolute left-0 top-full mt-1 py-1 min-w-[180px] bg-tech-card border border-tech-border rounded-sm shadow-xl z-50">
+                        {toolboxItems.map((item) => (
+                          <Link
+                            key={item.key}
+                            href={item.route}
+                            onClick={() => setIsToolboxOpen(false)}
+                            className="block px-4 py-2 font-mono text-xs text-zinc-400 hover:text-acid hover:bg-acid/5 transition-colors"
+                          >
+                            {t.navbar.toolbox_items[item.key]}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+              
+              // 其他直接链接
               const route = navbarRoutes[key];
               return (
                 <Link
@@ -159,6 +199,47 @@ export default function Navbar() {
               {/* 导航链接 */}
               <nav className="flex-1 px-6 py-8 space-y-2">
                 {navbarItems.map((key, index) => {
+                  // 工具箱展开菜单
+                  if (key === 'toolbox') {
+                    return (
+                      <motion.div
+                        key={key}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                        className="space-y-1"
+                      >
+                        <button
+                          onClick={() => setIsToolboxOpen(!isToolboxOpen)}
+                          className="w-full flex items-center justify-between px-4 py-4 font-mono text-lg uppercase tracking-wider text-zinc-300 hover:text-acid hover:bg-acid/5 rounded-sm transition-colors border-b border-tech-border/50"
+                        >
+                          {t.navbar.toolbox}
+                          <ChevronDown className={`w-4 h-4 transition-transform ${isToolboxOpen ? 'rotate-180' : ''}`} strokeWidth={2} />
+                        </button>
+                        
+                        {/* 子菜单 */}
+                        {isToolboxOpen && (
+                          <div className="pl-4 space-y-1">
+                            {toolboxItems.map((item) => (
+                              <Link
+                                key={item.key}
+                                href={item.route}
+                                onClick={() => {
+                                  setIsToolboxOpen(false);
+                                  setIsMobileMenuOpen(false);
+                                }}
+                                className="block px-4 py-3 font-mono text-sm text-zinc-400 hover:text-acid hover:bg-acid/5 rounded-sm transition-colors"
+                              >
+                                {t.navbar.toolbox_items[item.key]}
+                              </Link>
+                            ))}
+                          </div>
+                        )}
+                      </motion.div>
+                    );
+                  }
+                  
+                  // 其他直接链接
                   const route = navbarRoutes[key];
                   return (
                     <motion.div

@@ -11,7 +11,8 @@
 </p>
 
 <p align="center">
-  <strong>🌌 AI 驱动的平行宇宙肖像生成器</strong>
+  <strong>聚合 N 种黑科技，搞定图片一切需求</strong><br/>
+  <em>从 AI 创作到格式转换，一站式影像工具库</em>
 </p>
 
 <p align="center">
@@ -35,13 +36,15 @@
 
 ## ✨ 功能特性
 
-- 🎭 **双模式生成** — 模板模式（预设风格一键生成）+ 自由模式（自定义 Prompt）
+**无限图界 (Nthme)** 是一个集成了 AI 算力与传统算法的超级图片工具箱，20+ 专业工具随时待命。
+
+- 🎭 **双模式创作** — 模板模式（预设风格一键生成）+ 自由模式（自定义 Prompt）
 - 🔮 **标准/Pro 双模型** — 标准模型快速出图，Pro 模型高清细节 + 多尺寸输出
-- 📚 **Prompt 库** — 持续更新的风格模板，支持分类筛选与一键复制
-- 💳 **双渠道支付** — 国内爱发电 + 海外 Paddle，自动识别地区与货币
-- 🔐 **NextAuth 认证** — GitHub / Google OAuth 快速登录
+- 📚 **Prompt 提示词库** — 持续更新的风格模板，支持分类筛选与一键复制
+- 💳 **全球支付** — 国内爱发电 (CNY) + 海外 Paddle (USD)，自动识别地区与货币
+- 🔐 **快速登录** — GitHub / Google OAuth 认证
 - 🌍 **中英双语** — 完整 i18n 支持，自动识别浏览器语言
-- 🎨 **赛博朋克 UI** — 命运石之门风格，二进制雨 + 3D 科技感动效
+- 🎨 **赛博朋克 UI** — 暗黑风 + 霓虹色，科技感十足
 - 📱 **响应式设计** — 桌面端/移动端自适应布局
 
 ## 🛠 技术栈
@@ -127,8 +130,8 @@ npm start
 ```
 ├── app/                  # Next.js App Router 页面
 │   ├── api/              # API 路由
-│   ├── portal/           # 图片生成页面
-│   ├── showcase/         # 世界线画廊
+│   ├── portal/           # AI图片生成
+│   ├── showcase/         # Prompt提示词库
 │   └── ...
 ├── components/           # React 组件
 ├── lib/
@@ -145,9 +148,9 @@ npm start
 flowchart TB
     subgraph 前端["🖥️ 前端"]
         Home["🏠 首页<br/>app/page.tsx"]
-        Portal["🧪 实验室<br/>app/portal/page.tsx"]
-        Showcase["🌌 时空坐标库<br/>app/showcase/page.tsx"]
-        Pricing["⚡ 充能站<br/>app/pricing/page.tsx"]
+        Portal["🧪 AI图片生成<br/>app/portal/page.tsx"]
+        Showcase["🌌 Prompt提示词库<br/>app/showcase/page.tsx"]
+        Pricing["⚡ 购买算力<br/>app/pricing/page.tsx"]
         User["👤 个人中心<br/>app/user/page.tsx"]
         Login["🔐 登录<br/>app/login/page.tsx"]
     end
@@ -273,16 +276,16 @@ sequenceDiagram
 ```typescript
 worldlines: {
   'your-prompt-id': {
-    name: '显示名称',
-    description: '风格的简短描述',
+    name: '工具名称',
+    description: '工具的简短描述',
   },
   // ...
 }
 ```
 
-### 第四步：（可选）添加为世界线模板
+### 第四步：（可选）添加为快捷模板
 
-如果希望该 Prompt 出现在 Portal 模板选择器中，需编辑 `lib/worldlines.ts`：
+如果希望该 Prompt 出现在 AI图片生成页面的模板选择器中，需编辑 `lib/worldlines.ts`：
 
 ```typescript
 {
@@ -330,9 +333,9 @@ worldlines: {
 
 | 作用域 | 说明 |
 |--------|------|
-| `portal` | 实验室/生成页面 |
-| `showcase` | 时空坐标库 |
-| `pricing` | 充能站 |
+| `portal` | AI图片生成 |
+| `showcase` | Prompt提示词库 |
+| `pricing` | 购买算力 |
 | `auth` | 认证 |
 | `api` | API 路由 |
 | `i18n` | 国际化 |

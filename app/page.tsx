@@ -22,35 +22,33 @@ const Hero3DCanvas = dynamic(() => import('../components/Hero3DCanvas'), {
 
 const heroContent = {
   'zh-CN': {
-    sysStatus: '量子核心在线',
+    sysStatus: '工具库在线',
     sysVersion: 'v2.0.4',
-    title: '建立量子链接',
-    subtitle_gradient: '检索第 N 个维度的你',
+    title: '聚合 N 种黑科技',
+    subtitle_gradient: '搞定图片一切需求',
     description:
-      '基于 Nano Banana 神经核心驱动的时空观测系统。无需手动编写代码，系统已预载全套时空剧本。只需注入生物特征数据，即可让波函数坍缩，捕捉你在无数平行宇宙中的影像信号。',
-    btn_generate: '[ 立即生成 ]',
-    btn_primary: '[ 浏览时空坐标 ]',
-    btn_secondary: '[ 补充算力能源 ⚡ ]',
+      '从 AI 创作到格式转换，一站式影像工具库。集成 AI 算力与传统算法，20+ 专业工具随时待命。',
+    btn_generate: '开始使用',
+    btn_primary: '浏览工具库',
+    btn_secondary: '购买算力 ⚡',
     stats: {
-      latency: '信号延迟',
-      styles: '宇宙扇区',
-      resolution: '影像精度',
+      latency: '响应速度',
+      styles: '工具数量',
     },
   },
   'en-US': {
-    sysStatus: 'QUANTUM CORE ONLINE',
+    sysStatus: 'TOOLBOX ONLINE',
     sysVersion: 'v2.0.4',
-    title: 'ESTABLISH QUANTUM LINK',
-    subtitle_gradient: 'RETRIEVE THE NTH DIMENSION OF YOU',
+    title: 'AGGREGATE N BLACK-TECHS',
+    subtitle_gradient: 'HANDLE ALL IMAGE NEEDS',
     description:
-      'A spacetime observation system powered by the Nano Banana neural core. No manual coding required. Timeline scripts pre-loaded. Simply inject biometric data to collapse the wave function and capture your image signal across infinite parallel universes.',
-    btn_generate: '[ GENERATE NOW ]',
-    btn_primary: '[ BROWSE COORDINATES ]',
-    btn_secondary: '[ RECHARGE POWER ⚡ ]',
+      'The Ultimate Image Meta-Toolbox. From AI creation to format conversion, 20+ professional tools integrated with AI and traditional algorithms.',
+    btn_generate: 'START NOW',
+    btn_primary: 'BROWSE TOOLS',
+    btn_secondary: 'BUY CREDITS ⚡',
     stats: {
-      latency: 'SIGNAL DELAY',
-      styles: 'UNIVERSE SECTORS',
-      resolution: 'IMAGE PRECISION',
+      latency: 'RESPONSE TIME',
+      styles: 'TOOLS AVAILABLE',
     },
   },
 } as const;
@@ -99,7 +97,7 @@ export default function HomePage() {
 
               <div className="space-y-3">
                 <p className="font-mono text-xs text-zinc-600 uppercase tracking-[0.2em]">
-                  {`// INITIALIZING QUANTUM BRIDGE`}
+                  {`// INITIALIZING META-TOOLBOX`}
                 </p>
 
                 {/* 主标题 - 英文时缩小 */}
@@ -164,7 +162,7 @@ export default function HomePage() {
               </div>
 
               {/* 技术指标 */}
-              <div className="grid grid-cols-3 gap-4 sm:flex sm:items-center sm:gap-6 pt-4 border-t border-tech-border">
+              <div className="grid grid-cols-2 gap-4 sm:flex sm:items-center sm:gap-6 pt-4 border-t border-tech-border">
                 <div>
                   <p className="font-mono text-[10px] text-zinc-600 uppercase tracking-[0.15em]">
                     {hero.stats.latency}
@@ -177,13 +175,6 @@ export default function HomePage() {
                     {hero.stats.styles}
                   </p>
                   <p className="font-mono text-base sm:text-lg text-acid">20+</p>
-                </div>
-                <div className="hidden sm:block w-px h-8 bg-tech-border" />
-                <div>
-                  <p className="font-mono text-[10px] text-zinc-600 uppercase tracking-[0.15em]">
-                    {hero.stats.resolution}
-                  </p>
-                  <p className="font-mono text-base sm:text-lg text-acid">1024px</p>
                 </div>
               </div>
             </motion.div>
@@ -199,7 +190,7 @@ export default function HomePage() {
               <div className="relative h-full border border-tech-border rounded-sm overflow-hidden bg-tech-card/50">
                 {/* 顶部角标 */}
                 <span className="absolute top-2 left-3 font-mono text-[10px] text-zinc-600 uppercase tracking-wider z-10">
-                  [QUANTUM_PREVIEW]
+                  [TOOLBOX_PREVIEW]
                 </span>
                 <span className="absolute top-2 right-3 font-mono text-[10px] text-acid/50 uppercase tracking-wider z-10">
                   LAT: 40.22

@@ -11,7 +11,8 @@
 </p>
 
 <p align="center">
-  <strong>🌌 AI-Powered Parallel Universe Portrait Generator</strong>
+  <strong>The Ultimate Image Meta-Toolbox</strong><br/>
+  <em>Aggregate N black-techs, handle all image needs</em>
 </p>
 
 <p align="center">
@@ -35,13 +36,15 @@
 
 ## ✨ Features
 
-- 🎭 **Dual Generation Modes** — Template mode (one-click presets) + Free mode (custom prompts)
+**Nthme** is the ultimate image meta-toolbox that integrates AI computing power with traditional algorithms. 20+ professional tools at your fingertips.
+
+- 🎭 **Dual Creation Modes** — Template mode (one-click presets) + Free mode (custom prompts)
 - 🔮 **Standard & Pro Models** — Standard for speed, Pro for HD details + multiple aspect ratios
 - 📚 **Prompt Library** — Growing collection of style templates with filtering & one-click copy
-- 💳 **Global Payment** — Afdian (China) + Paddle (International), auto currency detection
-- 🔐 **NextAuth Login** — GitHub / Google OAuth authentication
+- 💳 **Global Payment** — Afdian (CNY) + Paddle (USD), auto region & currency detection
+- 🔐 **Quick Login** — GitHub / Google OAuth authentication
 - 🌍 **Bilingual** — Full i18n support (English & 简体中文), auto language detection
-- 🎨 **Cyberpunk UI** — Steins;Gate inspired design with binary rain & 3D tech effects
+- 🎨 **Cyberpunk UI** — Dark theme + neon colors, tech-powered aesthetics
 - 📱 **Responsive** — Desktop & mobile adaptive layout
 
 ## 🛠 Tech Stack
@@ -127,8 +130,8 @@ npm start
 ```
 ├── app/                  # Next.js App Router pages
 │   ├── api/              # API routes
-│   ├── portal/           # Main generation page
-│   ├── showcase/         # Worldline gallery
+│   ├── portal/           # AI image generation
+│   ├── showcase/         # Prompt library
 │   └── ...
 ├── components/           # React components
 ├── lib/
@@ -145,9 +148,9 @@ npm start
 flowchart TB
     subgraph Frontend["🖥️ Frontend"]
         Home["🏠 Home<br/>app/page.tsx"]
-        Portal["🧪 Laboratory<br/>app/portal/page.tsx"]
-        Showcase["🌌 Showcase<br/>app/showcase/page.tsx"]
-        Pricing["⚡ Pricing<br/>app/pricing/page.tsx"]
+        Portal["🧪 AI Image Gen<br/>app/portal/page.tsx"]
+        Showcase["🌌 Prompt Library<br/>app/showcase/page.tsx"]
+        Pricing["⚡ Buy Credits<br/>app/pricing/page.tsx"]
         User["👤 User Center<br/>app/user/page.tsx"]
         Login["🔐 Login<br/>app/login/page.tsx"]
     end
@@ -273,16 +276,16 @@ Add translations to both `lib/i18n/locales/en-US.ts` and `zh-CN.ts`:
 ```typescript
 worldlines: {
   'your-prompt-id': {
-    name: 'Display Name',
-    description: 'Short description for this style',
+    name: 'Tool Name',
+    description: 'Short description for this tool',
   },
   // ...
 }
 ```
 
-### Step 4: (Optional) Add as Worldline Template
+### Step 4: (Optional) Add as Quick Template
 
-If you want this prompt to appear in the Portal template selector, add it to `lib/worldlines.ts`:
+If you want this prompt to appear in the AI Image Generation page template selector, add it to `lib/worldlines.ts`:
 
 ```typescript
 {
@@ -330,9 +333,9 @@ We follow the [Conventional Commits](https://www.conventionalcommits.org/) speci
 
 | Scope | Description |
 |-------|-------------|
-| `portal` | Laboratory/generation page |
-| `showcase` | Showcase gallery |
-| `pricing` | Pricing page |
+| `portal` | AI image generation |
+| `showcase` | Prompt library |
+| `pricing` | Buy credits |
 | `auth` | Authentication |
 | `api` | API routes |
 | `i18n` | Internationalization |
