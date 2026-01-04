@@ -5,13 +5,16 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import type { ToolType } from '@/app/formats/page';
-import WebPConverter from './tools/WebPConverter';
-import CompressTool from './tools/CompressTool';
-import HeicConverter from './tools/HeicConverter';
-import Pdf2ImgConverter from './tools/Pdf2ImgConverter';
-import Img2PdfConverter from './tools/Img2PdfConverter';
-import Video2GifConverter from './tools/Video2GifConverter';
-import IcoGenerator from './tools/IcoGenerator';
+import dynamic from 'next/dynamic';
+
+// 动态导入工具组件以避免 SSR 时访问 window 对象
+const WebPConverter = dynamic(() => import('./tools/WebPConverter'), { ssr: false });
+const CompressTool = dynamic(() => import('./tools/CompressTool'), { ssr: false });
+const HeicConverter = dynamic(() => import('./tools/HeicConverter'), { ssr: false });
+const Pdf2ImgConverter = dynamic(() => import('./tools/Pdf2ImgConverter'), { ssr: false });
+const Img2PdfConverter = dynamic(() => import('./tools/Img2PdfConverter'), { ssr: false });
+const Video2GifConverter = dynamic(() => import('./tools/Video2GifConverter'), { ssr: false });
+const IcoGenerator = dynamic(() => import('./tools/IcoGenerator'), { ssr: false });
 
 interface ToolModalProps {
   toolId: ToolType;
