@@ -23,3 +23,4 @@ declare module 'gif.js' {
   export default GIF;
 }
 
+

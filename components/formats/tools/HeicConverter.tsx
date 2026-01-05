@@ -153,8 +153,8 @@ export default function HeicConverter() {
         };
       });
 
-      // 默认不选择，让用户手动选择
-      const selectedFrames: number[] = [];
+      // 单帧图片自动选中，多帧让用户手动选择
+      const selectedFrames: number[] = frames.length === 1 ? [0] : [];
 
       return {
         originalName: file.name,

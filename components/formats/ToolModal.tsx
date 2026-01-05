@@ -10,6 +10,7 @@ import dynamic from 'next/dynamic';
 // 动态导入工具组件以避免 SSR 时访问 window 对象
 const WebPConverter = dynamic(() => import('./tools/WebPConverter'), { ssr: false });
 const CompressTool = dynamic(() => import('./tools/CompressTool'), { ssr: false });
+const WatermarkRemover = dynamic(() => import('./tools/WatermarkRemover'), { ssr: false });
 const HeicConverter = dynamic(() => import('./tools/HeicConverter'), { ssr: false });
 const Pdf2ImgConverter = dynamic(() => import('./tools/Pdf2ImgConverter'), { ssr: false });
 const Img2PdfConverter = dynamic(() => import('./tools/Img2PdfConverter'), { ssr: false });
@@ -48,6 +49,8 @@ export default function ToolModal({ toolId, onClose }: ToolModalProps) {
         return <WebPConverter />;
       case 'compress':
         return <CompressTool />;
+      case 'watermark':
+        return <WatermarkRemover />;
       case 'heic':
         return <HeicConverter />;
       case 'pdf2img':

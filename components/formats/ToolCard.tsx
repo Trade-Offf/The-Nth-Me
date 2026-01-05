@@ -11,11 +11,13 @@ import {
   Sparkles,
   Smartphone,
   FileText,
+  Droplet,
 } from 'lucide-react';
 
 const toolIcons: Record<ToolType, React.ReactNode> = {
   webp: <Image className="w-6 h-6" strokeWidth={1.5} />,
   compress: <Sparkles className="w-6 h-6" strokeWidth={1.5} />,
+  watermark: <Droplet className="w-6 h-6" strokeWidth={1.5} />,
   heic: <Smartphone className="w-6 h-6" strokeWidth={1.5} />,
   pdf2img: <FileImage className="w-6 h-6" strokeWidth={1.5} />,
   img2pdf: <FileText className="w-6 h-6" strokeWidth={1.5} />,

@@ -13,6 +13,14 @@ const nextConfig = {
   compiler: {
     // Use Babel instead of SWC
   },
+  // 优化热更新配置
+  reactStrictMode: true,
+  onDemandEntries: {
+    // 页面在内存中保持的时间（毫秒）
+    maxInactiveAge: 60 * 1000,
+    // 同时保持在内存中的页面数量
+    pagesBufferLength: 5,
+  },
   // Allow Spline resources
   async headers() {
     return [

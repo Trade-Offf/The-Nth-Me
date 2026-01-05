@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { Suspense } from 'react';
-import Link from 'next/link';
-import dynamic from 'next/dynamic';
-import { motion } from 'framer-motion';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import BinaryRain from '@/components/BinaryRain';
-import { useI18n } from '@/lib/i18n';
+import { Suspense } from "react";
+import Link from "next/link";
+import dynamic from "next/dynamic";
+import { motion } from "framer-motion";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import BinaryRain from "@/components/BinaryRain";
+import { useI18n } from "@/lib/i18n";
 
-const Hero3DCanvas = dynamic(() => import('../components/Hero3DCanvas'), {
+const Hero3DCanvas = dynamic(() => import("../components/Hero3DCanvas"), {
   ssr: false,
   loading: () => (
     <div className="flex items-center justify-center w-full h-full bg-tech-bg">
@@ -21,101 +21,121 @@ const Hero3DCanvas = dynamic(() => import('../components/Hero3DCanvas'), {
 });
 
 const heroContent = {
-  'zh-CN': {
-    sysStatus: '工具库在线',
-    sysVersion: 'v2.0.4',
-    title: '聚合 N 种黑科技',
-    subtitle_gradient: '搞定图片一切需求',
+  "zh-CN": {
+    sysStatus: "工具库在线",
+    sysVersion: "v2.0.4",
+    title: "聚合 N 种黑科技",
+    subtitle_gradient: "搞定图片一切需求",
     description:
-      '从 AI 创作到格式转换，一站式影像工具库。集成 AI 算力与传统算法，20+ 专业工具随时待命。',
-    btn_generate: '开始使用',
-    btn_primary: '浏览工具库',
-    btn_secondary: '购买算力 ⚡',
+      "从 AI 智能创作到格式批量转换，打造一站式影像处理解决方案。深度集成 AI 算力引擎与高性能传统算法，20+ 专业工具覆盖图片全生命周期。支持双模型 AI 生成、多种格式转换，纯前端处理确保数据隐私安全。",
+    btn_generate: "开始使用",
+    btn_primary: "浏览工具库",
+    btn_secondary: "购买算力 ⚡",
     stats: {
-      latency: '响应速度',
-      styles: '工具数量',
+      latency: "响应速度",
+      styles: "工具数量",
     },
-    featuresTitle: '核心功能',
-    featuresSubtitle: '三大工具矩阵，覆盖图片全生命周期',
+    featuresTitle: "核心功能",
+    featuresSubtitle: "三大工具矩阵，覆盖图片全生命周期",
     features: [
       {
-        id: 'ai-lab',
-        icon: '🧪',
-        title: 'AI 工坊',
-        subtitle: 'AI-POWERED CREATION',
-        description: '双模型 AI 图片生成引擎。Standard 快速出图，Pro 高清细节。12种预设风格，支持文生图与图生图，多种尺寸自由选择。',
-        highlights: ['双模型引擎', '12种风格', '多尺寸输出'],
-        link: '/portal',
-        linkText: '进入工坊',
+        id: "ai-lab",
+        title: "AI 工坊",
+        subtitle: "AI-POWERED CREATION",
+        description:
+          "搭载双模型 AI 图片生成引擎，Standard 模型极速出图满足日常需求，Pro 模型提供高清细节专业品质。内置 12 种精选风格模板，涵盖人像写真、商业摄影、艺术创作等场景。支持文生图与图生图双模式，提供多种宽高比和分辨率选择，满足不同平台发布需求。每次生成消耗对应算力，按需使用经济实惠。",
+        highlights: [
+          "Standard / Pro 双模型",
+          "12 种预设风格",
+          "多尺寸输出",
+          "文生图 / 图生图",
+        ],
+        link: "/portal",
+        linkText: "进入工坊",
       },
       {
-        id: 'format-factory',
-        icon: '🔧',
-        title: '格式工厂',
-        subtitle: 'FORMAT CONVERSION',
-        description: '纯前端图片格式处理工具集。WebP/HEIC/JPEG转换，PDF与图片互转，视频转GIF，ICO生成。无需上传，即时处理，保护隐私。',
-        highlights: ['7大转换工具', '纯前端处理', '隐私安全'],
-        link: '/formats',
-        linkText: '打开工厂',
+        id: "format-factory",
+        title: "格式工厂",
+        subtitle: "CLIENT-SIDE PROCESSING",
+        description:
+          "纯前端图片格式处理工具矩阵，所有操作在浏览器本地完成，零上传保护隐私安全。包含 WebP 双向转换、JPEG 极限压缩、Live Photo 转换（支持 HEIC 静态图与 MOV 视频选帧）、PDF 与图片互转、视频转 GIF 动图、ICO 图标生成、图片去水印等多种实用工具。支持批量处理，实时预览，一键下载。无需登录即可使用全部功能。",
+        highlights: ["多种转换工具", "纯前端处理", "批量操作", "无需登录"],
+        link: "/formats",
+        linkText: "打开工厂",
       },
       {
-        id: 'credit-shop',
-        icon: '⚡',
-        title: '算力商城',
-        subtitle: 'FLEXIBLE PRICING',
-        description: '灵活的积分充值系统。国内爱发电（CNY）+ 海外Paddle（USD）双通道支付。多档位选择，充值即用，按需购买。',
-        highlights: ['双币种支付', '多档位选择', '即买即用'],
-        link: '/pricing',
-        linkText: '查看价格',
+        id: "credit-shop",
+        title: "算力商城",
+        subtitle: "FLEXIBLE PRICING",
+        description:
+          "灵活的算力积分充值系统，支持按需购买避免浪费。提供入门包、进阶包、专业包、旗舰包等多档位选择，满足不同使用需求。积分永久有效随时使用，充值即时到账。可用于 AI 图片生成，Standard 模型 2 算力/次，Pro 模型 8 算力/次，经济实惠按需消费。",
+        highlights: ["多档位选择", "永久有效", "即充即用", "按需消费"],
+        link: "/pricing",
+        linkText: "查看价格",
       },
     ],
   },
-  'en-US': {
-    sysStatus: 'TOOLBOX ONLINE',
-    sysVersion: 'v2.0.4',
-    title: 'AGGREGATE N BLACK-TECHS',
-    subtitle_gradient: 'HANDLE ALL IMAGE NEEDS',
+  "en-US": {
+    sysStatus: "TOOLBOX ONLINE",
+    sysVersion: "v2.0.4",
+    title: "AGGREGATE N BLACK-TECHS",
+    subtitle_gradient: "HANDLE ALL IMAGE NEEDS",
     description:
-      'The Ultimate Image Meta-Toolbox. From AI creation to format conversion, 20+ professional tools integrated with AI and traditional algorithms.',
-    btn_generate: 'START NOW',
-    btn_primary: 'BROWSE TOOLS',
-    btn_secondary: 'BUY CREDITS ⚡',
+      "The Ultimate Image Processing Solution. From AI-powered creation to batch format conversion, covering the complete image lifecycle. Deep integration of AI engines and high-performance algorithms. 20+ professional tools with dual-model AI generation, various converters, and client-side processing for maximum privacy.",
+    btn_generate: "START NOW",
+    btn_primary: "BROWSE TOOLS",
+    btn_secondary: "BUY CREDITS ⚡",
     stats: {
-      latency: 'RESPONSE TIME',
-      styles: 'TOOLS AVAILABLE',
+      latency: "RESPONSE TIME",
+      styles: "TOOLS AVAILABLE",
     },
-    featuresTitle: 'CORE FEATURES',
-    featuresSubtitle: 'Three toolsets covering the complete image lifecycle',
+    featuresTitle: "CORE FEATURES",
+    featuresSubtitle: "Three toolsets covering the complete image lifecycle",
     features: [
       {
-        id: 'ai-lab',
-        icon: '🧪',
-        title: 'AI Lab',
-        subtitle: 'AI-POWERED CREATION',
-        description: 'Dual-model AI image generation. Standard for speed, Pro for HD quality. 12 preset styles, text-to-image & image-to-image, multiple aspect ratios.',
-        highlights: ['Dual Models', '12 Styles', 'Multi-Size'],
-        link: '/portal',
-        linkText: 'Enter Lab',
+        id: "ai-lab",
+        title: "AI Lab",
+        subtitle: "AI-POWERED CREATION",
+        description:
+          "Powered by dual-model AI image generation engine. Standard model delivers lightning-fast results for everyday needs, while Pro model provides HD quality for professional work. Built-in 12 curated style templates covering portraits, commercial photography, and artistic creation. Supports both text-to-image and image-to-image modes. Offers multiple aspect ratios and resolutions for various platform requirements. Credits consumed per generation, cost-effective pay-as-you-go.",
+        highlights: [
+          "Standard / Pro Models",
+          "12 Preset Styles",
+          "Multi-size Output",
+          "Text & Image Input",
+        ],
+        link: "/portal",
+        linkText: "Enter Lab",
       },
       {
-        id: 'format-factory',
-        icon: '🔧',
-        title: 'Format Factory',
-        subtitle: 'FORMAT CONVERSION',
-        description: 'Client-side image processing toolkit. WebP/HEIC/JPEG conversion, PDF↔Image, Video to GIF, ICO generation. No upload, instant processing, privacy-first.',
-        highlights: ['7 Converters', 'Client-side', 'Privacy Safe'],
-        link: '/formats',
-        linkText: 'Open Factory',
+        id: "format-factory",
+        title: "Format Factory",
+        subtitle: "CLIENT-SIDE PROCESSING",
+        description:
+          "Client-side image processing toolkit, all operations performed locally in browser for maximum privacy. Includes WebP bidirectional conversion, JPEG extreme compression, Live Photo converter (supports HEIC static images and MOV video frame extraction), PDF↔Image conversion, Video to GIF, ICO generator, watermark remover and more practical tools. Supports batch processing, real-time preview, one-click download. No login required for full access.",
+        highlights: [
+          "Multiple Converters",
+          "Client-side Processing",
+          "Batch Operations",
+          "No Login",
+        ],
+        link: "/formats",
+        linkText: "Open Factory",
       },
       {
-        id: 'credit-shop',
-        icon: '⚡',
-        title: 'Credit Shop',
-        subtitle: 'FLEXIBLE PRICING',
-        description: 'Flexible credit system. Afdian (CNY) + Paddle (USD) dual payment channels. Multiple tiers, instant activation, pay-as-you-go.',
-        highlights: ['Dual Currency', 'Multi-tier', 'Instant Use'],
-        link: '/pricing',
-        linkText: 'View Pricing',
+        id: "credit-shop",
+        title: "Credit Shop",
+        subtitle: "FLEXIBLE PRICING",
+        description:
+          "Flexible credit system with pay-as-you-go pricing to avoid waste. Choose from Starter, Advanced, Professional, or Flagship packages to match your needs. Credits never expire and can be used anytime. Instant activation upon purchase. Use credits for AI generation: Standard model 2 credits/image, Pro model 8 credits/image. Cost-effective and economical.",
+        highlights: [
+          "Multiple Tiers",
+          "Never Expire",
+          "Instant Use",
+          "Pay-as-you-go",
+        ],
+        link: "/pricing",
+        linkText: "View Pricing",
       },
     ],
   },
@@ -145,7 +165,7 @@ export default function HomePage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="space-y-6"
+              className="space-y-8 p-8 lg:p-10 border border-tech-border/30 rounded-sm bg-gradient-to-br from-tech-card/10 to-transparent backdrop-blur-sm"
             >
               {/* 系统状态栏 */}
               <div className="flex items-center gap-4">
@@ -160,17 +180,13 @@ export default function HomePage() {
                 </span>
               </div>
 
-              <div className="space-y-3">
-                <p className="font-mono text-xs text-zinc-600 uppercase tracking-[0.2em]">
-                  {`// INITIALIZING META-TOOLBOX`}
-                </p>
-
+              <div className="space-y-4">
                 {/* 主标题 - 英文时缩小 */}
                 <h1
-                  className={`font-bold text-white uppercase tracking-wide ${
-                    lang === 'en-US'
-                      ? 'text-2xl sm:text-3xl lg:text-4xl'
-                      : 'text-3xl sm:text-4xl lg:text-5xl'
+                  className={`font-bold text-white uppercase tracking-wide leading-tight ${
+                    lang === "en-US"
+                      ? "text-2xl sm:text-3xl lg:text-4xl"
+                      : "text-3xl sm:text-4xl lg:text-5xl"
                   }`}
                 >
                   {hero.title}
@@ -179,10 +195,10 @@ export default function HomePage() {
                 {/* 副标题 - 酸性绿下划线效果 - 英文时缩小 */}
                 <div className="relative inline-block">
                   <p
-                    className={`font-bold text-acid uppercase tracking-wide ${
-                      lang === 'en-US'
-                        ? 'text-lg sm:text-xl lg:text-2xl'
-                        : 'text-xl sm:text-2xl lg:text-3xl'
+                    className={`font-bold text-acid uppercase tracking-wide leading-tight ${
+                      lang === "en-US"
+                        ? "text-lg sm:text-xl lg:text-2xl"
+                        : "text-xl sm:text-2xl lg:text-3xl"
                     }`}
                   >
                     {hero.subtitle_gradient}
@@ -194,19 +210,46 @@ export default function HomePage() {
               {/* 分隔线 */}
               <div className="w-full h-px bg-gradient-to-r from-tech-border via-acid/20 to-transparent" />
 
-              <p className="text-sm text-zinc-400 max-w-xl leading-relaxed font-light">
-                {hero.description}
-              </p>
+              {/* 描述文字 - 增强视觉层次 */}
+              <div className="space-y-3">
+                <p className="text-sm text-zinc-400 max-w-xl leading-relaxed">
+                  {hero.description}
+                </p>
+
+                {/* 特性标签 */}
+                <div className="flex flex-wrap gap-2">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-acid/5 border border-acid/20 rounded-sm">
+                    <span className="w-1 h-1 rounded-full bg-acid" />
+                    <span className="font-mono text-[10px] text-acid uppercase tracking-wider">
+                      AI_POWERED
+                    </span>
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-tech-panel border border-tech-border rounded-sm">
+                    <span className="w-1 h-1 rounded-full bg-zinc-500" />
+                    <span className="font-mono text-[10px] text-zinc-500 uppercase tracking-wider">
+                      CLIENT_SIDE
+                    </span>
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-tech-panel border border-tech-border rounded-sm">
+                    <span className="w-1 h-1 rounded-full bg-zinc-500" />
+                    <span className="font-mono text-[10px] text-zinc-500 uppercase tracking-wider">
+                      PRIVACY_FIRST
+                    </span>
+                  </span>
+                </div>
+              </div>
 
               {/* 按钮组 */}
-              <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 pt-2">
+              <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3">
                 {/* AI工坊按钮 - 主要 CTA */}
                 <Link
                   href="/portal"
                   className="group inline-flex items-center justify-center px-6 py-3 rounded-sm bg-acid text-black font-mono text-xs uppercase tracking-[0.15em] font-medium hover:bg-transparent hover:text-acid border border-acid transition-all duration-200"
                 >
-                  {hero.features[0].icon} {hero.features[0].title}
-                  <span className="ml-2 group-hover:translate-x-1 transition-transform">→</span>
+                  {hero.features[0].title}
+                  <span className="ml-2 group-hover:translate-x-1 transition-transform">
+                    →
+                  </span>
                 </Link>
 
                 {/* 格式工厂按钮 - 描边 */}
@@ -214,7 +257,7 @@ export default function HomePage() {
                   href="/formats"
                   className="inline-flex items-center justify-center px-6 py-3 rounded-sm border border-zinc-700 text-zinc-400 font-mono text-xs uppercase tracking-[0.15em] hover:border-acid hover:text-acid transition-colors duration-200"
                 >
-                  {hero.features[1].icon} {hero.features[1].title}
+                  {hero.features[1].title}
                 </Link>
 
                 {/* 算力商城按钮 - 描边 */}
@@ -222,24 +265,27 @@ export default function HomePage() {
                   href="/pricing"
                   className="inline-flex items-center justify-center px-6 py-3 rounded-sm border border-zinc-700 text-zinc-400 font-mono text-xs uppercase tracking-[0.15em] hover:border-acid hover:text-acid transition-colors duration-200"
                 >
-                  {hero.features[2].icon} {hero.features[2].title}
+                  {hero.features[2].title}
                 </Link>
               </div>
 
               {/* 技术指标 */}
-              <div className="grid grid-cols-2 gap-4 sm:flex sm:items-center sm:gap-6 pt-4 border-t border-tech-border">
-                <div>
+              <div className="grid grid-cols-2 gap-6 pt-6 border-t border-tech-border">
+                <div className="space-y-2">
                   <p className="font-mono text-[10px] text-zinc-600 uppercase tracking-[0.15em]">
                     {hero.stats.latency}
                   </p>
-                  <p className="font-mono text-base sm:text-lg text-acid">~2.5s</p>
+                  <p className="font-mono text-xl sm:text-2xl text-acid">
+                    ~2.5s
+                  </p>
+                  <div className="w-12 h-px bg-acid/50" />
                 </div>
-                <div className="hidden sm:block w-px h-8 bg-tech-border" />
-                <div>
+                <div className="space-y-2">
                   <p className="font-mono text-[10px] text-zinc-600 uppercase tracking-[0.15em]">
                     {hero.stats.styles}
                   </p>
-                  <p className="font-mono text-base sm:text-lg text-acid">20+</p>
+                  <p className="font-mono text-xl sm:text-2xl text-acid">20+</p>
+                  <div className="w-12 h-px bg-acid/50" />
                 </div>
               </div>
             </motion.div>
@@ -319,18 +365,18 @@ export default function HomePage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
-                <Link
-                  href={feature.link}
-                  className="group block h-full"
-                >
+                <Link href={feature.link} className="group block h-full">
                   <div className="h-full p-6 lg:p-8 border border-tech-border rounded-sm bg-tech-card hover:border-acid/50 hover:bg-tech-card/80 transition-all duration-300">
-                    {/* 图标和标签 */}
+                    {/* 编号标签 */}
                     <div className="flex items-start justify-between mb-4">
-                      <div className="w-12 h-12 flex items-center justify-center text-3xl bg-tech-bg border border-tech-border rounded-sm group-hover:border-acid/50 transition-colors">
-                        {feature.icon}
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-acid group-hover:animate-pulse" />
+                        <span className="font-mono text-xs text-zinc-600 uppercase tracking-wider">
+                          MODULE_{String(index + 1).padStart(2, "0")}
+                        </span>
                       </div>
-                      <span className="px-2 py-1 border border-tech-border rounded-sm text-[10px] font-mono text-zinc-500 uppercase tracking-wider">
-                        {String(index + 1).padStart(2, '0')}
+                      <span className="px-2 py-1 border border-tech-border rounded-sm text-[10px] font-mono text-zinc-500 uppercase tracking-wider group-hover:border-acid/50 transition-colors">
+                        ACTIVE
                       </span>
                     </div>
 

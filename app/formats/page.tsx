@@ -9,9 +9,9 @@ import { useI18n } from '@/lib/i18n';
 import ToolCard from '@/components/formats/ToolCard';
 import ToolModal from '@/components/formats/ToolModal';
 
-export type ToolType = 'webp' | 'compress' | 'heic' | 'pdf2img' | 'img2pdf' | 'video2gif' | 'ico';
+export type ToolType = 'webp' | 'compress' | 'heic' | 'pdf2img' | 'img2pdf' | 'video2gif' | 'ico' | 'watermark';
 
-const toolOrder: ToolType[] = ['webp', 'compress', 'heic', 'pdf2img', 'img2pdf', 'video2gif', 'ico'];
+const toolOrder: ToolType[] = ['webp', 'compress', 'watermark', 'heic', 'pdf2img', 'img2pdf', 'video2gif', 'ico'];
 
 export default function FormatsPage() {
   const { t, lang } = useI18n();
