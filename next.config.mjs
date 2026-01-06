@@ -8,11 +8,10 @@ const nextConfig = {
       },
     ],
   },
-  // Disable SWC minifier to avoid download issues
-  swcMinify: false,
-  compiler: {
-    // Use Babel instead of SWC
-  },
+  // 启用压缩和优化
+  compress: true,
+  swcMinify: true, // 启用SWC压缩以减小包体积
+  
   // 优化热更新配置
   reactStrictMode: true,
   onDemandEntries: {
@@ -21,7 +20,11 @@ const nextConfig = {
     // 同时保持在内存中的页面数量
     pagesBufferLength: 5,
   },
-  // Allow Spline resources
+  
+  // 性能优化
+  poweredByHeader: false,
+  generateEtags: true,
+  // 优化缓存和跨域配置
   async headers() {
     return [
       {
@@ -30,6 +33,26 @@ const nextConfig = {
           {
             key: 'Access-Control-Allow-Origin',
             value: '*',
+          },
+        ],
+      },
+      // 静态资源缓存（1年）
+      {
+        source: '/(.*)\\.(jpg|jpeg|png|webp|gif|svg|ico|woff|woff2|ttf|eot)$',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      // JS/CSS缓存（1年，immutable）
+      {
+        source: '/_next/static/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
           },
         ],
       },
